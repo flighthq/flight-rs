@@ -135,6 +135,38 @@ This settles the diagnosis above. The boundary was never the cost: removing `f64
 
 **At 16² the mirrors still lose** — 0.42x for `setBitmapAlpha`, 0.69x for `multiplyBitmapAlpha`. No kernel work fixes that: a 1 KB operation is dominated by crossing the boundary at all. The remaining argument about small calls is about call size, not about kernels, and the single-pixel accessors below are the extreme of it.
 
+### What is still generated, measured
+
+All twenty-seven remaining exports were measured against their generated kernels rather than guessed at, and they fall into four groups with different answers. `npm run bench:barrier` reproduces the table.
+
+**1. Pathological, 0.07x-0.09x — the biggest opportunity in the package.**
+
+| Export                  | 1024² wasm | 1024² TypeScript | ratio |
+| ----------------------- | ---------: | ---------------: | ----: |
+| `fillBitmapTurbulence`  | 2327.73 ms |        165.77 ms | 0.07x |
+| `fillBitmapPerlinNoise` | 1549.61 ms |        136.85 ms | 0.09x |
+| `fillBitmapNoise`       |  358.32 ms |         23.42 ms | 0.07x |
+| `getBitmapColorBounds`  |   46.99 ms |          3.18 ms | 0.07x |
+
+A 14x loss is not `f64` indexing, which costs about 2x. These four do **bitwise** work per pixel — a PRNG, a colour mask — and the generator reproduces JavaScript's `ToInt32`/`ToUint32` coercion faithfully, as nested `__flight_js_to_i32(__flight_js_to_u32(…))` calls on `f64` values, per pixel:
+
+```rust
+let masked_color = (__flight_js_to_i32((__flight_js_to_u32(color) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64)
+    & __flight_js_to_i32((__flight_js_to_u32(mask) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64)) as f64;
+```
+
+The semantics are right and the representation is the cost. In these algorithms the values are integers by construction — pixel bytes, masks, seeds — so a mirror uses `i32`/`u32` natively and the coercion disappears. `fillBitmapTurbulence` alone spends 2.3 seconds where TypeScript spends 0.17.
+
+**2. Ordinary losers, 0.27x-0.60x — the same `f64`-index penalty the five mirrored kernels had.** `colorMatrixBitmap` (0.35x), `applyBitmapCurve` (0.44x), `applyBitmapLevels` (0.39x), `applyBitmapPaletteMap` (0.46x), `copyBitmapPixels` (0.43x), `copyBitmapAlpha` (0.53x), `mergeBitmapChannels` (0.50x), `premultiplyBitmapPixels` (0.27x), `unpremultiplyBitmapPixels` (0.31x), `fillBitmapRectangle` (0.54x), `getBitmapHistogram` (0.60x), `getBitmapMismatch` (0.30x). Mirroring took the comparable kernels to 1.3x-3.2x.
+
+**3. Near parity, 0.73x — `getBitmapCoverage`.** Worth mirroring only after the rest.
+
+**4. Should not cross the barrier at all, 0.07x-0.31x.** The colour-matrix builders — `buildBitmapBrightnessColorMatrix` (0.22x), `buildBitmapHueRotationColorMatrix` (0.31x), `buildBitmapSaturationColorMatrix` (0.09x), `setBitmapColorMatrixIdentity` (0.07x), `concatBitmapColorMatrix` (0.08x) and their siblings — return **twenty floats**. There is no kernel to optimise: the cost is the crossing, and TypeScript does the arithmetic in tens of nanoseconds. Mirroring these would not help. The right action is to remove the nine of them from `wasmFacades.exports` so the facade stops shadowing them, which costs consumers nothing because `index.ts` re-exports upstream.
+
+That last group is why this table exists. Three of the four groups want different actions, and only measurement separates them.
+
+### Ranking what remains
+
 ### What is still generated
 
 Twenty-seven of the facade's thirty-three wasm-backed exports still use generated kernels and are therefore still slower than upstream. The ones worth mirroring next are the families with real arithmetic per pixel — the colour matrix and curve/levels/palette paths, `copyBitmapPixels`, the noise fills. `getBitmapHistogram`, `getBitmapCoverage` and `getBitmapMismatch` reduce to a few numbers and should win easily on the same reasoning.
