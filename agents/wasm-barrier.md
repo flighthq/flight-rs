@@ -108,6 +108,30 @@ This list is enforced rather than merely written down. `tests/generator/facade-p
 
 So the "75 deferred" figure should not be read as 75 missing things. Around a third of them should never cross, and the rest are waiting on the barrier being worth crossing at all.
 
+## The hand-written convolution kernel: 0.46x to 1.50x
+
+`crates/flighthq-bitmap-core` mirrors upstream's `convolveBitmap` with integer induction variables and indices and an `EdgeMode` enum, changing no floating-point arithmetic. It is the first function in this package to beat the TypeScript it replaces:
+
+| Size | generated | hand-written | TypeScript | before |     after |
+| ---- | --------: | -----------: | ---------: | -----: | --------: |
+| 64²  | 1.3966 ms |    0.4901 ms |  0.6808 ms |  0.49x | **1.39x** |
+| 256² | 23.085 ms |    6.8234 ms |  10.343 ms |  0.46x | **1.52x** |
+| 512² | 93.924 ms |    27.813 ms |  41.698 ms |  0.44x | **1.50x** |
+
+**About 3.3x faster than the generated kernel**, and upstream's own suite still passes 372 of 372 — the change is representational, so the output is byte-identical. The crate also carries 48 differential cases whose expected bytes come from upstream's TypeScript, which is what makes "byte-identical" a measured claim rather than a hope.
+
+That is the confirmation the section above was asking for: the barrier is not the problem, `f64` indices and string-compared modes are, and removing just those two for one kernel moves it from 0.46x to 1.50x without touching the boundary, the marshalling, or the arithmetic.
+
+### What it implies for the rest
+
+The remaining shadowed functions are still 0.24x-0.68x, and the ratios cluster by kind rather than by size:
+
+- `dilateBitmap` / `erodeBitmap` at 0.52x-0.56x — a window min/max per pixel, the same shape as convolution and the obvious next candidates.
+- `pixelateBitmap` at 0.47x-0.54x — block averaging, likewise.
+- `setBitmapAlpha` at 0.63x-0.68x and `multiplyBitmapAlpha` at 0.33x-0.36x — one byte written per pixel, so there is almost no arithmetic to win and the per-call cost dominates. These are the weakest case for a hand-written mirror and the strongest case for leaving them in TypeScript, which is a judgement the numbers now support rather than a guess.
+
+So the order is: the kernel families with real arithmetic per pixel first, and the bandwidth-bound one-byte-per- pixel operations possibly never. **Four kernels, not thirty-four**, and each one needs its own differential fixture before it is believed.
+
 ## Open: no facade substitutes the `./contract` lane
 
 Every upstream package these facades stand in for exposes two entry points — `.` and `./contract` — and **no facade exposes `./contract`**. A consumer who substitutes by package name (aliasing `@flighthq/bitmap` to `@flighthq/bitmap-wasm`, which is how these are meant to be adopted) therefore gets the wasm implementation on the root lane and an unresolved import on the contract lane.
