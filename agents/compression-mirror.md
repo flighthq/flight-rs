@@ -180,8 +180,41 @@ One hazard the move exposed, worth keeping in mind for every facade built this w
 
 ## Does the wasm barrier pay here?
 
-Yes, unlike `bitmap-wasm`. Measured through the facade against upstream's TypeScript on identical bytes, every codec is **1.4x to 5.5x faster across the barrier**: deflate decode 1.7x–3.0x, LZMA decode 1.4x–3.9x, deflate encode 2.5x–5.5x, LZMA encode 2.3x–4.8x.
+Yes, unlike `bitmap-wasm`. Every codec is faster across the barrier, in both directions, on identical bytes — and since the pin moved to `develop` the whole table is reproducible in-tree with `npm run bench:barrier`, because upstream now ships the LZMA decoder and both encoders. Byte identity is asserted alongside each timing: a codec that got faster by producing different output has not got faster at anything.
 
-`npm run bench:barrier` reproduces the deflate-decode half from the repository alone. The LZMA and encoder figures need upstream's `develop` sources, which are not in the pin, so they were measured out of tree.
+| Codec                         | 64 KB |  1 MB |
+| ----------------------------- | ----: | ----: |
+| `decompressDeflate` (stored)  | 1.83x | 2.58x |
+| `decompressDeflate` (huffman) | 4.38x | 2.90x |
+| `compressDeflate`             | 3.53x | 3.67x |
+| `compressDeflateZlib`         | 5.83x | 4.39x |
+| `compressLzma`                | 3.73x | 4.07x |
+| `decompressLzma`              | 1.13x | 1.23x |
+
+**These numbers took two attempts, and the first set was wrong.** At ten iterations the 1 MB zlib encode measured 35.5 ms and would have been published as a 10.31x speedup; at two hundred it measures 15.1 ms, for 4.39x. The difference was entirely under-warmed JIT in the TypeScript baseline. The benchmark now warms five times and uses iteration counts high enough that the figures do not move when the counts change — worth stating because a flattering benchmark number is the one least likely to be questioned.
+
+LZMA decode is the narrowest win at 1.13x–1.23x, which is the honest shape of that codec rather than a deficiency: the decoder is a bit-at-a-time range decoder with a serial dependency on probability-model state, so there is little for either implementation to exploit.
+
+### Upstream finding: `computeAdler32` iterates a typed array with `for...of`
+
+Isolated while explaining why the zlib encode gains more than the raw one. `upstream/packages/compression/src/deflateFormat.ts` reads:
+
+```ts
+for (const byte of input) {
+  first += byte;
+  ...
+}
+```
+
+Measured over 1 MB, fifty iterations, against the identical arithmetic with an indexed loop:
+
+| Form          |     1 MB |
+| ------------- | -------: |
+| `for...of`    | 12.70 ms |
+| indexed `for` |  1.44 ms |
+
+**8.84x, with the same result** — verified equal on the same input, not merely assumed. The iterator protocol over a `Uint8Array` is what costs it. This is the whole of the zlib encode's extra cost: `compressDeflateZlib` is `compressDeflate` plus an allocation, a `set`, and this checksum, and at 1 MB the measured delta between them is 12.88 ms against the 12.70 ms this loop accounts for.
+
+It is a one-line change upstream with no behavioural difference, on a path every zlib-framed read and write crosses — `decompressDeflate` verifies the same checksum on RFC 1950 input. Worth reporting the way the LZMA rep-shuffle defect was. It is also a reminder that part of a wasm speedup can be an artifact of the baseline rather than merit: fix this loop and `compressDeflateZlib`'s margin drops toward `compressDeflate`'s.
 
 The contrast with `bitmap-wasm` — about half the speed of its TypeScript — is the argument for this crate's discipline rather than an accident of workload. Same boundary, same toolchain; what differs is `usize` induction variables and an `enum` compared by discriminant here, against `f64` indices and an owned `String` compared per kernel tap in generated code. See [`agents/wasm-barrier.md`](wasm-barrier.md).

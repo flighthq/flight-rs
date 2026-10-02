@@ -3,18 +3,30 @@ import { writeFileSync } from 'node:fs';
 import * as reference from '@flighthq/compression';
 import { CompressionFraming } from '@flighthq/types';
 
-import { compressDeflate, decompressDeflate, initCompressionWasm } from './compressionWasm';
+import {
+  compressDeflate,
+  compressDeflateZlib,
+  compressLzma,
+  decompressDeflate,
+  decompressLzma,
+  initCompressionWasm,
+} from './compressionWasm';
 
 // Does the wasm barrier pay for THIS package? `bitmap-wasm` measured at about half the speed of the
 // TypeScript it replaces (see agents/wasm-barrier.md), so the question is empirical here too and the answer
 // is not transferable: these codecs are hand-written rather than generated, and they cross the boundary once
 // per buffer rather than once per pixel.
 //
-// Only the DEFLATE decoder is comparable from inside this package: LZMA and both encoders landed upstream
-// after the pin, so there is no pinned counterpart to measure against.
+// Every exported codec is measured, in both directions. That became possible when the pin moved to `develop`:
+// upstream now ships the LZMA decoder and both encoders, so each of them has a counterpart to compare against
+// rather than only DEFLATE decode. A package claiming "all features supported" should be able to say what each
+// of those features costs.
 
+// Five warm-up calls rather than one, and iteration counts high enough that the result does not move when they
+// change. Both were needed: at ten iterations the 1 MB zlib encode read 35.5 ms, and at two hundred it reads
+// 19.7 ms — the first number was under-warmed JIT, and it would have been published as a 10.31x speedup.
 function time(iterations: number, fn: () => void): number {
-  fn();
+  for (let warmup = 0; warmup < 5; warmup++) fn();
   const start = process.hrtime.bigint();
   for (let i = 0; i < iterations; i++) fn();
   return Number(process.hrtime.bigint() - start) / iterations / 1e6;
@@ -87,6 +99,41 @@ it('measures the compression barrier against upstream', { timeout: 300_000 }, ()
     );
   }
 
+  // The encoders, and the LZMA pair. Byte identity is asserted alongside the timing on purpose: a codec that
+  // got faster by producing different output has not got faster at anything that matters, and for a
+  // deterministic encoder the comparison costs nothing extra.
+  for (const size of [64 * 1024, 1024 * 1024]) {
+    const payload = runs(size);
+    const label = size >= 1024 * 1024 ? `${size / 1024 / 1024} MB` : `${size / 1024} KB`;
+    const iterations = size > 64 * 1024 ? 200 : 500;
+
+    for (const [name, ours, theirs] of [
+      ['compressDeflate', compressDeflate, reference.compressDeflate],
+      ['compressDeflateZlib', compressDeflateZlib, reference.compressDeflateZlib],
+      ['compressLzma', compressLzma, reference.compressLzma],
+    ] as const) {
+      const wasm = time(iterations, () => void ours(payload));
+      const ts = time(iterations, () => void theirs(payload));
+      expect(ours(payload), `${name} is byte-identical to upstream`).toEqual(theirs(payload));
+      rows.push(
+        `${name} ${label}`.padEnd(33) +
+          ` wasm ${wasm.toFixed(4).padStart(9)} ms   ts ${ts.toFixed(4).padStart(9)} ms   ` +
+          `${(ts / wasm).toFixed(2).padStart(6)}x`,
+      );
+    }
+
+    const lzma = reference.compressLzma(payload);
+    const wasm = time(iterations, () => void decompressLzma(lzma, payload.length, CompressionFraming.Raw));
+    const ts = time(iterations, () => void reference.decompressLzma(lzma, payload.length, CompressionFraming.Raw));
+    expect(decompressLzma(lzma, payload.length, CompressionFraming.Raw)).toEqual(payload);
+    rows.push(
+      `decompressLzma ${label}`.padEnd(33) +
+        ` wasm ${wasm.toFixed(4).padStart(9)} ms   ts ${ts.toFixed(4).padStart(9)} ms   ` +
+        `${(ts / wasm).toFixed(2).padStart(6)}x`,
+    );
+  }
+
   writeFileSync('/tmp/compression-barrier.txt', 'wasm vs TypeScript, >1x means wasm faster\n' + rows.join('\n') + '\n');
-  expect(rows.length).toBe(7);
+  // 7 decode rows plus four codecs at each of two sizes.
+  expect(rows.length).toBe(15);
 });
