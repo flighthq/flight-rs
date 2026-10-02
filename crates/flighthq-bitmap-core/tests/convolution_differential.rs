@@ -36,7 +36,7 @@ struct Case {
 }
 
 fn numbers<T, F: Fn(&str) -> T>(field: &str, parse: F) -> Vec<T> {
-    field.split(',').map(|value| parse(value)).collect()
+    field.split(',').map(parse).collect()
 }
 
 fn parse(line: &str) -> Case {
