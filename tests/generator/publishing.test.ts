@@ -23,8 +23,8 @@ describe('published version borrows the upstream release', () => {
     const stamped = JSON.parse(readFileSync(path.join(workspace, 'upstream/packages/sdk/package.json'), 'utf8')) as {
       version: string;
     };
-    expect(stamped.version).toBe('0.3.0');
-    expect(readFlightVersion(workspace)).toBe('0.4.0');
+    expect(stamped.version).toBe('0.5.0');
+    expect(readFlightVersion(workspace)).toBe('0.5.1');
   });
 
   it('bumps by conventional-commit level in the lane the base major selects', () => {

@@ -164,13 +164,15 @@ Since LZMA's compute lives in the range coder, the ~4x on realistic mixed conten
 
 Native figures again; wasm will be slower.
 
-### The seam changes with the pin
+### The seam changed with the pin, as predicted here
 
-At our pin, substitution happens through a runtime registry: `registerDecompressor(Compression.Deflate, …)`, documented as last-write-wins specifically so a host can replace a portable decoder with a native or wasm one.
+Before the pin moved, substitution happened through a runtime registry: `registerDecompressor(Compression.Deflate, …)`, documented as last-write-wins specifically so a host could replace a portable decoder with a native or wasm one.
 
-At `origin/main` that registry is **deleted**. The seam becomes the Host capability group — `@flighthq/types` declares `HostDecompressCapabilities { brotli?, deflate?, lzma? }` and `HostCompressCapabilities { deflate? }`, and `@flighthq/compression` ships `sdkHostDecompressDeflate` and `sdkHostCompressDeflate` as the slots Flight itself fills.
+On `develop` that registry is **deleted**. The seam is now one named Host slot per algorithm: `@flighthq/types` declares `HostDecompressDeflateCapability`, `HostDecompressLzmaCapability`, `HostCompressDeflateCapability` and `HostCompressLzmaCapability`, and `@flighthq/compression` ships `sdkHostDecompressDeflate`, `sdkHostDecompressLzma`, `sdkHostCompressDeflate` and `sdkHostCompressLzma` as the slots Flight itself fills. Upstream's comment on the first of those names the change directly — "named for the Host slot it fills rather than for the registry it used to feed". Its deflate decoder was also renamed `inflateDeflate` → `decompressDeflate`.
 
-A facade built against the pin would therefore target an API upstream has removed. Unlike `bitmap-wasm`, this one wants the pin move first. The crate in this directory is unaffected either way: it implements the algorithm, and the seam only decides how it is registered.
+The facade now fills all four slots, and the crate was untouched by any of it: it implements the algorithms, and the seam only decides how they are handed to a host. That is the division this file argues for throughout, and the pin move is the evidence it holds.
+
+One hazard the move exposed, worth keeping in mind for every facade built this way. `packages/compression-wasm/src/index.ts` re-exports upstream wholesale (`export * from '@flighthq/compression'`) and shadows what it implements, so anything upstream adds flows through for free. The cost is that a slot the facade FAILS to fill does not fail to resolve — it silently resolves to upstream's TypeScript codec, and a host wiring up what looks like a wasm package gets a mix. After the rename, `decompressDeflate` would have come straight from upstream had the facade not been updated, with nothing failing anywhere. `src/compressionWasm.test.ts` asserts each of the four slots is ours for exactly this reason.
 
 ## Gaps worth knowing
 

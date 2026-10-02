@@ -24,27 +24,58 @@ The rule that follows from that split: a representation defect in the compiler i
 
 `tests/generator/compiler-adoption.test.ts` asserts those paragraphs are still present, so this register cannot end up indexing prose that has been deleted.
 
-## Measured position, 2026-09-30
+## Measured position, 2026-10-02
 
-The compiler's roadmap reports Rust generator parity at 5–10% as a planning estimate dated 2026-08-18, and records downstream drop-in integration at 0% because no target has produced a Rust corpus ledger. The numbers below are the first measurement taken from this repository. They are a **lower bound**, for a reason stated in full under Caveats.
+The compiler's roadmap reports Rust generator parity at 5–10% as a planning estimate dated 2026-08-18, and records downstream drop-in integration at 0% because no target has produced a Rust corpus ledger. The numbers below are measured from this repository. They are a **lower bound**, for a reason stated in full under Caveats.
+
+This measurement was **re-taken when the Flight pin moved to `develop`**. The compiler revision is unchanged from the previous measurement, so the Flight pin is the only variable that moved — which makes the comparison below a clean reading of what a four-month-newer SDK does to the same compiler.
 
 | Input                          | Revision                                   |
 | ------------------------------ | ------------------------------------------ |
-| flight-rs                      | `2d837c8dbe5c6eedf2bd9d00d0d1e58c63589bdd` |
-| Flight (this repository's pin) | `147ae1eaea356a2200495b80ae4e42b1101ae647` |
+| flight-rs                      | `8b6bc4b09da0f3c023204406103298b342ce94db` |
+| Flight (this repository's pin) | `a62784923f3be814463286c9fb28edfe6ab15789` |
 | flight-compiler                | `ec8da2a6399ca6b916466779c86ca0a039ed4847` |
 | `@flighthq/tool-compiler`      | `0.0.0`, unpublished                       |
 
-| Upstream package   | Modules | Emitted | Refused |
-| ------------------ | ------: | ------: | ------: |
-| `@flighthq/types`  |     882 |     464 |     418 |
-| `@flighthq/bitmap` |      44 |       0 |      44 |
+| Upstream package   | Modules | Emitted | Refused | Emitted % |
+| ------------------ | ------: | ------: | ------: | --------: |
+| `@flighthq/types`  |    1026 |     353 |     673 |       34% |
+| `@flighthq/bitmap` |      44 |       0 |      44 |        0% |
 
-The emitted Rust is credible rather than skeletal. A representative declaration lowers to an idiomatic struct with `Option<f64>` fields, a provenance header naming the upstream declaration, and `#![forbid(unsafe_code)]`.
+### What moved, and the direction is the finding
 
-**The two packages fail for different reasons, and the difference is the finding.** `@flighthq/types` is declaration-shaped, and its refusals are dominated by absent host-type bindings — `WebGLProgram`, `GPURenderPipeline`, `CanvasRenderingContext2D`, `AbortSignal`, `ArrayBufferLike` — plus 10 intersection types needing record or trait lowering. Those are configuration and a bounded lowering list.
+Against the previous pin the same compiler emitted 464 of 882 `@flighthq/types` modules (53%). The SDK has since grown to 1026 modules and emission **fell to 353 (34%)** — fewer modules emitted in absolute terms, against a larger input.
 
-`@flighthq/bitmap` is imperative numeric code, and 18 of its 40 direct refusals are one family:
+This is the measurement's whole purpose, and it is why `tests/generator/compiler-adoption.test.ts` requires the recorded pin to be the current one. A figure carried forward across a pin move would have reported 53% while the truth was 34%, and the error would have grown silently in the direction that matters — upstream moves faster than the compiler.
+
+**673 refusals come from 114 root causes.** The rest — 559 — are `dependency … was refused` cascades, modules refused only because something they import was. That ratio is the actionable part: the root list is short.
+
+| `@flighthq/types` root refusal | Count |
+| ------------------------------ | ----: |
+| host-type binding plan incomplete |  103 |
+| intersection type needing record or trait lowering |     9 |
+| other (`external type`, `Partial<T>`) |     2 |
+
+The binding refusals name the same host surfaces as before, now with WebGPU well represented alongside WebGL: `WebGLProgram` (17), `AbortSignal` (16), `GPUBindGroupLayout` (15), `GPURenderPipeline` (15), `WebGLUniformLocation` (14), `WebGLTexture` (10), `CanvasRenderingContext2D` (9), `GPUTextureFormat` (9).
+
+**`@flighthq/bitmap` is unchanged: 44 modules, none emitted.** Its refusal profile is also unchanged in substance, which matters more than the figure — the blocker is the same one.
+
+| `@flighthq/bitmap` refusal | Count |
+| -------------------------- | ----: |
+| `operator …` requires Rust type-directed lowering |    19 |
+| external symbol binding plan incomplete (mostly `SharedArrayBuffer`) |     9 |
+| module evaluation dependency missing (`@flighthq/types/contract`) |     4 |
+| open structural construction target |     3 |
+| dependency refused (cascade) |     2 |
+| `??` requires an Option-shaped left operand |     2 |
+| external constructor ABI plan incomplete (`Array`) |     2 |
+| `typeof` on unknown |     1 |
+| mutable module variable needs synchronization lowering |     1 |
+| syntactic interface heritage |     1 |
+
+**The two packages fail for different reasons, and the difference is the finding.** `@flighthq/types` is declaration-shaped, and its root refusals are dominated by absent host-type bindings. Those are configuration plus a bounded lowering list.
+
+`@flighthq/bitmap` is imperative numeric code, and its single largest family is:
 
 ```
 operator < on number and unknown requires Rust type-directed lowering
@@ -52,17 +83,17 @@ operator + on unknown and number requires Rust type-directed lowering
 operator * on unknown and unknown requires Rust type-directed lowering
 ```
 
-That family appears **zero** times in `@flighthq/types`. It is the open decision the compiler's roadmap records under "The analysis checker has no library types, decided open 2026-08-22", whose own worked example is `index < values.length` refusing as `operator < on number and unknown`. The checker is built with `noLib: true`, so `Uint8ClampedArray.length` has no type and every loop bound over pixel data goes unknown.
+That family appears **zero** times among `@flighthq/types`' root refusals. It is the open decision the compiler's roadmap records under "The analysis checker has no library types, decided open 2026-08-22", whose own worked example is `index < values.length` refusing as `operator < on number and unknown`. The checker is built with `noLib: true`, so `Uint8ClampedArray.length` has no type and every loop bound over pixel data goes unknown.
 
 So the practical statement for this repository is narrower and harder than "Rust is at 5–10%": **the one package this repository publishes a facade for is blocked on the deepest unresolved decision in the compiler, not on a tail of small lowerings.** `packages/bitmap-wasm` substitutes `@flighthq/bitmap`, and its Rust core is exactly the pixel-loop code that needs library types to lower at all. A Rust backend could reach useful coverage across the SDK's declaration surface while remaining unable to emit the one crate this repository ships.
-
-The remaining bitmap refusals, for completeness: 7 open structural construction targets, 9 incomplete runtime external symbol or constructor binding plans (`SharedArrayBuffer`, the `Array` constructor, DOM canvas globals), 3 `??` needing an Option-shaped left operand, 1 `typeof` on unknown, and 1 mutable module variable needing synchronization lowering.
 
 ### Caveats
 
 These figures come from the single-package command-line lane — `flight-compile <dir> --target rust --package <name> --report` — because that is the only entry point this repository can drive today. That lane has no package graph and **no way to supply a binding profile**: there is no `--bindings` flag. `flight-cpp` closes whole refusal families by electing host types through profile files such as `bindings/web-types.json` and `bindings/runtime.json`, and the compiler's own notes record one such election moving its corpus from 1,108 to 1,339 emitted modules.
 
-Every `binding plan is incomplete` refusal above is therefore a lane artifact rather than demonstrated incapacity, and the real number is higher than 464/882. The `operator … on unknown` family is not: it is a lowering refusal that no binding profile addresses. Read the table as "what a downstream repository can measure before it has built a corpus driver", not as the compiler's capability.
+Every `binding plan is incomplete` refusal above is therefore a lane artifact rather than demonstrated incapacity, and the real number is higher than 353/1026. Because 103 of the 114 root refusals are exactly that family, a binding profile is the single highest-leverage thing missing — and the 559 cascades mean each root closed should free several modules rather than one.
+
+The `operator … on unknown` family is not a lane artifact: it is a lowering refusal that no binding profile addresses. Read the tables as "what a downstream repository can measure before it has built a corpus driver", not as the compiler's capability.
 
 ### Reproduction
 
