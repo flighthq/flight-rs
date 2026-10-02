@@ -36,13 +36,13 @@ describe('cultivated upstream analysis', () => {
     const geometryRoot = resolvePackageExportLane(inventoryByName, '@flighthq/geometry');
     const geometryContract = resolvePackageExportLane(inventoryByName, '@flighthq/geometry/contract');
 
-    expect(inventory.upstreamCommit).toBe('147ae1eaea356a2200495b80ae4e42b1101ae647');
-    expect(inventory.summary.packages).toBe(153);
-    expect(inventory.summary.exportLanes).toBe(319);
-    expect(inventory.summary.exports).toBe(36_005);
-    expect(inventory.summary.rootExports).toBe(14_020);
-    expect(inventory.summary.sourceFiles).toBe(2_716);
-    expect(inventory.summary.testFiles).toBe(1_561);
+    expect(inventory.upstreamCommit).toBe('a62784923f3be814463286c9fb28edfe6ab15789');
+    expect(inventory.summary.packages).toBe(163);
+    expect(inventory.summary.exportLanes).toBe(479);
+    expect(inventory.summary.exports).toBe(49_445);
+    expect(inventory.summary.rootExports).toBe(19_488);
+    expect(inventory.summary.sourceFiles).toBe(3_531);
+    expect(inventory.summary.testFiles).toBe(2_062);
     expect(geometry.exports.some((item) => item.name === 'createVector2')).toBe(true);
     expect(geometry.exportLanes.map((lane) => lane.specifier)).toEqual([
       '@flighthq/geometry',
@@ -58,7 +58,7 @@ describe('cultivated upstream analysis', () => {
     expect(geometry.sdkExposures.map((exposure) => exposure.sdkLane)).toEqual([
       '@flighthq/sdk',
       '@flighthq/sdk/contract',
-      '@flighthq/sdk/core',
+      '@flighthq/sdk/geometry',
     ]);
     expect(geometry.rustCrate).toBe('flighthq-geometry');
   });
