@@ -1,4 +1,16 @@
 declare module '@flighthq/types' {
+  // `Entity` is nominally branded upstream, so an ABI object literal must carry the slot or it is not an
+  // `Entity` at all. The slot holds no runtime value -- upstream's own suites set it to `undefined` -- but
+  // it is REQUIRED rather than optional, which is what makes the brand nominal and why omitting it is an
+  // error rather than a widening.
+  export const EntityRuntimeKey: unique symbol;
+  export interface EntityRuntime {
+    binding: object | null;
+    uid?: string;
+  }
+  export interface Entity {
+    [EntityRuntimeKey]: EntityRuntime | undefined;
+  }
   export type Physics3DAbiWorldHandle = number;
   export type Physics3DAbiWorldStatus = 'Busy' | 'Ready' | 'Stale';
   export type Physics3DAbiExecutionStatus =
@@ -80,7 +92,7 @@ declare module '@flighthq/types' {
     readonly kind: string;
     readonly [name: string]: unknown;
   }
-  export interface Physics3DAbi {
+  export interface Physics3DAbi extends Entity {
     readonly version: number;
     readonly capabilities: number;
     createWorld(): Physics3DAbiWorldHandle;

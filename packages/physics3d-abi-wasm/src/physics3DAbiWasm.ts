@@ -1,3 +1,4 @@
+import { EntityRuntimeKey } from '@flighthq/types';
 import type {
   Physics3DAbi,
   Physics3DAbiBodyBuffer,
@@ -59,6 +60,9 @@ export function createPhysics3DAbi(): Physics3DAbi {
   if (instance === 0) throw new Error('Physics3D wasm ABI instance handles are exhausted');
 
   return {
+    // `Entity` is nominally branded upstream; the slot carries no runtime value, which is why
+    // upstream's own suites set it to `undefined` too.
+    [EntityRuntimeKey]: undefined,
     version: abi_version(),
     capabilities: abi_capabilities(),
     createWorld: () => create_world(instance),
