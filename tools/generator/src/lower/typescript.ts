@@ -414,6 +414,7 @@ export function lowerTypeScriptSource(
             kind: 'anonymous',
           },
           typeParameters: statement.typeParameters?.map((parameter) => parameter.name.text) ?? [],
+          typeParameterDefaults: lowerTypeParameterDefaults(statement.typeParameters, context),
         });
         accountedDeclarations += 1;
       } else if (ts.isTypeAliasDeclaration(statement)) {
@@ -424,6 +425,7 @@ export function lowerTypeScriptSource(
           origin: origin(statement, context),
           type: lowerType(statement.type, context),
           typeParameters: statement.typeParameters?.map((parameter) => parameter.name.text) ?? [],
+          typeParameterDefaults: lowerTypeParameterDefaults(statement.typeParameters, context),
         });
         accountedDeclarations += 1;
       } else if (ts.isEnumDeclaration(statement)) {
@@ -442,6 +444,19 @@ export function lowerTypeScriptSource(
       } else if (ts.isVariableStatement(statement)) {
         const exported = hasModifier(statement, ts.SyntaxKind.ExportKeyword);
         const mutable = (statement.declarationList.flags & ts.NodeFlags.Const) === 0;
+        // `declare const Key: unique symbol` is TypeScript's nominal-branding idiom, not a value. The key is
+        // used only as a phantom property name — `readonly [Key]?: void` — to make an interface nominally
+        // distinct, and the `declare` says no runtime value exists to port. Lowering it as a variable
+        // produces "uninitialized top-level variable", which is true and beside the point; the declaration
+        // is accounted for by being deliberately erased, exactly as a type alias is.
+        //
+        // Kept deliberately narrow: ambient, uninitialized, AND annotated `unique symbol`. Any other
+        // uninitialized top-level variable still refuses, because that one probably is a value we are
+        // failing to port.
+        if (isNominalBrandKeyStatement(statement)) {
+          accountedDeclarations += 1;
+          continue;
+        }
         for (const declaration of statement.declarationList.declarations) {
           if (!ts.isIdentifier(declaration.name)) unsupported(declaration.name, context, 'binding pattern declaration');
           declarations.push({
@@ -1657,9 +1672,13 @@ function lowerType(node: ts.TypeNode, context: LoweringContext): IrType {
     };
   }
   if (ts.isTupleTypeNode(node)) {
-    const elements = node.elements.map((element) =>
-      lowerType(ts.isNamedTupleMember(element) ? element.type : element, context),
-    );
+    // A tuple already lowers to an array of its common element type, which is the only representation a
+    // substrate-neutral target can carry: Rust has no type-level arity. A REST element has to contribute its
+    // ELEMENT type rather than itself, or the idiom `[T, ...T[]]` — TypeScript's "at least one" — refuses on
+    // the rest node while the equivalent `T[]` lowers fine. The non-emptiness is a type-level guarantee that
+    // neither Rust nor upstream's own runtime enforces past construction, so dropping it loses nothing a
+    // generated consumer could have relied on.
+    const elements = node.elements.map((element) => lowerTupleElement(element, context));
     return { element: commonType(elements), kind: 'array' };
   }
   if (ts.isParenthesizedTypeNode(node)) return lowerType(node.type, context);
@@ -3465,6 +3484,52 @@ function origin(node: ts.Node, context: LoweringContext): SourceOrigin {
     packageName: context.packageName,
     source: path.relative(context.workspaceDirectory, context.sourceFile.fileName),
   };
+}
+
+/**
+ * Whether every declaration in this statement is a type-only nominal brand key.
+ *
+ * The shape is `declare const Key: unique symbol`. `unique symbol` has no portable runtime representation
+ * and `declare` promises no value is emitted, so the pair can only be a branding marker.
+ */
+function isNominalBrandKeyStatement(statement: ts.VariableStatement): boolean {
+  if (!hasModifier(statement, ts.SyntaxKind.DeclareKeyword)) return false;
+  return statement.declarationList.declarations.every(
+    (declaration) =>
+      declaration.initializer === undefined &&
+      declaration.type !== undefined &&
+      ts.isTypeOperatorNode(declaration.type) &&
+      declaration.type.operator === ts.SyntaxKind.UniqueKeyword &&
+      declaration.type.type.kind === ts.SyntaxKind.SymbolKeyword,
+  );
+}
+
+/** One tuple member, with a rest element contributing the type it repeats rather than the rest node. */
+function lowerTupleElement(element: ts.TypeNode, context: LoweringContext): IrType {
+  if (ts.isNamedTupleMember(element)) {
+    return element.dotDotDotToken ? restElementType(element.type, context) : lowerType(element.type, context);
+  }
+  if (ts.isRestTypeNode(element)) return restElementType(element.type, context);
+  return lowerType(element, context);
+}
+
+/** The element type a rest member repeats: `...T[]` repeats `T`, and anything else stands for itself. */
+function restElementType(node: ts.TypeNode, context: LoweringContext): IrType {
+  const lowered = lowerType(node, context);
+  return lowered.kind === 'array' ? lowered.element : lowered;
+}
+
+/** The declared defaults among a type-parameter list, keyed by parameter name. Empty when none declare one. */
+function lowerTypeParameterDefaults(
+  parameters: ts.NodeArray<ts.TypeParameterDeclaration> | undefined,
+  context: LoweringContext,
+): Readonly<Record<string, IrType>> | undefined {
+  if (!parameters) return undefined;
+  const defaults: Record<string, IrType> = {};
+  for (const parameter of parameters) {
+    if (parameter.default) defaults[parameter.name.text] = lowerType(parameter.default, context);
+  }
+  return Object.keys(defaults).length > 0 ? defaults : undefined;
 }
 
 function hasModifier(node: ts.Node, kind: ts.SyntaxKind): boolean {

@@ -230,6 +230,10 @@ export interface IrTypeDeclaration {
   kind: 'type';
   name: string;
   origin: SourceOrigin;
+  // Defaults for the type parameters that declare one, keyed by parameter name. TypeScript lets a use site
+  // omit a defaulted argument; Rust only lets it when the declaration carries the same default, so the
+  // information has to survive lowering or every bare use site loses its arity.
+  typeParameterDefaults?: Readonly<Record<string, IrType>> | undefined;
   // Emitted as a module-private type when its source identity is implementation-only.
   packagePrivate?: boolean;
   type: IrType;

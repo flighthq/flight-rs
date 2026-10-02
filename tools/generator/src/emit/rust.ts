@@ -401,20 +401,46 @@ export function emitRustModule(module: RustModule): string {
     ...(module.imports ?? []).flatMap((group) => group.names.map((item) => item.local)),
   ]);
   const synthesizedTypeImports = new Set<string>();
+  // `localTypeNames` holds only this module's `type` declarations, so an enum DECLARED here is absent from
+  // it. Importing such a name collides with its own definition (E0255), which is how admitting enums to the
+  // eligibility test first went wrong.
+  const locallyDeclaredNames = new Set([
+    ...context.localTypeNames,
+    ...module.declarations.filter((declaration) => declaration.kind === 'enum').map((declaration) => declaration.name),
+  ]);
+  const addSynthesizedImport = (referenced: string, declaredBy: string): void => {
+    if (
+      referenced !== declaredBy &&
+      // An enum emits a newtype struct, so it needs importing exactly as a named type does. Leaving it out
+      // of the eligibility test is why a field typed by an enum from another module compiled to
+      // "cannot find type".
+      (context.namedTypes.has(referenced) || context.enumNames.has(referenced)) &&
+      !locallyDeclaredNames.has(referenced) &&
+      !existingImportNames.has(referenced)
+    ) {
+      synthesizedTypeImports.add(referenced);
+    }
+  };
   for (const name of context.localTypeNames) {
     const type = context.namedTypes.get(name);
     if (type?.kind !== 'anonymous') continue;
     for (const field of flattenStructFields(type, context)) {
-      for (const referenced of collectReferencedNamedTypes(field.type)) {
-        if (
-          referenced !== name &&
-          context.namedTypes.has(referenced) &&
-          !context.localTypeNames.has(referenced) &&
-          !existingImportNames.has(referenced)
-        ) {
-          synthesizedTypeImports.add(referenced);
-        }
-      }
+      for (const referenced of collectReferencedNamedTypes(field.type)) addSynthesizedImport(referenced, name);
+    }
+  }
+  // The structs `emitAnonymousDefinitions` synthesises below — the `Omit`, `Pick` and `Partial` expansions
+  // named `FlightOmitRecord…` and friends — live in `context.anonymousTypes`, NOT in `localTypeNames`. Their
+  // field types therefore never reached the loop above, so a type referenced ONLY from an expansion was
+  // emitted without its import and the crate failed to compile with "cannot find type".
+  //
+  // Walk exactly the set that will be emitted, with the same `inheritedAnonymousTypeKeys` filter, so this
+  // cannot import for a record another module is responsible for.
+  for (const [key, name] of context.anonymousTypes.entries()) {
+    if (context.inheritedAnonymousTypeKeys.has(key)) continue;
+    const type = JSON.parse(key) as IrType;
+    if (type.kind !== 'anonymous') continue;
+    for (const field of flattenStructFields(type, context)) {
+      for (const referenced of collectReferencedNamedTypes(field.type)) addSynthesizedImport(referenced, name);
     }
   }
   const importGroups: RustImport[] = [
@@ -596,6 +622,27 @@ export function emitRustModule(module: RustModule): string {
           '}',
         ]
       : []),
+    ...(declarations.includes('__flight_string_from_char_code(')
+      ? [
+          '#[inline]',
+          'fn __flight_string_from_char_code(units: &[f64]) -> String {',
+          indent(
+            [
+              'let mut encoded = Vec::with_capacity(units.len());',
+              'for unit in units {',
+              indent(
+                [
+                  'assert!(unit.is_finite(), "String.fromCharCode received a non-finite code unit");',
+                  'encoded.push(((unit.trunc() as i64) & 0xFFFF) as u16);',
+                ].join('\n'),
+              ),
+              '}',
+              'String::from_utf16(&encoded).expect("Rust strings cannot represent unpaired surrogates")',
+            ].join('\n'),
+          ),
+          '}',
+        ]
+      : []),
     ...(declarations.includes('__flight_string_from_code_point(')
       ? [
           '#[inline]',
@@ -753,6 +800,7 @@ function emitDeclaration(declaration: IrDeclaration, context: EmitContext): stri
           : declaration.type,
         context,
         declaration.typeParameters,
+        declaration.typeParameterDefaults ?? {},
       )}`;
     case 'enum':
       return `${provenance}\n${emitEnumDeclaration(declaration, context)}`;
@@ -2815,6 +2863,15 @@ function emitCall(
       const value = expression.arguments[0];
       if (!value) throw new RustEmissionError('Number.parseFloat requires a string value');
       return `__flight_parse_float(&${parenthesize(emitExpression(value, context, primitive('String')))})`;
+    }
+    if (owner === 'String' && method === 'fromCharCode') {
+      // `fromCharCode` takes UTF-16 CODE UNITS, not code points, and upstream's utf8 decoder relies on that:
+      // it emits a surrogate PAIR in one call. So the units are decoded together through `from_utf16` rather
+      // than one at a time — `char::from_u32` would reject each half on its own. A lone surrogate has no Rust
+      // representation at all, so it panics loudly rather than being replaced, matching `fromCodePoint`.
+      const units = expression.arguments.map((argument) => emitExpression(argument, context, primitive('Float')));
+      if (units.length === 0) return 'String::new()';
+      return `__flight_string_from_char_code(&[${units.join(', ')}])`;
     }
     if (owner === 'String' && method === 'fromCodePoint') {
       const values = expression.arguments.map((argument) => emitExpression(argument, context, primitive('Float')));
@@ -6666,12 +6723,22 @@ function emitType(type: IrType, context: EmitContext): string {
       }
       const declarationType = context.namedTypes.get(type.name);
       const parameters = context.namedTypeParameters.get(type.name) ?? [];
-      const arguments_ = declarationType
-        ? parameters.flatMap((parameter, index) => {
-            const used = emittedDeclarationUsesNamedParameter(type.name, declarationType, parameter, context);
-            return used ? [type.arguments[index] ?? { kind: 'dynamic' as const }] : [];
-          })
-        : type.arguments;
+      // Only a STRUCT declaration drops type parameters its fields never mention, so only a struct's use site
+      // truncates the arguments to match. Alias and newtype declarations keep their full declared arity (see
+      // `emitTypeDeclaration`), which is what makes this agree across modules: `context.namedTypes` holds only
+      // this module's own declarations plus semantic mappings, so a reference to a type declared ELSEWHERE
+      // finds nothing here and falls through to the source arguments. If the declaring side filtered while a
+      // different module could not know it had, the two would disagree on arity with nothing to catch it --
+      // that is exactly how `ElectronAppCapabilitiesFor<Profile>` came to be emitted against a zero-parameter
+      // alias. Preserving arity on everything except structs removes the asymmetry instead of plumbing
+      // cross-module knowledge the per-module emitter does not have.
+      const arguments_ =
+        declarationType && declarationType.kind === 'anonymous'
+          ? parameters.flatMap((parameter, index) => {
+              const used = emittedDeclarationUsesNamedParameter(type.name, declarationType, parameter, context);
+              return used ? [type.arguments[index] ?? { kind: 'dynamic' as const }] : [];
+            })
+          : type.arguments;
       return `${type.name}${arguments_.length > 0 ? `<${arguments_.map((item) => emitType(item, context)).join(', ')}>` : ''}`;
     }
     case 'nullable':
@@ -6789,7 +6856,19 @@ function emitTypeDeclaration(
   type: IrType,
   context: EmitContext,
   typeParameters: readonly string[] = [],
+  typeParameterDefaults: Readonly<Record<string, IrType>> = {},
 ): string {
+  // Renders `<K, V = Default>`: a parameter that declared a default in TypeScript keeps it, so a use site
+  // that omitted the argument stays legal. Rust requires defaulted parameters last, which TypeScript already
+  // guarantees, and filtering below preserves relative order.
+  const renderGenerics = (parameters: readonly string[], generic: EmitContext): string => {
+    if (parameters.length === 0) return '';
+    const rendered = parameters.map((parameter) => {
+      const fallback = typeParameterDefaults[parameter];
+      return fallback === undefined ? parameter : `${parameter} = ${emitType(fallback, generic)}`;
+    });
+    return `<${rendered.join(', ')}>`;
+  };
   const visibility = exported ? 'pub ' : 'pub(crate) ';
   if (name !== 'EntityRuntime' && context.entityRuntimeTypes.has(name)) {
     if (context.entityRuntimeClosureError) {
@@ -6815,10 +6894,48 @@ function emitTypeDeclaration(
       lexicalTypeParameters: new Set(typeParameters),
     };
     const emittedType = emitType(type, aliasContext);
-    const effectiveTypeParameters = typeParameters.filter((parameter) =>
-      new RegExp(`\\b${parameter}\\b`, 'u').test(emittedType),
+    // An alias keeps EVERY declared type parameter. Dropping one changes the alias's ARITY, and a use site in
+    // another module cannot know that happened -- it emits the source's own type arguments -- so the two
+    // silently disagree. A conditional type like `ElectronAppCapabilitiesFor<Profile>` degrades to an opaque
+    // body mentioning no parameter at all, which is how `type X = OpaqueHostValue;` ended up facing call sites
+    // still writing `X<Profile>`.
+    //
+    // Rust will not take an unused parameter on an `type` alias either (E0091), so a body that does not
+    // mention every parameter cannot stay an alias: it becomes a newtype that binds the leftovers in a
+    // `PhantomData`. `fn() -> T` is the phantom payload rather than `T` or `*const T` so the wrapper neither
+    // claims to own the parameter nor gives up `Send`/`Sync`.
+    //
+    // Structs are the one case that still filters, because there an unused parameter is an error with no
+    // escape hatch -- and `emitType`'s use site mirrors that split exactly.
+    const unusedAliasParameters = typeParameters.filter(
+      (parameter) => !new RegExp(`\\b${parameter}\\b`, 'u').test(emittedType),
     );
-    const generics = effectiveTypeParameters.length > 0 ? `<${effectiveTypeParameters.join(', ')}>` : '';
+    const generics = renderGenerics(typeParameters, aliasContext);
+    // A self-referential alias cannot be an alias in Rust: aliases expand eagerly, so `type V = U<Vec<V>, F>`
+    // is a cycle (E0391) even though the `Vec` already provides the indirection the LAYOUT needs. A newtype
+    // supplies the nominal boundary that stops the expansion while keeping the structure, and every use site
+    // is a type position so nothing else has to change.
+    //
+    // Upstream reaches for the same trick one level down -- its comment on `FlightDocumentFields` says the
+    // interface exists to "break the recursive value/map cycle for the compiler and for the generated
+    // headers" -- so this follows the shape the source already chose rather than inventing one.
+    //
+    // If a recursion is ever NOT behind indirection, Rust refuses the newtype as infinitely sized, which is
+    // the right answer: that type has no representation.
+    const selfReferential = new RegExp(`\\b${name}\\b`, 'u').test(emittedType);
+    if (selfReferential || unusedAliasParameters.length > 0) {
+      const phantom =
+        unusedAliasParameters.length > 0
+          ? `, pub core::marker::PhantomData<fn() -> (${unusedAliasParameters.map((parameter) => `${parameter},`).join(' ')})>`
+          : '';
+      return [
+        emitAnonymousDefinitions(aliasContext, exported, !exported),
+        '#[derive(Clone)]',
+        `${visibility}struct ${name}${generics}(pub ${emittedType}${phantom});`,
+      ]
+        .filter(Boolean)
+        .join('\n');
+    }
     return `${emitAnonymousDefinitions(aliasContext, exported, !exported)}${visibility}type ${name}${generics} = ${emittedType};`;
   }
   const structuralContext = {
@@ -6829,7 +6946,7 @@ function emitTypeDeclaration(
   const effectiveTypeParameters = typeParameters.filter((parameter) =>
     fields.some((field) => emittedTypeUsesNamedParameter(field.type, parameter, structuralContext)),
   );
-  const generics = effectiveTypeParameters.length > 0 ? `<${effectiveTypeParameters.join(', ')}>` : '';
+  const generics = renderGenerics(effectiveTypeParameters, structuralContext);
   if (context.entityRuntimeTypes.has(name)) {
     if (context.entityRuntimeClosureError) {
       throw new RustEmissionError(
