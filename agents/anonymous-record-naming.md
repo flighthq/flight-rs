@@ -48,17 +48,40 @@ anonymousTypes.set(key, `${prefix}Record${stableTypeIdentity(key)}`); // rust.ts
 
 But it is reached only for _structural utility types_ — `FlightPartial` and `FlightOmit`, via `isStructuralUtilityType`. A plain inline object literal takes the positional path instead (`rust.ts:7782, 8266, 8619, 8641, 8681`), and `importedNestedStructuralNames` numbers an imported owner's records `1..N` over its own walk, which is what diverges from the declaring module's numbering.
 
-## The fix, and why it was not just applied
+## What was measured, and what was done
 
-Name every anonymous record that is visible outside its module by `stableTypeIdentity(key)` rather than by a counter. The name then becomes a pure function of the shape, so two modules cannot disagree about it and two shapes cannot collide on it.
+The corpus says the live surface is small and the mechanism is unreliable:
 
-It was left for a decision because the blast radius is wider than the defect:
+|                                                                           |       |
+| ------------------------------------------------------------------------- | ----: |
+| synthesized record declarations                                           |   310 |
+| of those, already named by structural hash (`FlightPartial`/`FlightOmit`) |    58 |
+| named by per-module counter                                               |   252 |
+| **references that cross a module boundary** (`crate::<Owner>Record<N>`)   | **3** |
+| of those three: correct                                                   |     1 |
+| of those three: named a struct nothing declared                           |     1 |
+| of those three: resolved to a DIFFERENT struct, and compiled              |     1 |
 
-- **Roughly 239 generated type names change**, from `OwnerRecord1` to `OwnerRecord<hash>`. Generated output is disposable, so that is churn rather than risk — but it is a large diff to review.
-- **`tests/generator/rust-emitter.test.ts` pins the positional convention deliberately**, asserting on `VariantRecordRecord1`, `VariantRecordRecord2`, `SharedStructuralRecord1`. Those assertions encode readability of single-module output, which the counter genuinely serves better than a hash does.
+So the guess was right one time in three. **The fix was to stop guessing**: a nested anonymous record inside an imported type is no longer given that module's private name for it. It stays anonymous, and the referencing module declares its own copy from the shape it can actually see. That needs only local knowledge, which is the point — the counter depends on the declaring module's walk order and is not computable from anywhere else.
 
-A narrower variant is available and may be the better trade: keep the counter for records declared and used within one module, and switch to structural identity only where a record crosses a module boundary. It needs one thing the current code does not track — whether a record is referenced outside its declaring module — because a module cannot otherwise know which scheme to use for its own declaration.
+The consequence is that such a record becomes nominally distinct per module. That is the honest outcome rather than a regression: if anything genuinely needs to assign one across a module boundary, it now fails as a compile error instead of binding the wrong fields silently.
 
-## Until then
+`tests/generator/anonymous-record-identity.test.ts` locks the property: every crate-root reference to a synthesized record resolves to exactly one declaration, and a name referenced across modules may not be declared with two different shapes. It is scoped to names actually referenced across modules, which is why it tolerates the long-standing duplication below.
 
-`npm run generate` fails at the conformance harvest, so the `develop` pin cannot complete a clean run. The candidate workspace is otherwise at **one** compile error, down from 202.
+## The dormant half, deliberately left alone
+
+`SharedStructuralRecord1` is declared in **45 modules with roughly 30 different shapes**, `SharedStructuralRecord2` in 10, and so on — all glob-re-exported into the crate root, which is the source of the five `ambiguous glob re-exports` warnings. Rust resolves such a name to whichever re-export wins.
+
+This is latent rather than live: these records are referenced from inside their own modules, where the local declaration shadows the glob, so the warnings are warnings. Worth noting that the hashed names collide too (`FlightOmitRecord2968336371` is declared seven times) — but those collisions are **benign by construction**, because an identical hash means an identical shape. That is the real difference between the two schemes, and it is not cosmetic.
+
+## The across-the-board migration, and why it is not queued
+
+Naming every anonymous record by `stableTypeIdentity(key)` would make the scheme content-derived throughout: no module could disagree about a name, no two shapes could collide on one, and the glob ambiguity above would disappear. It is the right end state.
+
+It is deliberately not being bought now:
+
+- **It renames roughly 252 generated types.** Disposable output, so churn rather than risk — but a large diff.
+- **`tests/generator/rust-emitter.test.ts` pins the positional convention on purpose**, asserting on `VariantRecordRecord1`, `SharedStructuralRecord1`. Within one module a counter genuinely reads better than a hash, and those assertions encode that.
+- **The party who needs it does not exist yet.** Byte parity on generated crates is a stated `flight-compiler` adoption gate, and a walk-order counter can never be reproduced by an independent implementation, while a content hash can. So a content-derived scheme is a _prerequisite_ for that gate — which makes it the compiler's design decision to inherit rather than something to pre-pay here and then discard. On the current measurement (`docs/flight-compiler-adoption.md`: 34% of `@flighthq/types`, 0 of 44 for `@flighthq/bitmap`, five prerequisites none started) that gate is not close.
+
+**Do the migration when** byte parity with `flight-compiler` becomes a live gate, or when cross-module references to anonymous records stop being rare — the count in the table above is the number to watch, and the test named earlier is what will report it.
