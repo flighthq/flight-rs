@@ -20,6 +20,7 @@ export interface RustModule {
   declarations: IrDeclaration[];
   entityRuntimeAggregateAvailable?: boolean;
   enumNames?: readonly string[];
+  importedNumericNamespaceNames?: readonly string[];
   imports?: RustImport[];
   inlineFunctions?: IrFunctionDeclaration[];
   semanticFunctions?: readonly IrFunctionDeclaration[];
@@ -303,8 +304,10 @@ export function emitRustModule(module: RustModule): string {
     ]),
     nonNullableNames: new Set(),
     nullCheckedNames: new Set(),
-    numericNamespaceNames: new Set(
-      module.declarations.flatMap((declaration) =>
+    numericNamespaceNames: new Set([
+      // Workspace-wide, so the `f64` mapping also holds where the name is only imported.
+      ...(module.importedNumericNamespaceNames ?? []),
+      ...module.declarations.flatMap((declaration) =>
         declaration.kind === 'variable' &&
         declaration.exported &&
         (!declaration.type || declaration.type.kind === 'dynamic') &&
@@ -313,7 +316,7 @@ export function emitRustModule(module: RustModule): string {
           ? [declaration.name]
           : [],
       ),
-    ),
+    ]),
     openInterfaceFields: new Map(),
     placeAliases: new Map(),
     preservedNames: new Set(),
@@ -6861,7 +6864,14 @@ function emitTypeDeclaration(
   // Renders `<K, V = Default>`: a parameter that declared a default in TypeScript keeps it, so a use site
   // that omitted the argument stays legal. Rust requires defaulted parameters last, which TypeScript already
   // guarantees, and filtering below preserves relative order.
-  const renderGenerics = (parameters: readonly string[], generic: EmitContext): string => {
+  // Bare parameters, for every position that is NOT the declaration's own parameter list: an `impl` header
+  // rejects a default outright, and a self type or field type reads `N = NodeAny` as an associated-item
+  // constraint rather than a default. Both are errors, and both came from reusing one rendered string for all
+  // three positions.
+  const renderGenerics = (parameters: readonly string[]): string =>
+    parameters.length === 0 ? '' : `<${parameters.join(', ')}>`;
+  /** The declaration's own parameter list -- the one place Rust accepts `<K = Default>`. */
+  const renderDeclarationGenerics = (parameters: readonly string[], generic: EmitContext): string => {
     if (parameters.length === 0) return '';
     const rendered = parameters.map((parameter) => {
       const fallback = typeParameterDefaults[parameter];
@@ -6910,7 +6920,7 @@ function emitTypeDeclaration(
     const unusedAliasParameters = typeParameters.filter(
       (parameter) => !new RegExp(`\\b${parameter}\\b`, 'u').test(emittedType),
     );
-    const generics = renderGenerics(typeParameters, aliasContext);
+    const generics = renderDeclarationGenerics(typeParameters, aliasContext);
     // A self-referential alias cannot be an alias in Rust: aliases expand eagerly, so `type V = U<Vec<V>, F>`
     // is a cycle (E0391) even though the `Vec` already provides the indirection the LAYOUT needs. A newtype
     // supplies the nominal boundary that stops the expansion while keeping the structure, and every use site
@@ -6946,7 +6956,8 @@ function emitTypeDeclaration(
   const effectiveTypeParameters = typeParameters.filter((parameter) =>
     fields.some((field) => emittedTypeUsesNamedParameter(field.type, parameter, structuralContext)),
   );
-  const generics = renderGenerics(effectiveTypeParameters, structuralContext);
+  const generics = renderGenerics(effectiveTypeParameters);
+  const declarationGenerics = renderDeclarationGenerics(effectiveTypeParameters, structuralContext);
   if (context.entityRuntimeTypes.has(name)) {
     if (context.entityRuntimeClosureError) {
       throw new RustEmissionError(
@@ -7012,7 +7023,7 @@ function emitTypeDeclaration(
         ? `Option<${emitStructFieldType(field.type, name, structuralContext)}>`
         : emitStructFieldType(field.type, name, structuralContext);
     return [
-      `${visibility}struct ${name}${generics} {`,
+      `${visibility}struct ${name}${declarationGenerics} {`,
       `  #[doc(hidden)] pub inner: std::sync::Arc<std::sync::Mutex<${storageName}${generics}>>,`,
       '}',
       `impl${generics} Clone for ${name}${generics} {`,
@@ -7045,7 +7056,7 @@ function emitTypeDeclaration(
   const entityTrait = entity ? entityTraitTypePath(context) : undefined;
   const emitted = [
     `#[derive(Clone${derivesDefault ? ', Default' : ''})]`,
-    `${visibility}struct ${name}${generics} {`,
+    `${visibility}struct ${name}${declarationGenerics} {`,
     indent(
       [
         '#[doc(hidden)] pub __flight_identity: std::sync::Arc<()>,',
@@ -7167,7 +7178,13 @@ function emittedTypeUsesNamedParameter(
       if (type.name === parameter) return true;
       const declaration = context.namedTypes.get(type.name);
       const declarationParameters = context.namedTypeParameters.get(type.name) ?? [];
-      if (!declaration || declarationParameters.length === 0) {
+      // Mirror `emitType`'s rule exactly, or a container drops a parameter its own field still mentions.
+      // Only a struct declaration truncates its arguments; an alias or newtype keeps every one, and an
+      // unknown declaration (one from another module) is assumed to keep them because the use site does.
+      // When the arguments survive, every parameter inside them is used by the emitted text -- which is what
+      // `CapacitorHost` needs in order to keep the `Profile` its `CapacitorAppCapabilitiesFor<Profile>` field
+      // goes on to name.
+      if (!declaration || declaration.kind !== 'anonymous' || declarationParameters.length === 0) {
         return type.arguments.some((argument) => emittedTypeUsesNamedParameter(argument, parameter, context, visited));
       }
       return declarationParameters.some(
@@ -9699,7 +9716,16 @@ function rustTypeSupportsDefault(
   if (type.kind === 'array' || type.kind === 'nullable' || type.kind === 'dynamic') return true;
   if (type.kind === 'task') return false;
   if (type.kind === 'primitive') return true;
-  if (type.kind === 'function' || type.kind === 'union') return false;
+  if (type.kind === 'function') return false;
+  if (type.kind === 'union') {
+    // A literal union gets no Rust enum: the emitter collapses it to the primitive its variants share, so
+    // `AlphaType = 'Straight' | 'Premultiplied'` is emitted as `String` — which supports `Default`. Rejecting
+    // every union made a struct whose fields are all defaultable undefaultable, while consumers in other
+    // modules concluded the opposite and derived `Default` anyway. One rule, matching what is emitted.
+    const [first, ...rest] = type.variants;
+    if (first?.kind !== 'primitive' || first.name === 'Void') return false;
+    return rest.every((variant) => variant.kind === 'primitive' && variant.name === first.name);
+  }
   if (type.kind === 'anonymous') {
     return flattenStructFields(type, context).every(
       (field) => field.optional || rustTypeSupportsDefault(field.type, context, visited),
