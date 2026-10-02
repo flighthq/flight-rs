@@ -330,19 +330,43 @@ pub fn convolve_bitmap_wasm(
 /// Integer indexing is equivalent to upstream's floating-point indexing exactly while the coordinates are whole
 /// numbers. This is the check that establishes it, so `RegionView`'s contract is satisfied by construction
 /// rather than by assumption; a caller with a fractional region falls back to the generated kernel.
-fn integral_region_view<'a>(
-    data: &'a [u8],
+/// The mutable counterpart of [`integral_region_view`], for kernels that write through the caller's buffer.
+fn integral_region_view_mut<'a>(
+    data: &'a mut [u8],
     descriptor: &[f64],
-) -> Option<flighthq_bitmap_core::RegionView<'a>> {
+) -> Option<flighthq_bitmap_core::RegionViewMut<'a>> {
+    if !integral_descriptor(descriptor) {
+        return None;
+    }
+    Some(flighthq_bitmap_core::RegionViewMut {
+        data,
+        bitmap_width: descriptor[0] as i32,
+        bitmap_height: descriptor[1] as i32,
+        x: descriptor[2] as i32,
+        y: descriptor[3] as i32,
+        width: descriptor[4] as i32,
+        height: descriptor[5] as i32,
+    })
+}
+
+/// Whether a region descriptor's `f64` coordinates are all whole numbers, which is what makes integer indexing
+/// equivalent to upstream's floating-point indexing rather than merely similar.
+fn integral_descriptor(descriptor: &[f64]) -> bool {
     assert_eq!(
         descriptor.len(),
         6,
         "bitmap region descriptor must contain [bitmapWidth, bitmapHeight, x, y, width, height]",
     );
-    if descriptor
+    descriptor
         .iter()
-        .any(|value| !value.is_finite() || value.fract() != 0.0 || value.abs() > i32::MAX as f64)
-    {
+        .all(|value| value.is_finite() && value.fract() == 0.0 && value.abs() <= i32::MAX as f64)
+}
+
+fn integral_region_view<'a>(
+    data: &'a [u8],
+    descriptor: &[f64],
+) -> Option<flighthq_bitmap_core::RegionView<'a>> {
+    if !integral_descriptor(descriptor) {
         return None;
     }
     Some(flighthq_bitmap_core::RegionView {
@@ -385,6 +409,13 @@ pub fn copy_bitmap_alpha_wasm(
 
 #[wasm_bindgen]
 pub fn multiply_bitmap_alpha_wasm(data: &mut [u8], descriptor: &[f64], factor: f64) {
+    // Hand-written kernel, for the reasons recorded in agents/wasm-barrier.md. Besides the integer indexing, it
+    // writes through `data` in place: the generated path below copies the whole buffer into a `Bitmap` and copies
+    // it back out, which is two full-buffer memcpys per call on top of the two wasm-bindgen already does.
+    if let Some(mut view) = integral_region_view_mut(data, descriptor) {
+        flighthq_bitmap_core::multiply_bitmap_alpha(&mut view, factor);
+        return;
+    }
     let mut target = region(data, descriptor);
     multiply_bitmap_alpha(&mut target, factor);
     copy_u8_output(data, &target.bitmap.data);
@@ -392,6 +423,10 @@ pub fn multiply_bitmap_alpha_wasm(data: &mut [u8], descriptor: &[f64], factor: f
 
 #[wasm_bindgen]
 pub fn set_bitmap_alpha_wasm(data: &mut [u8], descriptor: &[f64], alpha: f64) {
+    if let Some(mut view) = integral_region_view_mut(data, descriptor) {
+        flighthq_bitmap_core::set_bitmap_alpha(&mut view, alpha);
+        return;
+    }
     let mut target = region(data, descriptor);
     set_bitmap_alpha(&mut target, alpha);
     copy_u8_output(data, &target.bitmap.data);
@@ -479,6 +514,15 @@ pub fn dilate_bitmap_wasm(
     source_descriptor: &[f64],
     radius: f64,
 ) {
+    if let Some(view) = integral_region_view(source_data, source_descriptor) {
+        flighthq_bitmap_core::apply_morphological(
+            out,
+            &view,
+            radius,
+            flighthq_bitmap_core::Morphology::Dilate,
+        );
+        return;
+    }
     let mut owned = out.to_vec();
     let source = region(source_data, source_descriptor);
     dilate_bitmap(&mut owned, &source, radius);
@@ -492,6 +536,15 @@ pub fn erode_bitmap_wasm(
     source_descriptor: &[f64],
     radius: f64,
 ) {
+    if let Some(view) = integral_region_view(source_data, source_descriptor) {
+        flighthq_bitmap_core::apply_morphological(
+            out,
+            &view,
+            radius,
+            flighthq_bitmap_core::Morphology::Erode,
+        );
+        return;
+    }
     let mut owned = out.to_vec();
     let source = region(source_data, source_descriptor);
     erode_bitmap(&mut owned, &source, radius);
@@ -505,6 +558,10 @@ pub fn pixelate_bitmap_wasm(
     source_descriptor: &[f64],
     block_size: f64,
 ) {
+    if let Some(view) = integral_region_view(source_data, source_descriptor) {
+        flighthq_bitmap_core::pixelate_bitmap(out, &view, block_size);
+        return;
+    }
     let mut owned = out.to_vec();
     let source = region(source_data, source_descriptor);
     pixelate_bitmap(&mut owned, &source, block_size);
