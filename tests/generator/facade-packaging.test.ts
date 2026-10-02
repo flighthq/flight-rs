@@ -64,6 +64,60 @@ function hasStarReexport(sourceFile: ts.SourceFile, from: string): boolean {
   );
 }
 
+/**
+ * Every value name a package's `index.ts` actually makes public, following its re-export graph.
+ *
+ * Upstream's barrel shape is not stable and must not be assumed: `@flighthq/bitmap` moved from re-exporting a
+ * single `./contract` to enumerating `export * from './bitmapX.ts'` per module, extension included. A resolver
+ * that only understood one of those shapes reported an EMPTY public surface for the other — which turns this
+ * guard from "shadows only names upstream exports" into "fails on every name", and in the opposite direction
+ * would have passed anything at all.
+ */
+function publicValueNames(indexFile: string): Set<string> {
+  const names = new Set<string>();
+  const seen = new Set<string>();
+  const visit = (file: string): void => {
+    if (seen.has(file)) return;
+    seen.add(file);
+    let sourceFile: ts.SourceFile;
+    try {
+      sourceFile = parse(file);
+    } catch {
+      return;
+    }
+    for (const name of exportedFunctionNames(sourceFile)) names.add(name);
+    for (const name of exportedConstNames(sourceFile)) names.add(name);
+    for (const statement of sourceFile.statements) {
+      if (!ts.isExportDeclaration(statement)) continue;
+      const specifier = statement.moduleSpecifier;
+      if (!specifier || !ts.isStringLiteral(specifier) || !specifier.text.startsWith('.')) continue;
+      const clause = statement.exportClause;
+      if (clause && ts.isNamedExports(clause)) {
+        // A named re-export publishes exactly these, whatever else the target module exports.
+        for (const element of clause.elements) names.add(element.name.text);
+        continue;
+      }
+      // `export *` republishes the target's whole surface, so it has to be read.
+      const base = path.join(path.dirname(file), specifier.text);
+      visit(base.endsWith('.ts') ? base : `${base}.ts`);
+    }
+  };
+  visit(indexFile);
+  return names;
+}
+
+function exportedConstNames(sourceFile: ts.SourceFile): string[] {
+  const names: string[] = [];
+  for (const statement of sourceFile.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    if (!(ts.getCombinedModifierFlags(statement.declarationList.declarations[0]!) & ts.ModifierFlags.Export)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (ts.isIdentifier(declaration.name)) names.push(declaration.name.text);
+    }
+  }
+  return names;
+}
+
 function exportedFunctionNames(sourceFile: ts.SourceFile): string[] {
   const names: string[] = [];
   for (const statement of sourceFile.statements) {
@@ -192,13 +246,13 @@ describe('blessed facade packaging', () => {
 
   it('shadows only names the pinned upstream package actually exports', () => {
     const packageDirectory = authoritativePackage.replace(/^@flighthq\//u, '');
-    const upstreamIndex = parse(
+    const upstreamExports = publicValueNames(
       path.join(workspace, portConfig.upstreamDirectory, 'packages', packageDirectory, 'src/index.ts'),
     );
-    const upstreamExports = new Set([
-      ...reexportedNames(upstreamIndex, './contract'),
-      ...exportedFunctionNames(upstreamIndex),
-    ]);
+    // A resolver that silently resolved nothing would make the loop below vacuous.
+    expect(upstreamExports.size, `upstream ${authoritativePackage} exposes a readable public surface`).toBeGreaterThan(
+      20,
+    );
 
     for (const name of bitmapFacade?.exports ?? []) {
       expect(upstreamExports.has(name), `${name} is exported by upstream ${authoritativePackage}`).toBe(true);
