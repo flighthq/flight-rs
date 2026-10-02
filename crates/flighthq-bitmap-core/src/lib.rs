@@ -1,23 +1,73 @@
-//! Hand-written Rust mirrors of the `@flighthq/bitmap` kernels where the generated lowering is measurably
-//! slower than the TypeScript it replaces.
+//! Hand-written Rust mirrors of the `@flighthq/bitmap` kernels, where the generated lowering is slower than the
+//! TypeScript it replaces.
 //!
-//! This crate exists for one reason, and it is a measurement rather than a preference. `npm run bench:barrier`
-//! reports the shipped generated bitmap wasm at roughly half the speed of upstream's TypeScript at every size
-//! and on every function tried, and a second measurement shows the wasm boundary is not where the time goes:
-//! copying the pixel buffer in and back out is 6% of a 1024² call, so even a zero-copy facade would still lose.
-//! `agents/wasm-barrier.md` records both tables and the diagnosis — `f64` loop counters, every array index
-//! computed in floating point and cast per access, and closed string unions lowered to `String` so an edge-mode
-//! check becomes a string comparison inside the innermost loop.
+//! # Why this crate exists
 //!
-//! What this crate is NOT is a second implementation. Each kernel here is a structural port of upstream's own
-//! function, in upstream's order of operations, held to upstream's own test suite through the conformance lane
-//! in `packages/bitmap-wasm/vitest.config.upstream.ts`. The only deliberate differences are representational:
-//! integer induction variables and indices, and an enum where upstream has a string union. Those are exactly the
-//! two lowering improvements `agents/wasm-barrier.md` asks the generator for; doing them by hand here is the
-//! interim, and the precedent is `crates/flighthq-compression-core`.
+//! `packages/bitmap-wasm` wraps generated Rust, and the generated kernels measured **0.24x-0.68x** of upstream's
+//! TypeScript — slower, at every size and on every function tried. Two measurements located the cause before any
+//! of this was written:
 //!
-//! Floating-point arithmetic is deliberately NOT changed. Accumulators stay `f64` and accumulate in upstream's
-//! order, because float addition is not associative and the conformance suite compares exact bytes.
+//! 1. **It is not the wasm boundary.** Copying the pixel buffer in and back out is 6% of a 1024² call, so even a
+//!    zero-copy facade would still have lost at 0.71x. That is what licenses not rewriting the marshalling.
+//! 2. **It is the arithmetic.** The generated code runs loop counters in `f64`, computes every array index in
+//!    floating point and casts per access, and compares closed string unions as owned `String`s inside the
+//!    innermost loop — up to three comparisons per kernel tap.
+//!
+//! Each kernel here removes exactly those two things and changes nothing else. `agents/wasm-barrier.md` carries
+//! both tables.
+//!
+//! # This is an interim, not the destination
+//!
+//! **The permanent fix is integer induction variables and closed-union enums in the generator.** That would fix
+//! every generated package at once and keep each kernel tracking upstream automatically, which is what the whole
+//! repository is for. This crate exists because that lowering work has no delivery date and the wasm packages are
+//! separately maintained so they can ship sooner — a deliberate trade, recorded here so nobody later reads these
+//! files as the intended end state and ports the remaining twenty-seven by hand out of consistency.
+//!
+//! When the generator grows integer lowering, the right move is to delete a module from this crate and re-point
+//! its facade binding back at the generated kernel, one at a time, with `npm run bench:barrier` confirming each
+//! swap does not regress.
+//!
+//! # The cost this accepts, and what contains it
+//!
+//! A mirrored kernel stops following upstream on its own. Four things keep that honest:
+//!
+//! - **Structural ports only.** Each function follows upstream's own control flow and order of operations. The
+//!   only deliberate differences are representational: integer counters and indices, an enum where upstream has a
+//!   string union, and — in `multiply_bitmap_alpha` — a 256-entry table holding exactly what the per-pixel
+//!   arithmetic would have produced.
+//! - **Floating-point arithmetic is never changed.** Accumulators stay `f64` and accumulate in upstream's
+//!   sequence, because float addition is not associative and the conformance suite compares exact bytes.
+//! - **Upstream's own suite is the oracle.** All 372 of its bitmap tests run unmodified against this crate
+//!   through `packages/bitmap-wasm/vitest.config.upstream.ts`.
+//! - **Differential fixtures whose expected bytes come from upstream's TypeScript**, in `tests/`, reaching the
+//!   input space upstream's hand-written cases do not: random RGBA, regions hanging off the bitmap edge, partial
+//!   windows, fractional parameters. Mutation testing earned these — swapping two colour channels passed all of
+//!   upstream's hand-written cases, and replacing a rounding clamp with a truncating cast passed every test in
+//!   this crate until the fixture started generating fractional alpha.
+//!
+//! # Measured result
+//!
+//! Every mirrored kernel now beats the TypeScript it replaces, at 256² and above:
+//!
+//! | Kernel                    | generated   | mirrored          |
+//! | ------------------------- | ----------: | ----------------: |
+//! | `multiplyBitmapAlpha`     | 0.31x-0.33x | **3.13x - 3.18x** |
+//! | `setBitmapAlpha`          | 0.63x-0.68x | **1.95x - 2.17x** |
+//! | `pixelateBitmap`          | 0.44x-0.54x | **1.69x - 1.74x** |
+//! | `convolveBitmap` 5x5      | 0.44x-0.50x | **1.52x - 1.54x** |
+//! | `dilateBitmap` / `erode`  | 0.52x-0.69x | **1.33x - 1.44x** |
+//!
+//! **At 16² the mirrors still lose** (0.42x for `setBitmapAlpha`, 0.69x for `multiplyBitmapAlpha`), and no amount
+//! of kernel work fixes that: a 1 KB operation is dominated by the cost of crossing the boundary at all. That is
+//! the real boundary of this approach, and it is an argument about call size rather than about kernels.
+//!
+//! # What is not mirrored
+//!
+//! Twenty-seven of the facade's thirty-three wasm-backed exports still use the generated kernels, and are
+//! therefore still slower than upstream. They were left because the six here cover the families with real
+//! arithmetic per pixel, and because each mirror has to earn its own differential fixture before it is believed.
+//! `agents/wasm-barrier.md` ranks what remains and records which functions should never cross the barrier at all.
 
 #![forbid(unsafe_code)]
 

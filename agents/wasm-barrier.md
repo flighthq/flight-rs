@@ -108,29 +108,38 @@ This list is enforced rather than merely written down. `tests/generator/facade-p
 
 So the "75 deferred" figure should not be read as 75 missing things. Around a third of them should never cross, and the rest are waiting on the barrier being worth crossing at all.
 
-## The hand-written convolution kernel: 0.46x to 1.50x
+## The hand-written mirrors: every kernel now beats TypeScript
 
-`crates/flighthq-bitmap-core` mirrors upstream's `convolveBitmap` with integer induction variables and indices and an `EdgeMode` enum, changing no floating-point arithmetic. It is the first function in this package to beat the TypeScript it replaces:
+`crates/flighthq-bitmap-core` mirrors six kernels with integer induction variables and indices, an `EdgeMode` enum, and no change to any floating-point arithmetic. Measured through the facade against upstream on identical inputs:
 
-| Size | generated | hand-written | TypeScript | before |     after |
-| ---- | --------: | -----------: | ---------: | -----: | --------: |
-| 64²  | 1.3966 ms |    0.4901 ms |  0.6808 ms |  0.49x | **1.39x** |
-| 256² | 23.085 ms |    6.8234 ms |  10.343 ms |  0.46x | **1.52x** |
-| 512² | 93.924 ms |    27.813 ms |  41.698 ms |  0.44x | **1.50x** |
+| Kernel                | Size  | generated |  mirrored | TypeScript | before |     after |
+| --------------------- | ----- | --------: | --------: | ---------: | ------ | --------: |
+| `multiplyBitmapAlpha` | 1024² |  9.904 ms |  1.005 ms |   3.194 ms | 0.31x  | **3.18x** |
+| `multiplyBitmapAlpha` | 256²  |  0.625 ms |  0.061 ms |   0.191 ms | 0.33x  | **3.13x** |
+| `setBitmapAlpha`      | 256²  |  0.157 ms |  0.050 ms |   0.109 ms | 0.63x  | **2.17x** |
+| `setBitmapAlpha`      | 1024² |  2.285 ms |  0.769 ms |   1.502 ms | 0.68x  | **1.95x** |
+| `pixelateBitmap` 8    | 1024² | 13.499 ms |  3.944 ms |   6.867 ms | 0.47x  | **1.74x** |
+| `pixelateBitmap` 8    | 256²  |  0.811 ms |  0.237 ms |   0.399 ms | 0.54x  | **1.69x** |
+| `convolveBitmap` 5x5  | 256²  | 23.085 ms |  7.070 ms |  10.915 ms | 0.46x  | **1.54x** |
+| `convolveBitmap` 5x5  | 512²  | 93.924 ms | 27.938 ms |  42.484 ms | 0.44x  | **1.52x** |
+| `dilateBitmap` r3     | 256²  | 24.961 ms |  9.804 ms |  14.152 ms | 0.56x  | **1.44x** |
+| `dilateBitmap` r3     | 512²  | 99.996 ms | 39.531 ms |  52.713 ms | 0.52x  | **1.33x** |
 
-**About 3.3x faster than the generated kernel**, and upstream's own suite still passes 372 of 372 — the change is representational, so the output is byte-identical. The crate also carries 48 differential cases whose expected bytes come from upstream's TypeScript, which is what makes "byte-identical" a measured claim rather than a hope.
+Upstream's suite still passes 372 of 372, so every one of these is byte-identical. The crate also carries 108 differential cases whose expected bytes come from upstream's own TypeScript, which is what makes that a measured claim rather than a hope.
 
-That is the confirmation the section above was asking for: the barrier is not the problem, `f64` indices and string-compared modes are, and removing just those two for one kernel moves it from 0.46x to 1.50x without touching the boundary, the marshalling, or the arithmetic.
+This settles the diagnosis above. The boundary was never the cost: removing `f64` counters and float indexing — and nothing else — moved five kernel families from losing by 2-3x to winning by 1.3-3.2x.
 
-### What it implies for the rest
+### Two findings worth keeping
 
-The remaining shadowed functions are still 0.24x-0.68x, and the ratios cluster by kind rather than by size:
+**`multiplyBitmapAlpha` needed more than integer indexing.** At 0.68x with integer indices it still lost, because per pixel it converted `u8` to `f64`, multiplied, rounded and converted back for one byte of output. It is now a 256-entry table: the function is `clamp_byte(v * f)` over a `u8`, so there are exactly 256 possible results and the table holds all of them, each from the same `f64` arithmetic upstream performs. That took it to 3.18x, the largest single win in the package — and it is a memoisation rather than an approximation, with a test sweeping all 256 values across 65 factors against the per-pixel form.
 
-- `dilateBitmap` / `erodeBitmap` at 0.52x-0.56x — a window min/max per pixel, the same shape as convolution and the obvious next candidates.
-- `pixelateBitmap` at 0.47x-0.54x — block averaging, likewise.
-- `setBitmapAlpha` at 0.63x-0.68x and `multiplyBitmapAlpha` at 0.33x-0.36x — one byte written per pixel, so there is almost no arithmetic to win and the per-call cost dominates. These are the weakest case for a hand-written mirror and the strongest case for leaving them in TypeScript, which is a judgement the numbers now support rather than a guess.
+**At 16² the mirrors still lose** — 0.42x for `setBitmapAlpha`, 0.69x for `multiplyBitmapAlpha`. No kernel work fixes that: a 1 KB operation is dominated by crossing the boundary at all. The remaining argument about small calls is about call size, not about kernels, and the single-pixel accessors below are the extreme of it.
 
-So the order is: the kernel families with real arithmetic per pixel first, and the bandwidth-bound one-byte-per- pixel operations possibly never. **Four kernels, not thirty-four**, and each one needs its own differential fixture before it is believed.
+### What is still generated
+
+Twenty-seven of the facade's thirty-three wasm-backed exports still use generated kernels and are therefore still slower than upstream. The ones worth mirroring next are the families with real arithmetic per pixel — the colour matrix and curve/levels/palette paths, `copyBitmapPixels`, the noise fills. `getBitmapHistogram`, `getBitmapCoverage` and `getBitmapMismatch` reduce to a few numbers and should win easily on the same reasoning.
+
+Each one needs its own differential fixture before it is believed. Mutation testing is why: swapping two colour channels in the convolution accumulator passed **all eleven** of upstream's hand-written cases, and replacing a rounding clamp with a truncating cast passed **every test in the crate** until the fixture began generating fractional alpha.
 
 ## Open: no facade substitutes the `./contract` lane
 
