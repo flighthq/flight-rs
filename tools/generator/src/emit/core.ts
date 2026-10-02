@@ -2851,9 +2851,7 @@ function collectNumericNamespaceNames(workspaceDirectory: string): readonly stri
       // The paired type alias is required, not assumed: without it the name is an ordinary constant and no
       // type of that name exists to map.
       const aliases = new Set(
-        source.statements.flatMap((statement) =>
-          ts.isTypeAliasDeclaration(statement) ? [statement.name.text] : [],
-        ),
+        source.statements.flatMap((statement) => (ts.isTypeAliasDeclaration(statement) ? [statement.name.text] : [])),
       );
       return source.statements.flatMap((statement) => {
         if (!ts.isVariableStatement(statement)) return [];

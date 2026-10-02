@@ -78,9 +78,7 @@ describe('compression wasm facade', () => {
     expect(sdkHostDecompressDeflate.decompress).toBe(decompressDeflate);
 
     const stream = deflated(new Uint8Array([4, 5, 6]));
-    expect(sdkHostDecompressDeflate.decompress(stream, 3, CompressionFraming.Raw)).toEqual(
-      new Uint8Array([4, 5, 6]),
-    );
+    expect(sdkHostDecompressDeflate.decompress(stream, 3, CompressionFraming.Raw)).toEqual(new Uint8Array([4, 5, 6]));
   });
 });
 

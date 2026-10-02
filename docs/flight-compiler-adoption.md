@@ -50,28 +50,28 @@ This is the measurement's whole purpose, and it is why `tests/generator/compiler
 
 **673 refusals come from 114 root causes.** The rest — 559 — are `dependency … was refused` cascades, modules refused only because something they import was. That ratio is the actionable part: the root list is short.
 
-| `@flighthq/types` root refusal | Count |
-| ------------------------------ | ----: |
-| host-type binding plan incomplete |  103 |
+| `@flighthq/types` root refusal                     | Count |
+| -------------------------------------------------- | ----: |
+| host-type binding plan incomplete                  |   103 |
 | intersection type needing record or trait lowering |     9 |
-| other (`external type`, `Partial<T>`) |     2 |
+| other (`external type`, `Partial<T>`)              |     2 |
 
 The binding refusals name the same host surfaces as before, now with WebGPU well represented alongside WebGL: `WebGLProgram` (17), `AbortSignal` (16), `GPUBindGroupLayout` (15), `GPURenderPipeline` (15), `WebGLUniformLocation` (14), `WebGLTexture` (10), `CanvasRenderingContext2D` (9), `GPUTextureFormat` (9).
 
 **`@flighthq/bitmap` is unchanged: 44 modules, none emitted.** Its refusal profile is also unchanged in substance, which matters more than the figure — the blocker is the same one.
 
-| `@flighthq/bitmap` refusal | Count |
-| -------------------------- | ----: |
-| `operator …` requires Rust type-directed lowering |    19 |
+| `@flighthq/bitmap` refusal                                           | Count |
+| -------------------------------------------------------------------- | ----: |
+| `operator …` requires Rust type-directed lowering                    |    19 |
 | external symbol binding plan incomplete (mostly `SharedArrayBuffer`) |     9 |
-| module evaluation dependency missing (`@flighthq/types/contract`) |     4 |
-| open structural construction target |     3 |
-| dependency refused (cascade) |     2 |
-| `??` requires an Option-shaped left operand |     2 |
-| external constructor ABI plan incomplete (`Array`) |     2 |
-| `typeof` on unknown |     1 |
-| mutable module variable needs synchronization lowering |     1 |
-| syntactic interface heritage |     1 |
+| module evaluation dependency missing (`@flighthq/types/contract`)    |     4 |
+| open structural construction target                                  |     3 |
+| dependency refused (cascade)                                         |     2 |
+| `??` requires an Option-shaped left operand                          |     2 |
+| external constructor ABI plan incomplete (`Array`)                   |     2 |
+| `typeof` on unknown                                                  |     1 |
+| mutable module variable needs synchronization lowering               |     1 |
+| syntactic interface heritage                                         |     1 |
 
 **The two packages fail for different reasons, and the difference is the finding.** `@flighthq/types` is declaration-shaped, and its root refusals are dominated by absent host-type bindings. Those are configuration plus a bounded lowering list.
 

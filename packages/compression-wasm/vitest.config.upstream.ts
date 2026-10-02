@@ -82,9 +82,7 @@ function substituteWasmImplementation(): Plugin {
     buildEnd() {
       const dead = [...substitutions.entries()].filter(([, count]) => count === 0).map(([specifier]) => specifier);
       if (dead.length > 0) {
-        throw new Error(
-          `never substituted ${dead.join(', ')}, so nothing under test in those lanes was ours`,
-        );
+        throw new Error(`never substituted ${dead.join(', ')}, so nothing under test in those lanes was ours`);
       }
     },
   };

@@ -25,9 +25,7 @@ interface Lane {
   readonly facade: string;
 }
 
-const LANES: readonly Lane[] = [
-  { specifier: './physics2DAbi.ts', facade: 'src/index.ts' },
-];
+const LANES: readonly Lane[] = [{ specifier: './physics2DAbi.ts', facade: 'src/index.ts' }];
 
 const resolved = LANES.map((lane) => ({
   ...lane,

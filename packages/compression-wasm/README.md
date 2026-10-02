@@ -15,11 +15,7 @@ Rust/wasm codecs for [`@flighthq/compression`](https://github.com/flighthq/fligh
 Upstream models each codec as a named slot on the Host, one per algorithm, and says a host "with a native or wasm codec supplies its own slot instead and never bundles this module". This supplies those slots — the seam is declared upstream rather than invented here:
 
 ```ts
-import {
-  sdkHostCompressDeflate,
-  sdkHostDecompressDeflate,
-  sdkHostDecompressLzma,
-} from '@flighthq/compression-wasm';
+import { sdkHostCompressDeflate, sdkHostDecompressDeflate, sdkHostDecompressLzma } from '@flighthq/compression-wasm';
 
 const host = {
   decompress: { deflate: sdkHostDecompressDeflate, lzma: sdkHostDecompressLzma },
