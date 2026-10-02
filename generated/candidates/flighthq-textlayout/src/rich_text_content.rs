@@ -6,8 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::merge_text_format;
-use flighthq_types::{RichTextContent, RichTextData, RichTextRuntime, TextFormat, TextFormatRange};
+use crate::{create_text_format_range, merge_text_format};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{
+    EntityConstruction, RichTextContent, RichTextData, RichTextRuntime, TextFormat, TextFormatRange,
+};
 
 #[inline]
 
@@ -52,7 +55,7 @@ fn __flight_string_from_code_point(value: f64) -> String {
         .to_string()
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:11 (sha256:b40cc1fb78aa22db5607db40e1b7c99cb99c3ca95de8de4e18b6a365aa3d49af)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:14 (sha256:b40cc1fb78aa22db5607db40e1b7c99cb99c3ca95de8de4e18b6a365aa3d49af)
 pub fn clear_rich_text_content(mut runtime: RichTextRuntime) -> () {
     {
         let __flight_runtime = runtime;
@@ -62,7 +65,7 @@ pub fn clear_rich_text_content(mut runtime: RichTextRuntime) -> () {
     };
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:19 (sha256:30f88764e43644af3300a07a4de799bea9576c2b0322758b13e0835ed3a570c6)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:22 (sha256:30f88764e43644af3300a07a4de799bea9576c2b0322758b13e0835ed3a570c6)
 pub fn compute_rich_text_content(
     out: &mut RichTextContent,
     data: &RichTextData,
@@ -90,16 +93,14 @@ pub fn compute_rich_text_content(
     apply_text_format_ranges(out, &data.text_format_ranges);
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:40 (sha256:05c5233b916c715e5b06c9150e295f1065149bffd63718972dfafa5eb2fea130)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:43 (sha256:547616e60299d4c86abecc2386c35febd8e34ff59dd190351b4feae3522ca293)
 pub fn create_rich_text_content() -> RichTextContent {
-    return RichTextContent {
-        __flight_identity: std::sync::Arc::new(()),
-        format_ranges: vec![],
-        text: "".to_owned(),
-    };
+    let mut out = allocate_entity();
+    initialize_rich_text_content((out).clone());
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:44 (sha256:56db16cad411b29c5bb8836c46fdca70a13980c29887fdf5c23d83786382e85a)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:49 (sha256:56db16cad411b29c5bb8836c46fdca70a13980c29887fdf5c23d83786382e85a)
 pub fn get_rich_text_content(mut runtime: RichTextRuntime) -> RichTextContent {
     if ((runtime.inner.lock().unwrap().rich_text_content).clone()).is_none() {
         {
@@ -112,7 +113,13 @@ pub fn get_rich_text_content(mut runtime: RichTextRuntime) -> RichTextContent {
     return ((runtime.inner.lock().unwrap().rich_text_content).clone()).unwrap();
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:51 (sha256:2032b25b2d9d1a3dc1eea76dcb23cb441fbd8a5351ad813759bec413992ed9a4)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:56 (sha256:2c58ed8983622d44f4f2d85f72a06d4e1a76e11368f2b46cac3a2bf0dd213a0e)
+pub fn initialize_rich_text_content(out: EntityConstruction<RichTextContent>) -> () {
+    crate::host_set("host.formatRanges", vec![]);
+    crate::host_set("host.text", "");
+}
+
+// Source: upstream/packages/textlayout/src/richTextContent.ts:61 (sha256:2032b25b2d9d1a3dc1eea76dcb23cb441fbd8a5351ad813759bec413992ed9a4)
 fn append_text(
     out: &mut RichTextContent,
     text: String,
@@ -161,7 +168,7 @@ fn append_text(
     };
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:75 (sha256:f1747b1c807432a75063b6faa16cd2854fba96b7541ac633455c123cf92d47d8)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:85 (sha256:f1747b1c807432a75063b6faa16cd2854fba96b7541ac633455c123cf92d47d8)
 fn apply_text_format_ranges(out: &mut RichTextContent, overrides: &Vec<TextFormatRange>) -> () {
     if ((overrides.len() as f64) == 0.0_f64)
         || ((out.text.encode_utf16().count() as f64) == 0.0_f64)
@@ -206,7 +213,7 @@ fn apply_text_format_ranges(out: &mut RichTextContent, overrides: &Vec<TextForma
     }
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:107 (sha256:ef80663a5b42c81c1363d1dcda13672236450a739f119a107d11fc44d0bf5b10)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:117 (sha256:ef80663a5b42c81c1363d1dcda13672236450a739f119a107d11fc44d0bf5b10)
 fn clamp_ranges(ranges: &mut Vec<TextFormatRange>, length: f64) -> () {
     {
         let mut i = ((ranges.len() as f64) - 1.0_f64);
@@ -236,7 +243,7 @@ fn clamp_ranges(ranges: &mut Vec<TextFormatRange>, length: f64) -> () {
     }
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:118 (sha256:b593981411e261f5be687efabce2f1a0bd7b4c755db650fc3fbfa225dd4daa4a)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:128 (sha256:b593981411e261f5be687efabce2f1a0bd7b4c755db650fc3fbfa225dd4daa4a)
 fn create_base_format(data: &RichTextData) -> TextFormat {
     let mut format = merge_text_format(&data.default_text_format, &data.text_format);
     if (format.color).is_none() {
@@ -245,7 +252,7 @@ fn create_base_format(data: &RichTextData) -> TextFormat {
     return format;
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:124 (sha256:7f06abd12e25e9e61f75d50d23db46f1a9cdc500b91e99739865b7c18f05c259)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:134 (sha256:7f06abd12e25e9e61f75d50d23db46f1a9cdc500b91e99739865b7c18f05c259)
 fn decode_html_entities(value: String) -> String {
     return {
         let mut __flight_replace = |_match: String, entity: String| -> String {
@@ -290,7 +297,7 @@ fn decode_html_entities(value: String) -> String {
     };
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:133 (sha256:b047f25f7ca82be989a273e4d199a15190e34ba1694f90ce1dcf24b185ce9fd0)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:143 (sha256:b047f25f7ca82be989a273e4d199a15190e34ba1694f90ce1dcf24b185ce9fd0)
 fn get_renderable_source(data: &RichTextData, password_character: Option<String>) -> String {
     if (password_character).is_none() {
         return (data.text).clone();
@@ -303,7 +310,7 @@ fn get_renderable_source(data: &RichTextData, password_character: Option<String>
     return __flight_string_repeat(&(mask), (data.text.encode_utf16().count() as f64));
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:139 (sha256:29e6bd354a194abe1d36111a87bc0a8e9728d443c9b9c2b05e169be762ffb718)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:149 (sha256:a885c1d0a046ac9a4d996c173239fb082bdcccd2c819da200575271cf61974d9)
 fn write_format_range(
     ranges: &mut Vec<TextFormatRange>,
     format: &TextFormat,
@@ -321,16 +328,11 @@ fn write_format_range(
     {
         previous.as_mut().unwrap().end = end;
     } else {
-        ranges.push(TextFormatRange {
-            __flight_identity: std::sync::Arc::new(()),
-            end: end,
-            format: (format).clone(),
-            start: start,
-        });
+        ranges.push(create_text_format_range(&(format).clone(), start, end));
     }
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:149 (sha256:8fd21605927746f23b9de316987d4358bd6fa1e6040a447988bb6f6191cdb340)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:159 (sha256:8fd21605927746f23b9de316987d4358bd6fa1e6040a447988bb6f6191cdb340)
 fn text_format_equals(a: &TextFormat, b: &TextFormat) -> bool {
     let a_keys = crate::host_value::<Vec<String>>("host.Object.keys");
     let b_keys = crate::host_value::<Vec<String>>("host.Object.keys");
@@ -365,7 +367,7 @@ fn text_format_equals(a: &TextFormat, b: &TextFormat) -> bool {
     return true;
 }
 
-// Source: upstream/packages/textlayout/src/richTextContent.ts:168 (sha256:b81d577e3d17a6837d68a7d0f19b37e0a6d993712c67071c0a8ddc495d096a2b)
+// Source: upstream/packages/textlayout/src/richTextContent.ts:178 (sha256:b81d577e3d17a6837d68a7d0f19b37e0a6d993712c67071c0a8ddc495d096a2b)
 static NAMED_ENTITIES: std::sync::LazyLock<Vec<(String, String)>> =
     std::sync::LazyLock::new(|| {
         let mut __flight_record = Vec::new();

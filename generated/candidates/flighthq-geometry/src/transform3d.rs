@@ -7,10 +7,13 @@
 #![allow(unused_parens)]
 
 use crate::{compose_matrix4, create_quaternion, create_vector3, decompose_matrix4};
-use flighthq_entity::create_entity;
-use flighthq_types::{Matrix4Like, QuaternionLike, Transform3D, Transform3DLike, Vector3Like};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{
+    EntityConstruction, Matrix4Like, Quaternion, QuaternionLike, Transform3D, Transform3DLike,
+    Vector3, Vector3Like,
+};
 
-// Source: upstream/packages/geometry/src/transform3d.ts:9 (sha256:ae6085c8e34872730f39053f3dc2a1fbd4786461b4447caa01e39ce0c0c4d3f5)
+// Source: upstream/packages/geometry/src/transform3d.ts:16 (sha256:ae6085c8e34872730f39053f3dc2a1fbd4786461b4447caa01e39ce0c0c4d3f5)
 pub fn compose_matrix4_from_transform3_d(out: &mut Matrix4Like, source: &Transform3DLike) -> () {
     compose_matrix4(
         out,
@@ -57,19 +60,29 @@ pub fn compose_matrix4_from_transform3_d(out: &mut Matrix4Like, source: &Transfo
     );
 }
 
-// Source: upstream/packages/geometry/src/transform3d.ts:15 (sha256:55986cc73a04e07fb0cde6bbc77e2cc699f7ea64b84db2fe9e7970c9c5c5d732)
+// Source: upstream/packages/geometry/src/transform3d.ts:22 (sha256:f109f38ae7e068b588187582120eaf74f7baccf0a88730e523764a46ee7cf16c)
 pub fn create_transform3_d() -> Transform3D {
-    return create_entity(Some(Transform3D {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        rotation: create_quaternion(None, None, None, None),
-        scale: create_vector3(Some(1.0_f64), Some(1.0_f64), Some(1.0_f64)),
-        position: create_vector3(None, None, None),
-    }));
+    let position = create_vector3(None, None, None);
+    let rotation = create_quaternion(None, None, None, None);
+    let scale = create_vector3(Some(1.0_f64), Some(1.0_f64), Some(1.0_f64));
+    let mut out = allocate_entity();
+    initialize_transform3_d((out).clone(), &position, &rotation, &scale);
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/geometry/src/transform3d.ts:25 (sha256:a43de0257a1fec8cc23ca1854f7987ee3d40dc4858707633c9ef991cda28f511)
+// Source: upstream/packages/geometry/src/transform3d.ts:33 (sha256:a43de0257a1fec8cc23ca1854f7987ee3d40dc4858707633c9ef991cda28f511)
 pub fn decompose_matrix4_to_transform3_d(out: &mut Transform3DLike, m: &Matrix4Like) -> () {
     decompose_matrix4(&mut out.position, &mut out.rotation, &mut out.scale, m);
+}
+
+// Source: upstream/packages/geometry/src/transform3d.ts:37 (sha256:664f7a6ea0d9fcdcd7aab9cef93bdd407958306dd7139acc5cbd40492b604156)
+pub fn initialize_transform3_d(
+    out: EntityConstruction<Transform3D>,
+    position: &Vector3,
+    rotation: &Quaternion,
+    scale: &Vector3,
+) -> () {
+    crate::host_set("host.position", position);
+    crate::host_set("host.rotation", rotation);
+    crate::host_set("host.scale", scale);
 }

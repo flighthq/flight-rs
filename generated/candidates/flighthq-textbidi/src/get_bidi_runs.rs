@@ -7,11 +7,15 @@
 #![allow(unused_parens)]
 
 use crate::resolve_bidi_levels;
-use flighthq_types::{BidiDirection, BidiRun};
+use flighthq_types::{BidiClassKernel, BidiDirection, BidiRun};
 
-// Source: upstream/packages/textbidi/src/getBidiRuns.ts:10 (sha256:9c1d0f7d5edf06e0ec4531595002ee0cc338d787af2be1d594bd8e4350a9840d)
-pub fn get_bidi_runs(text: String, base_direction: BidiDirection) -> Vec<BidiRun> {
-    let levels = resolve_bidi_levels((text).clone(), (base_direction).clone());
+// Source: upstream/packages/textbidi/src/getBidiRuns.ts:5 (sha256:bd5893d8d1b71fab61b5c545281bbf66230be0fd9e693a83bcbd50d58d800e3b)
+pub fn get_bidi_runs(
+    bidi_class_kernel: &BidiClassKernel,
+    text: String,
+    base_direction: BidiDirection,
+) -> Vec<BidiRun> {
+    let levels = resolve_bidi_levels(bidi_class_kernel, (text).clone(), (base_direction).clone());
     let mut runs: Vec<BidiRun> = vec![];
     let length = (levels.len() as f64);
     let mut start = 0.0_f64;

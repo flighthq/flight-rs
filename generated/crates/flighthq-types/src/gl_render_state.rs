@@ -7,14 +7,15 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, CanvasShapeCommand, ColorAdjustmentUnsupportedGuard, ColorScaleBias, EntityRuntime,
-    GlBitmapShader, GlCompressedTextureDecoder, GlCompressedTextureUploader,
-    GlCustomMaterialShaderSource, GlMaterialRenderer, GlMeshMaterialRenderer, GlModifierSnippet,
-    GlPbrExtensionRegistration, GlRenderEffectRegistration, GlRenderTarget, GlShapeMesh,
-    GlTextureResolver, GlVelocityWriter, Image, KeyedTable, Matrix, Path, PathMesh,
-    RenderEffectPaddingResolver, RenderProxy, RenderProxy2D, RenderRootGuard, RenderState,
-    Renderer, Scene2DClipHooks, Scene3DGraphSyncPolicy, ShapeRasterizer, SlotTable, StrokeStyle,
-    TextureSource, TintMaterialData,
+    BlendMode, CanvasShapeCommand, ColorAdjustmentUnsupportedGuard, ColorScaleBias,
+    EffectPaddingResolver, EntityRuntime, GlBitmapShader, GlCompressedTextureDecoder,
+    GlCompressedTextureUploader, GlContext, GlContextRuntime, GlContextState, GlCubeRenderTarget,
+    GlCustomMaterialShaderSource, GlEffectRegistration, GlMeshMaterialRenderer, GlModifierSnippet,
+    GlPbrExtensionRegistration, GlQuadMaterialRenderer, GlRenderTarget, GlScene3DPass,
+    GlShaderLocations, GlShapeMesh, GlTextureResolver, GlVelocityWriter, HostCanvasCapability,
+    HostImageCapability, Kind, NodeRenderer, RenderProxy, RenderProxy2D, RenderRegistrySignals,
+    RenderRootGuard, RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy, ShapeRasterizer,
+    StrokeTessellator, TintMaterialData,
 };
 
 #[derive(Clone, Default)]
@@ -31,7 +32,7 @@ impl PartialEq for SharedStructuralRecord1 {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderState.ts:30 (sha256:464eeba3f4bedfaa41e89c4eeecce566a24f5114fdb842604f4ceec1b98c796a)
+// Source: upstream/packages/types/src/GlRenderState.ts:31 (sha256:be17d8a9f6f9185792c587c052d93d550fd9808be208fab4e64311145b0ae91d)
 #[derive(Clone, Default)]
 pub struct GlRenderState {
     #[doc(hidden)]
@@ -41,15 +42,13 @@ pub struct GlRenderState {
     #[doc(hidden)]
     pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub allow_smoothing: bool,
-    pub background_color: f64,
-    pub background_color_rgba: Vec<f64>,
-    pub background_color_string: String,
     pub current_clip_depth: f64,
     pub display_object_clip_hooks: Option<Scene2DClipHooks>,
     pub pixel_ratio: f64,
+    pub canvas_host: Option<HostCanvasCapability>,
+    pub image_host: Option<HostImageCapability>,
     pub render_alpha: f64,
     pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
     pub scene_graph_sync_policy: Scene3DGraphSyncPolicy,
     pub round_pixels: bool,
     pub apply_blend_mode: Option<
@@ -59,8 +58,9 @@ pub struct GlRenderState {
             >,
         >,
     >,
-    pub canvas: crate::OpaqueHostValue,
-    pub gl: crate::OpaqueHostValue,
+    pub context_state: GlContextState,
+    pub gl: GlContext,
+    pub registries: GlRenderRegistries,
 }
 impl PartialEq for GlRenderState {
     fn eq(&self, other: &Self) -> bool {
@@ -86,53 +86,44 @@ impl crate::FlightEntity for GlRenderState {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderState.ts:38 (sha256:43740eafc1e1c310207dcce7ac38be6340b29e9a1a67fcec617ff72fef5634ea)
+// Source: upstream/packages/types/src/GlRenderState.ts:40 (sha256:a509f3a88a179edf52296a0ae7e8ff26cad241f5b48d05f69c402186a2ff5aec)
 #[derive(Clone, Default)]
 pub struct GlRenderRegistries {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub canvas_shape_commands: Option<KeyedTable<CanvasShapeCommand<crate::OpaqueHostValue>>>,
+    pub canvas_shape_commands: Option<Vec<(Kind, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
     pub color_adjustments: Option<
-        SlotTable<
-            std::sync::Arc<
-                std::sync::Mutex<
-                    Box<
-                        dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> ()
-                            + Send
-                            + 'static,
-                    >,
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
                 >,
             >,
         >,
     >,
-    pub color_adjustment_unsupported_guard: Option<SlotTable<ColorAdjustmentUnsupportedGuard>>,
-    pub effect_padding_resolvers: Option<KeyedTable<RenderEffectPaddingResolver>>,
-    pub renderers: KeyedTable<Renderer>,
-    pub render_root_guard: Option<SlotTable<RenderRootGuard>>,
-    pub stroke_tessellator: SlotTable<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
-            >,
-        >,
-    >,
-    pub blend_realizations: KeyedTable<GlBlendRealization>,
-    pub color_adjustment_feature: Option<SlotTable<GlColorAdjustmentMaterialFeature>>,
-    pub color_adjustment_feature_guard: Option<SlotTable<GlColorAdjustmentMaterialFeatureGuard>>,
-    pub compressed_texture_decoder: SlotTable<GlCompressedTextureDecoder>,
-    pub compressed_texture_upload: SlotTable<GlCompressedTextureUploader>,
-    pub custom_effect_shaders: KeyedTable<String>,
-    pub custom_material_shaders: KeyedTable<GlCustomMaterialShaderSource>,
-    pub material_renderers: KeyedTable<GlMaterialRenderer>,
-    pub mesh_material_renderers: KeyedTable<GlMeshMaterialRenderer>,
-    pub modifier_snippets: KeyedTable<GlModifierSnippet>,
-    pub modifier_snippet_revision: f64,
-    pub pbr_extensions: KeyedTable<GlPbrExtensionRegistration>,
-    pub pbr_extension_revision: f64,
-    pub render_effects: KeyedTable<GlRenderEffectRegistration>,
-    pub shape_rasterizer: SlotTable<ShapeRasterizer>,
-    pub texture_resolvers: KeyedTable<GlTextureResolver>,
-    pub velocity_writers: KeyedTable<GlVelocityWriter>,
+    pub color_adjustment_unsupported_guard: Option<ColorAdjustmentUnsupportedGuard>,
+    pub effect_padding_resolvers: Option<Vec<(Kind, EffectPaddingResolver)>>,
+    pub node_renderers: Vec<(Kind, NodeRenderer)>,
+    pub render_root_guard: Option<RenderRootGuard>,
+    pub stroke_tessellator: Option<StrokeTessellator>,
+    pub blend_realizations: Vec<(Kind, GlBlendRealization)>,
+    pub color_adjustment_feature: Option<GlColorAdjustmentMaterialFeature>,
+    pub color_adjustment_feature_guard: Option<GlColorAdjustmentMaterialFeatureGuard>,
+    pub compressed_texture_decoder: Option<GlCompressedTextureDecoder>,
+    pub compressed_texture_upload: Option<GlCompressedTextureUploader>,
+    pub custom_effect_shaders: Vec<(Kind, String)>,
+    pub custom_material_shaders: Vec<(Kind, GlCustomMaterialShaderSource)>,
+    pub material_renderers: Vec<(
+        Kind,
+        crate::FlightUnion2<GlMeshMaterialRenderer, GlQuadMaterialRenderer>,
+    )>,
+    pub modifier_snippets: Vec<(Kind, GlModifierSnippet)>,
+    pub pbr_extensions: Vec<(Kind, GlPbrExtensionRegistration)>,
+    pub effects: Vec<(Kind, GlEffectRegistration)>,
+    pub passes: Option<Vec<GlScene3DPass>>,
+    pub shape_rasterizer: Option<ShapeRasterizer>,
+    pub texture_resolvers: Vec<(Kind, GlTextureResolver)>,
+    pub velocity_writers: Vec<(Kind, GlVelocityWriter)>,
 }
 impl PartialEq for GlRenderRegistries {
     fn eq(&self, other: &Self) -> bool {
@@ -140,7 +131,7 @@ impl PartialEq for GlRenderRegistries {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderState.ts:70 (sha256:08d46091d710deac70dc82dd5ba3988c6e74e8161dfcd2028e9f0166f91e02d5)
+// Source: upstream/packages/types/src/GlRenderState.ts:66 (sha256:08d46091d710deac70dc82dd5ba3988c6e74e8161dfcd2028e9f0166f91e02d5)
 #[derive(Clone, Default)]
 pub struct GlBlendRealization {
     #[doc(hidden)]
@@ -155,13 +146,42 @@ impl PartialEq for GlBlendRealization {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderState.ts:76 (sha256:b12ab248cba7a5676510fa787e945e56b616d16e05eccabd097a7995c7afce8f)
+// Source: upstream/packages/types/src/GlRenderState.ts:74 (sha256:8d220ee0534489bc29a78e722d9aceee9d7e2fb0f9ececf43df5dcc16d047e3a)
+#[derive(Clone, Default)]
+pub struct GlBlendSignature {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub dst: f64,
+    pub equation: f64,
+    pub src: f64,
+}
+impl PartialEq for GlBlendSignature {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/GlRenderState.ts:83 (sha256:47cb66d99fe4424f5173f83d93556fe967f733d2a3dd7792e8d54fe119727d65)
+#[derive(Clone, Default)]
+pub struct GlBoundShader {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub locations: Option<GlShaderLocations>,
+    pub program: crate::OpaqueHostValue,
+}
+impl PartialEq for GlBoundShader {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/GlRenderState.ts:88 (sha256:b12ab248cba7a5676510fa787e945e56b616d16e05eccabd097a7995c7afce8f)
 pub type GlBlendFactor = String;
 
-// Source: upstream/packages/types/src/GlRenderState.ts:78 (sha256:8b84dd066ca9a399220d5b710e5f54629408eb1a49b565d2d53ee71c7f6c457b)
+// Source: upstream/packages/types/src/GlRenderState.ts:90 (sha256:8b84dd066ca9a399220d5b710e5f54629408eb1a49b565d2d53ee71c7f6c457b)
 pub type GlBlendEquation = String;
 
-// Source: upstream/packages/types/src/GlRenderState.ts:91 (sha256:bd98a75c3475e29dfdb842948e8f4a8b85c2e10bc3158734f770d6f037bb7dd8)
+// Source: upstream/packages/types/src/GlRenderState.ts:103 (sha256:bd98a75c3475e29dfdb842948e8f4a8b85c2e10bc3158734f770d6f037bb7dd8)
 #[derive(Clone)]
 pub struct GlColorAdjustmentMaterialFeature {
     #[doc(hidden)]
@@ -201,7 +221,7 @@ impl PartialEq for GlColorAdjustmentMaterialFeature {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderState.ts:107 (sha256:38536bde80c2ab230666995653a7acd91d194f205eb13af21b757f795414c96b)
+// Source: upstream/packages/types/src/GlRenderState.ts:119 (sha256:38536bde80c2ab230666995653a7acd91d194f205eb13af21b757f795414c96b)
 pub type GlColorAdjustmentMaterialFeatureGuard = std::sync::Arc<
     std::sync::Mutex<
         Box<
@@ -218,12 +238,12 @@ pub type GlColorAdjustmentMaterialFeatureGuard = std::sync::Arc<
     >,
 >;
 
-// Source: upstream/packages/types/src/GlRenderState.ts:116 (sha256:42e9530ec685e1f00cc45e3695ffe475266047164f10002bcb41a8ad935d17e6)
-#[derive(Clone, Default)]
+// Source: upstream/packages/types/src/GlRenderState.ts:128 (sha256:96187ad87ad59de001df157154e36c5c58757972267963a65545c8fd0e22b69a)
+#[derive(Clone)]
 pub struct GlRenderStateRuntimeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub texture: crate::OpaqueHostValue,
-    pub uploaded_version: f64,
+    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+    pub signals: RenderRegistrySignals,
 }
 impl PartialEq for GlRenderStateRuntimeRecord1 {
     fn eq(&self, other: &Self) -> bool {
@@ -231,67 +251,41 @@ impl PartialEq for GlRenderStateRuntimeRecord1 {
     }
 }
 
-#[derive(Clone, Default)]
-pub struct GlRenderStateRuntimeRecord2 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub texture: crate::OpaqueHostValue,
-    pub version: f64,
-}
-impl PartialEq for GlRenderStateRuntimeRecord2 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
 #[doc(hidden)]
 pub struct GlRenderStateRuntimeStorage {
+    pub context: GlContextRuntime,
     pub registries: GlRenderRegistries,
+    pub teardowns:
+        Vec<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>>,
     pub default_bitmap_shader: Option<GlBitmapShader>,
-    pub particle_instance_buffer: Option<crate::OpaqueHostValue>,
     pub particle_instance_data: Option<Vec<f32>>,
-    pub quad_batch_writer_material_renderer: Option<GlMaterialRenderer>,
+    pub quad_batch_writer_material_renderer: Option<GlQuadMaterialRenderer>,
     pub quad_batch_writer_texture: Option<crate::OpaqueHostValue>,
     pub current_scissor_rect: Option<GlScissorRect>,
-    pub current_render_target: Option<GlRenderTarget>,
+    pub current_render_target: Option<crate::FlightUnion2<GlCubeRenderTarget, GlRenderTarget>>,
     pub render_target_viewport: Option<GlViewportRect>,
-    pub texture_cache: Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>,
-    pub texture_source_premultiplied_texture_cache:
-        Vec<(TextureSource, GlRenderStateRuntimeRecord2)>,
-    pub texture_source_premultiplied_srgb_texture_cache:
-        Vec<(TextureSource, GlRenderStateRuntimeRecord2)>,
-    pub texture_source_straight_texture_cache: Vec<(TextureSource, GlRenderStateRuntimeRecord2)>,
-    pub texture_source_straight_srgb_texture_cache:
-        Vec<(TextureSource, GlRenderStateRuntimeRecord2)>,
-    pub video_texture_cache: Option<Vec<(Image, GlRenderStateRuntimeRecord1)>>,
-    pub video_srgb_texture_cache: Option<Vec<(Image, GlRenderStateRuntimeRecord1)>>,
     pub scissor_stack: Option<Vec<GlScissorRect>>,
 }
 impl Default for GlRenderStateRuntimeStorage {
     fn default() -> Self {
         Self {
+            context: Default::default(),
             registries: Default::default(),
+            teardowns: Default::default(),
             default_bitmap_shader: Default::default(),
-            particle_instance_buffer: Default::default(),
             particle_instance_data: Default::default(),
             quad_batch_writer_material_renderer: Default::default(),
             quad_batch_writer_texture: Default::default(),
             current_scissor_rect: Default::default(),
             current_render_target: Default::default(),
             render_target_viewport: Default::default(),
-            texture_cache: Default::default(),
-            texture_source_premultiplied_texture_cache: Default::default(),
-            texture_source_premultiplied_srgb_texture_cache: Default::default(),
-            texture_source_straight_texture_cache: Default::default(),
-            texture_source_straight_srgb_texture_cache: Default::default(),
-            video_texture_cache: Default::default(),
-            video_srgb_texture_cache: Default::default(),
             scissor_stack: Default::default(),
         }
     }
 }
 pub type GlRenderStateRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/GlRenderState.ts:256 (sha256:92ef9e960d48ccadf9d840f3dc2863ee3f64c2089ea081effa5c2ecaa9d1a079)
+// Source: upstream/packages/types/src/GlRenderState.ts:189 (sha256:92ef9e960d48ccadf9d840f3dc2863ee3f64c2089ea081effa5c2ecaa9d1a079)
 #[derive(Clone, Default)]
 pub struct GlParticleShader {
     #[doc(hidden)]
@@ -314,7 +308,7 @@ impl PartialEq for GlParticleShader {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderState.ts:270 (sha256:dd54f9f662967291bb053c203ae7ab4ba75c1cbc97000e5a7a27ec51d44b5014)
+// Source: upstream/packages/types/src/GlRenderState.ts:203 (sha256:33409fa963fc52e0f9ff8f12bb277256e385fba6fc9ef7b776f4848ad194e2ff)
 #[derive(Clone, Default)]
 pub struct GlQuadBatchShader {
     #[doc(hidden)]
@@ -324,8 +318,8 @@ pub struct GlQuadBatchShader {
     pub loc_mat_ab: f64,
     pub loc_mat_cd: f64,
     pub loc_mat_txty: f64,
-    pub loc_size: f64,
-    pub loc_uv_rect: f64,
+    pub loc_uv_origin_axis_u: f64,
+    pub loc_uv_axis_v: f64,
     pub loc_alpha: f64,
     pub loc_world_matrix: crate::OpaqueHostValue,
     pub loc_texture: crate::OpaqueHostValue,
@@ -337,7 +331,7 @@ impl PartialEq for GlQuadBatchShader {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderState.ts:286 (sha256:eb2748590ab9d2f4190685a0e0023dcfbc58ae2fcfa924a12b27f0b5867c273c)
+// Source: upstream/packages/types/src/GlRenderState.ts:219 (sha256:eb2748590ab9d2f4190685a0e0023dcfbc58ae2fcfa924a12b27f0b5867c273c)
 #[derive(Clone, Default)]
 pub struct GlColorScaleBiasInstancedShader {
     #[doc(hidden)]
@@ -354,7 +348,7 @@ impl PartialEq for GlColorScaleBiasInstancedShader {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderState.ts:297 (sha256:c041cbbcaaa16bdba25bba01bd230322edf62bd9dc987ec0acae5c410449cbb1)
+// Source: upstream/packages/types/src/GlRenderState.ts:230 (sha256:c041cbbcaaa16bdba25bba01bd230322edf62bd9dc987ec0acae5c410449cbb1)
 #[derive(Clone, Default)]
 pub struct GlUniformColorScaleBiasShader {
     #[doc(hidden)]
@@ -373,7 +367,7 @@ impl PartialEq for GlUniformColorScaleBiasShader {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderState.ts:311 (sha256:df1e98bd12a8d711c970bbc0453b9fbccdcb484b40c72fbb3f426e18442333ed)
+// Source: upstream/packages/types/src/GlRenderState.ts:244 (sha256:df1e98bd12a8d711c970bbc0453b9fbccdcb484b40c72fbb3f426e18442333ed)
 #[derive(Clone, Default)]
 pub struct GlShapeMeshColorScaleBiasShader {
     #[doc(hidden)]
@@ -392,7 +386,7 @@ impl PartialEq for GlShapeMeshColorScaleBiasShader {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderState.ts:321 (sha256:c5eed51656152d130c5bd39967bda2fdec09e68c7666b1789992993ec2ac9b57)
+// Source: upstream/packages/types/src/GlRenderState.ts:254 (sha256:c5eed51656152d130c5bd39967bda2fdec09e68c7666b1789992993ec2ac9b57)
 #[derive(Clone, Default)]
 pub struct GlScissorRect {
     #[doc(hidden)]
@@ -408,7 +402,7 @@ impl PartialEq for GlScissorRect {
     }
 }
 
-// Source: upstream/packages/types/src/GlRenderState.ts:330 (sha256:b0b1de9b1a624baec9c5e6a1e62ec9c8ebf103c9b1a6779d90493772ef40a693)
+// Source: upstream/packages/types/src/GlRenderState.ts:263 (sha256:b0b1de9b1a624baec9c5e6a1e62ec9c8ebf103c9b1a6779d90493772ef40a693)
 #[derive(Clone, Default)]
 pub struct GlViewportRect {
     #[doc(hidden)]

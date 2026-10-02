@@ -7,13 +7,14 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, CanvasMaterialRenderer, CanvasRenderEffectRunner, CanvasShapeCommand,
-    ColorAdjustmentUnsupportedGuard, EntityRuntime, KeyedTable, Matrix, Path, PathMesh,
-    RenderEffectPaddingResolver, RenderProxy, RenderProxy2D, RenderRootGuard, RenderState,
-    Renderer, Scene2DClipHooks, Scene3DGraphSyncPolicy, SlotTable, StrokeStyle,
+    BlendMode, CanvasEffectRunner, CanvasQuadMaterialRenderer, CanvasRenderPass,
+    CanvasRenderTarget, CanvasShapeCommand, ColorAdjustmentUnsupportedGuard, EffectPaddingResolver,
+    EntityRuntime, HostCanvasCapability, HostImageCapability, Kind, NodeRenderer, RenderProxy,
+    RenderProxy2D, RenderRegistrySignals, RenderRootGuard, RenderState, Scene2DClipHooks,
+    Scene3DGraphSyncPolicy, StrokeTessellator,
 };
 
-// Source: upstream/packages/types/src/CanvasRenderState.ts:10 (sha256:2d3ed80aeffa1af698defe21cc96fededc24c5de7d4a233df2684315565006c5)
+// Source: upstream/packages/types/src/CanvasRenderState.ts:12 (sha256:c72f2856e8dd8dd19c52c0d7f04e04bdbd4ea5c516ad7693ef9a60b395e4c00a)
 #[derive(Clone, Default)]
 pub struct CanvasRenderState {
     #[doc(hidden)]
@@ -23,15 +24,13 @@ pub struct CanvasRenderState {
     #[doc(hidden)]
     pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub allow_smoothing: bool,
-    pub background_color: f64,
-    pub background_color_rgba: Vec<f64>,
-    pub background_color_string: String,
     pub current_clip_depth: f64,
     pub display_object_clip_hooks: Option<Scene2DClipHooks>,
     pub pixel_ratio: f64,
+    pub canvas_host: Option<HostCanvasCapability>,
+    pub image_host: Option<HostImageCapability>,
     pub render_alpha: f64,
     pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
     pub scene_graph_sync_policy: Scene3DGraphSyncPolicy,
     pub round_pixels: bool,
     pub apply_blend_mode: Option<
@@ -50,7 +49,7 @@ pub struct CanvasRenderState {
     >,
     pub canvas: crate::OpaqueHostValue,
     pub context: crate::OpaqueHostValue,
-    pub context_attributes: crate::OpaqueHostValue,
+    pub registries: CanvasRenderRegistries,
 }
 impl PartialEq for CanvasRenderState {
     fn eq(&self, other: &Self) -> bool {
@@ -76,38 +75,35 @@ impl crate::FlightEntity for CanvasRenderState {
     }
 }
 
-// Source: upstream/packages/types/src/CanvasRenderState.ts:22 (sha256:bf54026159b9f0b3aa3951ced7856cb58c83480a7bfffbc5dd32f36ea5a03b02)
+// Source: upstream/packages/types/src/CanvasRenderState.ts:29 (sha256:9adf90ffc8be2ba4d9eaec5dfda17f595cf5c0ec889a5bcac67189db09974d6d)
 #[derive(Clone, Default)]
 pub struct CanvasRenderRegistries {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub canvas_shape_commands: Option<KeyedTable<CanvasShapeCommand<crate::OpaqueHostValue>>>,
+    pub canvas_shape_commands: Option<Vec<(Kind, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
     pub color_adjustments: Option<
-        SlotTable<
-            std::sync::Arc<
-                std::sync::Mutex<
-                    Box<
-                        dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> ()
-                            + Send
-                            + 'static,
-                    >,
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
                 >,
             >,
         >,
     >,
-    pub color_adjustment_unsupported_guard: Option<SlotTable<ColorAdjustmentUnsupportedGuard>>,
-    pub effect_padding_resolvers: Option<KeyedTable<RenderEffectPaddingResolver>>,
-    pub renderers: KeyedTable<Renderer>,
-    pub render_root_guard: Option<SlotTable<RenderRootGuard>>,
-    pub stroke_tessellator: SlotTable<
+    pub color_adjustment_unsupported_guard: Option<ColorAdjustmentUnsupportedGuard>,
+    pub effect_padding_resolvers: Option<Vec<(Kind, EffectPaddingResolver)>>,
+    pub node_renderers: Vec<(Kind, NodeRenderer)>,
+    pub render_root_guard: Option<RenderRootGuard>,
+    pub stroke_tessellator: Option<StrokeTessellator>,
+    pub blend_mode_application: Option<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
+                Box<dyn FnMut(CanvasRenderState, Option<BlendMode>) -> () + Send + 'static>,
             >,
         >,
     >,
-    pub material_renderers: Option<KeyedTable<CanvasMaterialRenderer>>,
-    pub render_effects: KeyedTable<CanvasRenderEffectRunner>,
+    pub material_renderers: Option<Vec<(Kind, CanvasQuadMaterialRenderer)>>,
+    pub effects: Vec<(Kind, CanvasEffectRunner)>,
 }
 impl PartialEq for CanvasRenderRegistries {
     fn eq(&self, other: &Self) -> bool {
@@ -115,15 +111,35 @@ impl PartialEq for CanvasRenderRegistries {
     }
 }
 
-// Source: upstream/packages/types/src/CanvasRenderState.ts:34 (sha256:5af720d86a9638ad751e184c1a7db541300dcdce38e6e5e5168e2c0fe5b00421)
+// Source: upstream/packages/types/src/CanvasRenderState.ts:46 (sha256:1d18a23b6fb715a6851248f802da02971d89c573a16ca83efb122d7d9cf9337c)
+#[derive(Clone)]
+pub struct CanvasRenderStateRuntimeRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+    pub signals: RenderRegistrySignals,
+}
+impl PartialEq for CanvasRenderStateRuntimeRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 #[doc(hidden)]
 pub struct CanvasRenderStateRuntimeStorage {
     pub registries: CanvasRenderRegistries,
+    pub pass_stack: Vec<CanvasRenderPass>,
+    pub current_render_target: Option<CanvasRenderTarget>,
+    pub teardowns: Vec<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(CanvasRenderState) -> () + Send + 'static>>>,
+    >,
 }
 impl Default for CanvasRenderStateRuntimeStorage {
     fn default() -> Self {
         Self {
             registries: Default::default(),
+            pass_stack: Default::default(),
+            current_render_target: Default::default(),
+            teardowns: Default::default(),
         }
     }
 }

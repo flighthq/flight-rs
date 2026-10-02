@@ -18,7 +18,10 @@ pub fn get_camera3_d_linear_depth(camera: &Camera3D, ndc_z: f64) -> f64 {
     }
     if (match &((camera.projection).clone()) {
         crate::FlightUnion2::A(value) => (value).kind.clone(),
-        crate::FlightUnion2::B(value) => (value).kind.clone(),
+        crate::FlightUnion2::B(value) => match value {
+            crate::FlightUnion2::A(value) => (value).kind.clone(),
+            crate::FlightUnion2::B(value) => (value).kind.clone(),
+        },
     } == "orthographic")
     {
         return (-(near + (((ndc_z + 1.0_f64) * range) / 2.0_f64)));

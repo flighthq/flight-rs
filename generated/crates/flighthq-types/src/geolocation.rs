@@ -6,11 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/Geolocation.ts:8 (sha256:5417b3f83e7e0285670398975f0aa6df0c4500a1ad50700de97d2a3358a4321a)
+use crate::EntityRuntime;
+
+// Source: upstream/packages/types/src/Geolocation.ts:8 (sha256:0bf54f43ed52b1d5a1436c2d53acf9ac9de2a4b6456ce8b785b8ea3e2c2bd312)
 #[derive(Clone, Default)]
-pub struct GeoPosition {
+pub struct GeolocationPosition {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub latitude: f64,
     pub longitude: f64,
     pub accuracy: f64,
@@ -21,33 +27,48 @@ pub struct GeoPosition {
     pub speed: f64,
     pub timestamp: f64,
 }
-impl PartialEq for GeoPosition {
+impl PartialEq for GeolocationPosition {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for GeolocationPosition {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }
 
 // Source: upstream/packages/types/src/Geolocation.ts:22 (sha256:b7520bfe18268367c0e715beb88c590516293b3ed21056fc88a3f66c356cc4e4)
 pub type GeolocationErrorReason = String;
 
-// Source: upstream/packages/types/src/Geolocation.ts:25 (sha256:37338ec08a1e76cfdd7ce6120774b503a65523bd95fe775f31f26b8c8d94ff43)
-pub type GeolocationPermissionState = String;
-
-// Source: upstream/packages/types/src/Geolocation.ts:29 (sha256:22f866c0ec750b09a4f5ebefce2e17cb9296a23384038fd24a041981784c87ab)
+// Source: upstream/packages/types/src/Geolocation.ts:26 (sha256:97f839ec4d25afae1174396ca465ff3c0410247133885d15513378ac41b7bdcf)
 #[derive(Clone, Default)]
-pub struct GeoPositionResult {
+pub struct GeolocationPositionResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub position: Option<GeoPosition>,
+    pub position: Option<GeolocationPosition>,
     pub reason: Option<GeolocationErrorReason>,
 }
-impl PartialEq for GeoPositionResult {
+impl PartialEq for GeolocationPositionResult {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Geolocation.ts:34 (sha256:5f1a61b650bedcbcdbe22934d14b583849c03ba675c429173cd6b734ff9eb020)
+// Source: upstream/packages/types/src/Geolocation.ts:31 (sha256:5f1a61b650bedcbcdbe22934d14b583849c03ba675c429173cd6b734ff9eb020)
 #[derive(Clone, Default)]
 pub struct GeolocationRequestOptions {
     #[doc(hidden)]
@@ -62,15 +83,30 @@ impl PartialEq for GeolocationRequestOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Geolocation.ts:40 (sha256:f714682d4acf1065872d4a54442f2448ca40f3957792a7e56c0f0e5f7419e74a)
+// Source: upstream/packages/types/src/Geolocation.ts:52 (sha256:4bc598e6397dc3a454ad668b3d4af2c9878a8d2db989be322ea5f98c41364157)
+#[derive(Clone, Default)]
+pub struct GeolocationAccessOutcome {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub reason: String,
+}
+impl PartialEq for GeolocationAccessOutcome {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Geolocation.ts:63 (sha256:0a3035c705e756b3ee2a716c35865ccdabf801cceb3a2d40ba218b7ee007ff1b)
 #[derive(Clone)]
-pub struct GeolocationBackend {
+pub struct HostGeolocationCapability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub get_current_position: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(GeolocationRequestOptions) -> crate::FlightTask<Option<GeoPosition>>
+                dyn FnMut(
+                        GeolocationRequestOptions,
+                    ) -> crate::FlightTask<Option<GeolocationPosition>>
                     + Send
                     + 'static,
             >,
@@ -79,23 +115,21 @@ pub struct GeolocationBackend {
     pub get_current_position_result: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(GeolocationRequestOptions) -> crate::FlightTask<GeoPositionResult>
+                dyn FnMut(GeolocationRequestOptions) -> crate::FlightTask<GeolocationPositionResult>
                     + Send
                     + 'static,
             >,
         >,
     >,
-    pub get_permission: std::sync::Arc<
-        std::sync::Mutex<
-            Box<dyn FnMut() -> crate::FlightTask<GeolocationPermissionState> + Send + 'static>,
-        >,
-    >,
+    pub is_available: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>,
     pub watch_position: std::sync::Arc<
         std::sync::Mutex<
             Box<
                 dyn FnMut(
                         std::sync::Arc<
-                            std::sync::Mutex<Box<dyn FnMut(GeoPosition) -> () + Send + 'static>>,
+                            std::sync::Mutex<
+                                Box<dyn FnMut(GeolocationPosition) -> () + Send + 'static>,
+                            >,
                         >,
                         GeolocationRequestOptions,
                         Option<
@@ -112,27 +146,13 @@ pub struct GeolocationBackend {
         >,
     >,
     pub clear_watch: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> () + Send + 'static>>>,
-    pub request_permission: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<bool> + Send + 'static>>,
-    >,
-    pub subscribe_permission: std::sync::Arc<
+    pub prompt_for_access: std::sync::Arc<
         std::sync::Mutex<
-            Box<
-                dyn FnMut(
-                        std::sync::Arc<
-                            std::sync::Mutex<
-                                Box<dyn FnMut(GeolocationPermissionState) -> () + Send + 'static>,
-                            >,
-                        >,
-                    ) -> std::sync::Arc<
-                        std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
-                    > + Send
-                    + 'static,
-            >,
+            Box<dyn FnMut() -> crate::FlightTask<GeolocationAccessOutcome> + Send + 'static>,
         >,
     >,
 }
-impl PartialEq for GeolocationBackend {
+impl PartialEq for HostGeolocationCapability {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

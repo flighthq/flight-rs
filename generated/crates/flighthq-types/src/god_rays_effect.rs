@@ -6,24 +6,141 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Kind;
+use crate::{
+    AdvancedBlendMode, BitmapDisplacementEffectEdgeMode, EffectSourceMode, Texture2D,
+    ToneMapOperator,
+};
+use crate::{EntityRuntime, Kind};
 
-// Source: upstream/packages/types/src/GodRaysEffect.ts:3 (sha256:200f20a7b556d1c3a1c4880fde41f35aba28c6d41c03cf434ac1c39eb00f2275)
+// Source: upstream/packages/types/src/GodRaysEffect.ts:3 (sha256:ca4bbffaf346cc2100623fd65f4e422b40557742571bc61e3a0ba322cfda6738)
 #[derive(Clone, Default)]
 pub struct GodRaysEffect {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Kind,
+    pub temperature: Option<f64>,
+    pub tint: Option<f64>,
+    pub density: Option<f64>,
+    pub light_color: Option<f64>,
+    pub light_x: Option<f64>,
+    pub light_y: Option<f64>,
+    pub samples: Option<f64>,
+    pub scattering: Option<f64>,
+    pub intensity: Option<f64>,
+    pub radius: Option<f64>,
+    pub softness: Option<f64>,
+    pub color: Option<f64>,
+    pub operator: ToneMapOperator,
+    pub exposure: Option<f64>,
+    pub white: Option<f64>,
+    pub center: Option<f64>,
+    pub width: Option<f64>,
+    pub blur: Option<f64>,
+    pub feedback: Option<f64>,
+    pub max_distance: Option<f64>,
+    pub resolution: Option<f64>,
+    pub steps: Option<f64>,
+    pub bias: Option<f64>,
+    pub threshold: Option<f64>,
+    pub strength: Option<f64>,
+    pub amount: Option<f64>,
+    pub near: Option<f64>,
+    pub far: Option<f64>,
+    pub count: Option<f64>,
     pub center_x: Option<f64>,
     pub center_y: Option<f64>,
-    pub density: Option<f64>,
+    pub levels: Option<f64>,
+    pub size: Option<f64>,
+    pub compression: Option<f64>,
+    pub crop: Option<f64>,
+    pub thickness: Option<f64>,
+    pub alpha: Option<f64>,
+    pub blur_x: Option<f64>,
+    pub blur_y: Option<f64>,
+    pub quality: Option<f64>,
+    pub source_mode: Option<EffectSourceMode>,
+    pub ghosts: Option<f64>,
+    pub halo: Option<f64>,
+    pub scale: Option<f64>,
+    pub seed: Option<f64>,
+    pub angle: Option<f64>,
+    pub distance: Option<f64>,
+    pub alphas: Vec<f64>,
+    pub colors: Vec<f64>,
+    pub ratios: Vec<f64>,
+    pub bevel_type: Option<String>,
     pub decay: Option<f64>,
     pub weight: Option<f64>,
-    pub exposure: Option<f64>,
-    pub samples: Option<f64>,
+    pub block_size: Option<f64>,
+    pub color_shift: Option<f64>,
+    pub edge_threshold: Option<f64>,
+    pub subpixel: Option<f64>,
+    pub gate_weave: Option<f64>,
+    pub grain_intensity: Option<f64>,
+    pub halation_radius: Option<f64>,
+    pub halation_strength: Option<f64>,
+    pub frequency: Option<f64>,
+    pub length: Option<f64>,
+    pub shader_key: String,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
+    pub curvature: Option<f64>,
+    pub scanline_intensity: Option<f64>,
+    pub vignette: Option<f64>,
+    pub aberration: Option<f64>,
+    pub matrix: Vec<f64>,
+    pub matrix_x: f64,
+    pub matrix_y: f64,
+    pub clamp: Option<bool>,
+    pub divisor: Option<f64>,
+    pub preserve_alpha: Option<bool>,
+    pub opacity: Option<f64>,
+    pub smoothness: Option<f64>,
+    pub backdrop_key: Option<String>,
+    pub radial: Option<bool>,
+    pub focus_distance: Option<f64>,
+    pub focus_range: Option<f64>,
+    pub max_blur: Option<f64>,
+    pub passes: Option<f64>,
+    pub mode: AdvancedBlendMode,
+    pub map: Option<Texture2D>,
+    pub component_x: Option<f64>,
+    pub component_y: Option<f64>,
+    pub scale_x: Option<f64>,
+    pub scale_y: Option<f64>,
+    pub edge_mode: Option<BitmapDisplacementEffectEdgeMode>,
+    pub highlight_alpha: Option<f64>,
+    pub highlight_color: Option<f64>,
+    pub shadow_alpha: Option<f64>,
+    pub shadow_color: Option<f64>,
+    pub adaptation_speed: Option<f64>,
+    pub exposure_compensation: Option<f64>,
+    pub max_exposure: Option<f64>,
+    pub min_exposure: Option<f64>,
 }
 impl PartialEq for GodRaysEffect {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for GodRaysEffect {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

@@ -89,16 +89,16 @@ impl PartialEq for SpineParticleDocument {
     }
 }
 
-// Source: upstream/packages/types/src/SpineParticleSchema.ts:70 (sha256:b2a302ae7e751079717db45f54e36b898cb30675e541d15366a3592ab5d887be)
+// Source: upstream/packages/types/src/SpineParticleSchema.ts:70 (sha256:a95f92055207cd75f80599079d2e9a2a4cf6c4fef889f7b133968aceec8e883b)
 #[derive(Clone, Default)]
-pub struct SpineParsed {
+pub struct SpineParseResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub config: ParticleEmitterConfig,
     pub document: SpineParticleDocument,
     pub diagnostics: Vec<ImportDiagnostic>,
 }
-impl PartialEq for SpineParsed {
+impl PartialEq for SpineParseResult {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

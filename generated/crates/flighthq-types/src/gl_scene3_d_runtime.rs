@@ -7,12 +7,12 @@
 #![allow(unused_parens)]
 
 use crate::{
-    GlMeshProgram, GlPbrTransmissionSceneColor, GlRenderState, GlRenderTarget,
-    GlSkinPaletteTexture, Matrix4, Mesh, MeshGeometry, PbrExtension, Scene3DLightBlock,
-    Scene3DLightsLike, TextureColorSpace,
+    Camera3D, GlMeshProgram, GlPbrTransmissionSceneColor, GlRenderState, GlSkinPaletteTexture,
+    GlTextureRenderTarget, Matrix4, Mesh, MeshGeometry, Node3D, PbrExtension, Scene3DLightBlock,
+    Scene3DLightsLike, Scene3DRenderProxy, Texture, TextureColorSpace,
 };
 
-// Source: upstream/packages/types/src/GlScene3DRuntime.ts:17 (sha256:90dc2896eefb221192ca20bc54bd58a95732b1f3cae3374b147c11b71718f0e7)
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:21 (sha256:90dc2896eefb221192ca20bc54bd58a95732b1f3cae3374b147c11b71718f0e7)
 #[derive(Clone, Default)]
 pub struct GlScene3DShadow {
     #[doc(hidden)]
@@ -30,12 +30,13 @@ impl PartialEq for GlScene3DShadow {
     }
 }
 
-// Source: upstream/packages/types/src/GlScene3DRuntime.ts:31 (sha256:60a7d244805c8bf2b3b72e2fcf4777fe83b902d5676a58e0975baa9b8cf7d52c)
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:35 (sha256:46a6bf29b28caec7e116ac00ce989ad811eb9c0bd25cf5583c7c5a0d97517fef)
 #[derive(Clone, Default)]
 pub struct GlScene3DIbl {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub brdf_lut: crate::OpaqueHostValue,
+    pub environment_source_revision: f64,
     pub intensity: f64,
     pub irradiance_cube: crate::OpaqueHostValue,
     pub prefiltered_cube: crate::OpaqueHostValue,
@@ -47,7 +48,7 @@ impl PartialEq for GlScene3DIbl {
     }
 }
 
-// Source: upstream/packages/types/src/GlScene3DRuntime.ts:42 (sha256:19afb18fb092b624bbd1cde411781b148a4786e8dc14bc25d8305755907b3f0c)
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:49 (sha256:30dbf16e6756a05ad333cf73cde94cf0b87d7498ae71458132ab4782c6468158)
 #[derive(Clone, Default)]
 pub struct GlScene3DDrawEntry {
     #[doc(hidden)]
@@ -60,6 +61,7 @@ pub struct GlScene3DDrawEntry {
     pub material: crate::OpaqueHostValue,
     pub mesh: crate::OpaqueHostValue,
     pub renderer: crate::OpaqueHostValue,
+    pub sort_key: f64,
     pub subset: crate::OpaqueHostValue,
     pub world_matrix: crate::OpaqueHostValue,
 }
@@ -69,7 +71,39 @@ impl PartialEq for GlScene3DDrawEntry {
     }
 }
 
-// Source: upstream/packages/types/src/GlScene3DRuntime.ts:69 (sha256:22fd14cbeff906498e6edbd2d1b4bacab27556b1e3e49e1216933d2785fec45d)
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:83 (sha256:92170083a6dab3fa6ce93ae5e76f029ad9b6a6bcf2485b272da1b07e5eb98205)
+#[derive(Clone)]
+pub struct GlMeshSkinFeature {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub bind_mesh_skin_palette: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(GlRenderState, GlMeshProgram, Scene3DRenderProxy) -> bool
+                    + Send
+                    + 'static,
+            >,
+        >,
+    >,
+    pub bind_shadow_skin_palette: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(GlRenderState, Vec<f32>) -> () + Send + 'static>>,
+    >,
+    pub vertex_declarations_glsl: String,
+}
+impl PartialEq for GlMeshSkinFeature {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:103 (sha256:4f966902a8c16cffca1810333366096914c37f44e70b5dfce2420a0777899752)
+pub type GlScene3DPass = std::sync::Arc<
+    std::sync::Mutex<
+        Box<dyn FnMut(GlRenderState, Node3D, Camera3D, Scene3DLightsLike) -> () + Send + 'static>,
+    >,
+>;
+
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:110 (sha256:345c44bebf3aa3013e9a1cbee2d386f42f23cc2d4f4b769a23415b194001aa6b)
 #[derive(Clone, Default)]
 pub struct GlScene3DRuntime {
     #[doc(hidden)]
@@ -77,6 +111,7 @@ pub struct GlScene3DRuntime {
     pub active_blended_run: bool,
     pub active_color_adjustment_run: bool,
     pub active_color_matrix_run: bool,
+    pub active_instanced_run: bool,
     pub active_mesh_program: Option<GlMeshProgram>,
     pub active_skinned_run: bool,
     pub blended_draw_list: Vec<GlScene3DDrawEntry>,
@@ -96,8 +131,13 @@ pub struct GlScene3DRuntime {
         Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Mesh) -> () + Send + 'static>>>>,
     pub environment_source_cube: Option<crate::OpaqueHostValue>,
     pub environment_source_cube_color_space: TextureColorSpace,
+    pub environment_source_cube_face_versions: Vec<f64>,
+    pub environment_source_revision: f64,
+    pub environment_source_texture: Option<Texture>,
+    pub environment_source_texture_version: f64,
     pub ibl: Option<GlScene3DIbl>,
     pub ibl_bake_framebuffer: Option<crate::OpaqueHostValue>,
+    pub mesh_skin_feature: Option<GlMeshSkinFeature>,
     pub forward_light_selection_guard: Option<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Scene3DLightsLike) -> () + Send + 'static>>>,
     >,
@@ -108,8 +148,13 @@ pub struct GlScene3DRuntime {
     >,
     pub pbr_transmission_scene_color: Option<GlPbrTransmissionSceneColor>,
     pub program_cache: Vec<(String, GlMeshProgram)>,
+    pub resource_cleanups: Option<
+        Vec<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>>,
+    >,
     pub shadow: Option<GlScene3DShadow>,
-    pub shadow_target: Option<GlRenderTarget>,
+    pub shadow_target: Option<GlTextureRenderTarget>,
+    pub instance_palette: Option<GlSkinPaletteTexture>,
+    pub instance_color_palette: Option<GlSkinPaletteTexture>,
     pub skin_palette: Option<GlSkinPaletteTexture>,
     pub skin_normal_palette: Option<GlSkinPaletteTexture>,
     pub time: f64,
@@ -121,7 +166,7 @@ impl PartialEq for GlScene3DRuntime {
     }
 }
 
-// Source: upstream/packages/types/src/GlScene3DRuntime.ts:131 (sha256:ea701c770e76279c2c1ed247f4e08cca4953589f33791d7e9964c4acbb38c508)
+// Source: upstream/packages/types/src/GlScene3DRuntime.ts:197 (sha256:ea701c770e76279c2c1ed247f4e08cca4953589f33791d7e9964c4acbb38c508)
 #[derive(Clone, Default)]
 pub struct GlMeshUpload {
     #[doc(hidden)]

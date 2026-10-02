@@ -7,8 +7,10 @@
 #![allow(unused_parens)]
 
 use crate::create_spritesheet_frame;
-use flighthq_entity::create_entity;
-use flighthq_types::{Spritesheet, SpritesheetAnimation, SpritesheetFrame, TextureAtlas};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{
+    EntityConstruction, Spritesheet, SpritesheetAnimation, SpritesheetFrame, TextureAtlas,
+};
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord2119237179 {
@@ -23,7 +25,7 @@ impl PartialEq for FlightPartialRecord2119237179 {
     }
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheet.ts:6 (sha256:ece52e49ff2700a8b6a8e9102cc84379f04e6abb6dd08315e6d758b6db6d9718)
+// Source: upstream/packages/spritesheet/src/spritesheet.ts:6 (sha256:2896ca2da47569ecc5fd0851283319201ae8cb48d8b0f0a75e0559d59848245e)
 pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
     let frames = ((spritesheet.frames).clone())
         .iter()
@@ -42,42 +44,35 @@ pub fn clone_spritesheet(spritesheet: &Spritesheet) -> Spritesheet {
             ))
         })
         .collect::<Vec<_>>();
-    return create_entity(Some(Spritesheet {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        atlas: (spritesheet.atlas).clone(),
-        animations: ((spritesheet.animations).clone()).clone(),
-        frames: (frames).clone(),
-    }));
+    let mut out = allocate_entity();
+    crate::host_set("host.atlas", (spritesheet.atlas).clone());
+    crate::host_set(
+        "host.animations",
+        ((spritesheet.animations).clone()).clone(),
+    );
+    crate::host_set("host.frames", frames);
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheet.ts:24 (sha256:98a6a5f0626783039851024b48235bdace564ed9b1c823cf7f811c6c94568bb4)
-#[derive(Clone, Default)]
-struct CreateSpritesheetRecord6 {
-    __flight_identity: std::sync::Arc<()>,
-}
-impl PartialEq for CreateSpritesheetRecord6 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
+// Source: upstream/packages/spritesheet/src/spritesheet.ts:24 (sha256:812de98bdfec2da616f88a45de8cb8141d0e90c6a5ecd9755ee8f51cd3593aa0)
 pub fn create_spritesheet(obj: Option<FlightPartialRecord2119237179>) -> Spritesheet {
-    return create_entity(Some(Spritesheet {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        atlas: obj.as_ref().and_then(|value| (value.atlas).clone()),
-        animations: (obj.as_ref().and_then(|value| (value.animations).clone())).unwrap_or({
-            let mut __flight_record = Vec::new();
-            __flight_record
+    let mut out = allocate_entity();
+    initialize_spritesheet(
+        (out).clone(),
+        ((obj).clone()).as_ref().map(|__flight_value| {
+            let __flight_source = &(__flight_value);
+            FlightPartialRecord2119237179 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                atlas: (__flight_source.atlas).clone(),
+                animations: (__flight_source.animations).clone(),
+                frames: (__flight_source.frames).clone(),
+            }
         }),
-        frames: (obj.as_ref().and_then(|value| (value.frames).clone())).unwrap_or(vec![]),
-    }));
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheet.ts:32 (sha256:6f56609b9982389e44152ae36263dc8ad0723eaaa895a139b62ac7bbe26cf6c8)
+// Source: upstream/packages/spritesheet/src/spritesheet.ts:30 (sha256:6f56609b9982389e44152ae36263dc8ad0723eaaa895a139b62ac7bbe26cf6c8)
 pub fn get_spritesheet_animation(
     spritesheet: &Spritesheet,
     label: String,
@@ -89,5 +84,37 @@ pub fn get_spritesheet_animation(
             .find(|(entry_key, _)| entry_key == &(label).clone())
             .map(|(_, value)| value.clone()))
         .expect("TypeScript Record key was absent"),
+    );
+}
+
+// Source: upstream/packages/spritesheet/src/spritesheet.ts:34 (sha256:75f0086be6af5b7bf9247ecdcdf6cc3ccce342126446df68f09f6e7d0a28641f)
+#[derive(Clone, Default)]
+struct InitializeSpritesheetRecord3 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for InitializeSpritesheetRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn initialize_spritesheet(
+    out: EntityConstruction<Spritesheet>,
+    obj: Option<FlightPartialRecord2119237179>,
+) -> () {
+    crate::host_set(
+        "host.atlas",
+        obj.as_ref().and_then(|value| (value.atlas).clone()),
+    );
+    crate::host_set(
+        "host.animations",
+        (obj.as_ref().and_then(|value| (value.animations).clone())).unwrap_or({
+            let mut __flight_record = Vec::new();
+            __flight_record
+        }),
+    );
+    crate::host_set(
+        "host.frames",
+        (obj.as_ref().and_then(|value| (value.frames).clone())).unwrap_or(vec![]),
     );
 }

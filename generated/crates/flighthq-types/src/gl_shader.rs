@@ -6,9 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{GlRenderState, RenderProxy2D};
+use crate::{GlContext, GlRenderState, RenderProxy2D};
 
-// Source: upstream/packages/types/src/GlShader.ts:4 (sha256:bc27eb05329e99a8a1978d826475e2001bc2b76528fa31104b1e115a3c6f1761)
+// Source: upstream/packages/types/src/GlShader.ts:5 (sha256:7ee3c216fb85c36b5d06270fd12c37b36e76f6e792ea82b8f18c0956b1c67457)
 #[derive(Clone)]
 pub struct GlShader {
     #[doc(hidden)]
@@ -16,11 +16,7 @@ pub struct GlShader {
     pub program: crate::OpaqueHostValue,
     pub bind: std::sync::Arc<
         std::sync::Mutex<
-            Box<
-                dyn FnMut(crate::OpaqueHostValue, GlRenderState, RenderProxy2D) -> ()
-                    + Send
-                    + 'static,
-            >,
+            Box<dyn FnMut(GlContext, GlRenderState, RenderProxy2D) -> () + Send + 'static>,
         >,
     >,
 }

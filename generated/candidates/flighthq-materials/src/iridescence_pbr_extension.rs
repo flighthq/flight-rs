@@ -10,9 +10,9 @@ use crate::{
     is_valid_material_ior, is_valid_material_iridescence_thickness, is_valid_material_weight,
     is_valid_pbr_uv_set,
 };
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_types::{
-    IRIDESCENCE_PBR_EXTENSION_KIND as iridescence_pbr_extension_kind_constant,
+    EntityConstruction, IRIDESCENCE_PBR_EXTENSION_KIND as iridescence_pbr_extension_kind_constant,
     IridescencePbrExtension, Kind, PbrUvSet, Texture,
 };
 
@@ -73,42 +73,122 @@ impl PartialEq for FlightPartialRecord4007100904 {
     }
 }
 
-// Source: upstream/packages/materials/src/iridescencePbrExtension.ts:8 (sha256:be7030f971eb646d109da28ed9f9061ad512f460ab8e5f05a852370023912abc)
+// Source: upstream/packages/materials/src/iridescencePbrExtension.ts:12 (sha256:9e1e684ea36c6ae052d74fe82cf1b6c8292271af263859a7429a1de3798158db)
 pub fn create_iridescence_pbr_extension(
     opts: Option<FlightPartialRecord4007100904>,
 ) -> IridescencePbrExtension {
-    return create_entity(Some(IridescencePbrExtension {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        iridescence: (opts.as_ref().and_then(|value| value.iridescence)).unwrap_or(0.0_f64),
-        iridescence_ior: (opts.as_ref().and_then(|value| value.iridescence_ior)).unwrap_or(1.3_f64),
-        iridescence_map: opts
-            .as_ref()
+    let mut out = allocate_entity();
+    initialize_iridescence_pbr_extension(
+        (out).clone(),
+        ((opts).clone()).as_ref().map(|__flight_value| {
+            let __flight_source = &(__flight_value);
+            FlightPartialRecord4007100904 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                kind: (__flight_source.kind).clone(),
+                thickness: __flight_source.thickness,
+                thickness_map: (__flight_source.thickness_map).clone(),
+                thickness_map_uv_set: __flight_source.thickness_map_uv_set,
+                wrapped_diffuse_color: __flight_source.wrapped_diffuse_color,
+                wrapped_diffuse_map: (__flight_source.wrapped_diffuse_map).clone(),
+                wrapped_diffuse_map_uv_set: __flight_source.wrapped_diffuse_map_uv_set,
+                wrapped_diffuse_strength: __flight_source.wrapped_diffuse_strength,
+                attenuation_color: __flight_source.attenuation_color,
+                attenuation_distance: __flight_source.attenuation_distance,
+                ior: __flight_source.ior,
+                transmission: __flight_source.transmission,
+                transmission_map: (__flight_source.transmission_map).clone(),
+                transmission_map_uv_set: __flight_source.transmission_map_uv_set,
+                specular: __flight_source.specular,
+                specular_color: __flight_source.specular_color,
+                specular_color_map: (__flight_source.specular_color_map).clone(),
+                specular_color_map_uv_set: __flight_source.specular_color_map_uv_set,
+                specular_map: (__flight_source.specular_map).clone(),
+                specular_map_uv_set: __flight_source.specular_map_uv_set,
+                sheen_color: __flight_source.sheen_color,
+                sheen_color_map: (__flight_source.sheen_color_map).clone(),
+                sheen_color_map_uv_set: __flight_source.sheen_color_map_uv_set,
+                sheen_roughness: __flight_source.sheen_roughness,
+                sheen_roughness_map: (__flight_source.sheen_roughness_map).clone(),
+                sheen_roughness_map_uv_set: __flight_source.sheen_roughness_map_uv_set,
+                iridescence: __flight_source.iridescence,
+                iridescence_ior: __flight_source.iridescence_ior,
+                iridescence_map: (__flight_source.iridescence_map).clone(),
+                iridescence_map_uv_set: __flight_source.iridescence_map_uv_set,
+                iridescence_thickness_map: (__flight_source.iridescence_thickness_map).clone(),
+                iridescence_thickness_map_uv_set: __flight_source.iridescence_thickness_map_uv_set,
+                iridescence_thickness_max: __flight_source.iridescence_thickness_max,
+                iridescence_thickness_min: __flight_source.iridescence_thickness_min,
+                clearcoat: __flight_source.clearcoat,
+                clearcoat_map: (__flight_source.clearcoat_map).clone(),
+                clearcoat_map_uv_set: __flight_source.clearcoat_map_uv_set,
+                clearcoat_normal_map: (__flight_source.clearcoat_normal_map).clone(),
+                clearcoat_normal_map_uv_set: __flight_source.clearcoat_normal_map_uv_set,
+                clearcoat_normal_scale: __flight_source.clearcoat_normal_scale,
+                clearcoat_roughness: __flight_source.clearcoat_roughness,
+                clearcoat_roughness_map: (__flight_source.clearcoat_roughness_map).clone(),
+                clearcoat_roughness_map_uv_set: __flight_source.clearcoat_roughness_map_uv_set,
+                anisotropy_map: (__flight_source.anisotropy_map).clone(),
+                anisotropy_map_uv_set: __flight_source.anisotropy_map_uv_set,
+                anisotropy_rotation: __flight_source.anisotropy_rotation,
+                anisotropy_strength: __flight_source.anisotropy_strength,
+            }
+        }),
+    );
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/materials/src/iridescencePbrExtension.ts:20 (sha256:2da1ffd478ba8455a45053c072215ed19e57ec8a448345e5b7329385e124656e)
+pub fn initialize_iridescence_pbr_extension(
+    out: EntityConstruction<IridescencePbrExtension>,
+    opts: Option<FlightPartialRecord4007100904>,
+) -> () {
+    crate::host_set(
+        "host.iridescence",
+        (opts.as_ref().and_then(|value| value.iridescence)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.iridescenceIor",
+        (opts.as_ref().and_then(|value| value.iridescence_ior)).unwrap_or(1.3_f64),
+    );
+    crate::host_set(
+        "host.iridescenceMap",
+        opts.as_ref()
             .and_then(|value| (value.iridescence_map).clone()),
-        iridescence_map_uv_set: (opts.as_ref().and_then(|value| value.iridescence_map_uv_set))
-            .unwrap_or(0.0_f64),
-        iridescence_thickness_map: opts
-            .as_ref()
+    );
+    crate::host_set(
+        "host.iridescenceMapUvSet",
+        (opts.as_ref().and_then(|value| value.iridescence_map_uv_set)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.iridescenceThicknessMap",
+        opts.as_ref()
             .and_then(|value| (value.iridescence_thickness_map).clone()),
-        iridescence_thickness_map_uv_set: (opts
+    );
+    crate::host_set(
+        "host.iridescenceThicknessMapUvSet",
+        (opts
             .as_ref()
             .and_then(|value| value.iridescence_thickness_map_uv_set))
         .unwrap_or(0.0_f64),
-        iridescence_thickness_max: (opts
+    );
+    crate::host_set(
+        "host.iridescenceThicknessMax",
+        (opts
             .as_ref()
             .and_then(|value| value.iridescence_thickness_max))
         .unwrap_or(400.0_f64),
-        iridescence_thickness_min: (opts
+    );
+    crate::host_set(
+        "host.iridescenceThicknessMin",
+        (opts
             .as_ref()
             .and_then(|value| value.iridescence_thickness_min))
         .unwrap_or(100.0_f64),
-        kind: (iridescence_pbr_extension_kind_constant).to_owned(),
-        ..Default::default()
-    }));
+    );
+    crate::host_set("host.kind", iridescence_pbr_extension_kind_constant);
 }
 
-// Source: upstream/packages/materials/src/iridescencePbrExtension.ts:24 (sha256:4e4ec088fde2d6960f981a7a25cddbf0e6104f682978ccc1da2063cda41b1ab7)
+// Source: upstream/packages/materials/src/iridescencePbrExtension.ts:35 (sha256:4e4ec088fde2d6960f981a7a25cddbf0e6104f682978ccc1da2063cda41b1ab7)
 pub fn is_valid_iridescence_pbr_extension(value: &IridescencePbrExtension) -> bool {
     return ((((((is_valid_material_weight(value.iridescence))
         && (is_valid_material_ior(value.iridescence_ior)))

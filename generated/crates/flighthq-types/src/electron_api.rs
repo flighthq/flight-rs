@@ -58,7 +58,7 @@ impl PartialEq for FlightPartialRecord1135797624 {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:12 (sha256:f54a1342b6e20a6877114b8a64de522c5dd432abe1db067f1d64cf56da7987a5)
+// Source: upstream/packages/types/src/ElectronApi.ts:20 (sha256:f54a1342b6e20a6877114b8a64de522c5dd432abe1db067f1d64cf56da7987a5)
 #[derive(Clone)]
 pub struct ElectronApi {
     #[doc(hidden)]
@@ -86,7 +86,7 @@ impl PartialEq for ElectronApi {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:34 (sha256:f05d0cd05f7fce3eb4d9c803683cb70050a7d952a4048b962581b61a9777b0b2)
+// Source: upstream/packages/types/src/ElectronApi.ts:42 (sha256:75e11af963ee408526561a32d477e76f81a3bd1c2dcdc94d787dbe2feda068f1)
 #[derive(Clone)]
 pub struct ElectronFs {
     #[doc(hidden)]
@@ -95,6 +95,10 @@ pub struct ElectronFs {
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String) -> bool + Send + 'static>>>,
     pub read_file_sync:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String, String) -> String + Send + 'static>>>,
+    pub rename_sync:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String, String) -> () + Send + 'static>>>,
+    pub unlink_sync:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String) -> () + Send + 'static>>>,
     pub write_file_sync:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String, String) -> () + Send + 'static>>>,
 }
@@ -104,7 +108,7 @@ impl PartialEq for ElectronFs {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:40 (sha256:3e46ec257e59382a6f444397f6b4f1c64be91afd4a4dc30c32ef08331e514e76)
+// Source: upstream/packages/types/src/ElectronApi.ts:50 (sha256:3e46ec257e59382a6f444397f6b4f1c64be91afd4a4dc30c32ef08331e514e76)
 #[derive(Clone)]
 pub struct ElectronApp {
     #[doc(hidden)]
@@ -195,7 +199,7 @@ impl PartialEq for ElectronApp {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:75 (sha256:f16dca8a64510b52937957ae11ce1e642946e1b3e7b8a9b9cc8ac5004885887f)
+// Source: upstream/packages/types/src/ElectronApi.ts:85 (sha256:f16dca8a64510b52937957ae11ce1e642946e1b3e7b8a9b9cc8ac5004885887f)
 #[derive(Clone, Default)]
 pub struct ElectronLoginItemSettings {
     #[doc(hidden)]
@@ -210,7 +214,7 @@ impl PartialEq for ElectronLoginItemSettings {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:81 (sha256:c976436373f06063fc0a589624ab0ca6b6278a3844b3eb9f38d0d3464054d989)
+// Source: upstream/packages/types/src/ElectronApi.ts:91 (sha256:c976436373f06063fc0a589624ab0ca6b6278a3844b3eb9f38d0d3464054d989)
 #[derive(Clone, Default)]
 pub struct ElectronLoginItemSettingsLike {
     #[doc(hidden)]
@@ -226,7 +230,7 @@ impl PartialEq for ElectronLoginItemSettingsLike {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:88 (sha256:1cf5766e007f376ec3c137bd8eed5b25ca5447cd65b7ffc48d3d8d09390f80d6)
+// Source: upstream/packages/types/src/ElectronApi.ts:98 (sha256:1cf5766e007f376ec3c137bd8eed5b25ca5447cd65b7ffc48d3d8d09390f80d6)
 #[derive(Clone)]
 pub struct ElectronDock {
     #[doc(hidden)]
@@ -244,7 +248,7 @@ impl PartialEq for ElectronDock {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:95 (sha256:8b6ae0274cb46ed328c34840202b2ace336bc12f73a8e73b89a9ebe447757776)
+// Source: upstream/packages/types/src/ElectronApi.ts:105 (sha256:c2d10e88459de0e61a174f937a8e8a2afa1c839ca60a902b78d3dfffae2000bf)
 #[derive(Clone, Default)]
 pub struct ElectronClipboardRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -292,7 +296,7 @@ impl PartialEq for ElectronClipboard {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:113 (sha256:55cc8e0cb47173522baec789cddbc9f5940e031cec263b7b3f9f218d0c0b509b)
+// Source: upstream/packages/types/src/ElectronApi.ts:123 (sha256:55cc8e0cb47173522baec789cddbc9f5940e031cec263b7b3f9f218d0c0b509b)
 #[derive(Clone, Default)]
 pub struct ElectronClipboardData {
     #[doc(hidden)]
@@ -309,7 +313,7 @@ impl PartialEq for ElectronClipboardData {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:121 (sha256:1c7c8b442be860f2d165cdcd41313ebdfd3b0f018846d39f38fcbe968dcec719)
+// Source: upstream/packages/types/src/ElectronApi.ts:131 (sha256:1c7c8b442be860f2d165cdcd41313ebdfd3b0f018846d39f38fcbe968dcec719)
 #[derive(Clone)]
 pub struct ElectronShell {
     #[doc(hidden)]
@@ -341,7 +345,7 @@ impl PartialEq for ElectronShell {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:135 (sha256:87f8b1e86de98aa0ff5e21e3aae28d222fd0ef695acd5861eaf9325a83487aaa)
+// Source: upstream/packages/types/src/ElectronApi.ts:145 (sha256:87f8b1e86de98aa0ff5e21e3aae28d222fd0ef695acd5861eaf9325a83487aaa)
 #[derive(Clone, Default)]
 pub struct ElectronShortcutDetails {
     #[doc(hidden)]
@@ -360,7 +364,7 @@ impl PartialEq for ElectronShortcutDetails {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:145 (sha256:95a800bbf1d57a449fccd7abfeb872c00f6159899cf1252f6edcd7aab5ac2e34)
+// Source: upstream/packages/types/src/ElectronApi.ts:155 (sha256:95a800bbf1d57a449fccd7abfeb872c00f6159899cf1252f6edcd7aab5ac2e34)
 #[derive(Clone, Default)]
 pub struct ElectronDialogRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -444,7 +448,7 @@ impl PartialEq for ElectronDialog {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:160 (sha256:6679fd8531da5f74cf89ad8c4433b53c012d682b1672324d6550619e615acfa6)
+// Source: upstream/packages/types/src/ElectronApi.ts:170 (sha256:6679fd8531da5f74cf89ad8c4433b53c012d682b1672324d6550619e615acfa6)
 #[derive(Clone, Default)]
 pub struct ElectronOpenDialogOptions {
     #[doc(hidden)]
@@ -460,7 +464,7 @@ impl PartialEq for ElectronOpenDialogOptions {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:167 (sha256:26df83cb5755d4915f53e38aca497142a72f2516cc32367319248c98b1c6615a)
+// Source: upstream/packages/types/src/ElectronApi.ts:177 (sha256:26df83cb5755d4915f53e38aca497142a72f2516cc32367319248c98b1c6615a)
 #[derive(Clone, Default)]
 pub struct ElectronSaveDialogOptions {
     #[doc(hidden)]
@@ -475,7 +479,7 @@ impl PartialEq for ElectronSaveDialogOptions {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:173 (sha256:2ad1b657fbfc2362b4b36ec7a846205ae87a8e827d2147fbeaf5fcb2cc0b5863)
+// Source: upstream/packages/types/src/ElectronApi.ts:183 (sha256:736f6b3d3c430fb3b2e2278465497b81f7692f7ab104b34e46cb9513bca1aaab)
 #[derive(Clone, Default)]
 pub struct ElectronMessageBoxOptions {
     #[doc(hidden)]
@@ -487,6 +491,7 @@ pub struct ElectronMessageBoxOptions {
     pub buttons: Option<Vec<String>>,
     pub default_id: Option<f64>,
     pub cancel_id: Option<f64>,
+    pub signal: Option<crate::OpaqueHostValue>,
     pub checkbox_label: Option<String>,
     pub checkbox_checked: Option<bool>,
 }
@@ -496,7 +501,7 @@ impl PartialEq for ElectronMessageBoxOptions {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:185 (sha256:f2f22fb5e843a2376a6bcc876d42857d7431881c9d648e5b546ba23fdacd36fa)
+// Source: upstream/packages/types/src/ElectronApi.ts:196 (sha256:f2f22fb5e843a2376a6bcc876d42857d7431881c9d648e5b546ba23fdacd36fa)
 #[derive(Clone)]
 pub struct ElectronGlobalShortcut {
     #[doc(hidden)]
@@ -524,7 +529,7 @@ impl PartialEq for ElectronGlobalShortcut {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:192 (sha256:fc210c01a2d8820717d5d48026d38d2445adc1a96bb518822d5546549e37ceef)
+// Source: upstream/packages/types/src/ElectronApi.ts:203 (sha256:fc210c01a2d8820717d5d48026d38d2445adc1a96bb518822d5546549e37ceef)
 #[derive(Clone)]
 pub struct ElectronScreen {
     #[doc(hidden)]
@@ -575,7 +580,7 @@ impl PartialEq for ElectronScreen {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:200 (sha256:f0ff8180f6aea9d35478fc8c9e6286d524e4ce32fed7623b2b2e5fe4a65cf11e)
+// Source: upstream/packages/types/src/ElectronApi.ts:211 (sha256:021cb40f60ced0ae90a2bcc5ab9547ce29c493b006f71521ee347cd68bfc34fa)
 #[derive(Clone, Default)]
 pub struct ElectronDisplay {
     #[doc(hidden)]
@@ -584,6 +589,14 @@ pub struct ElectronDisplay {
     pub bounds: SharedStructuralRecord3,
     pub work_area: SharedStructuralRecord3,
     pub scale_factor: f64,
+    pub color_depth: Option<f64>,
+    pub color_space: Option<String>,
+    pub display_frequency: Option<f64>,
+    pub internal: Option<bool>,
+    pub label: Option<String>,
+    pub monochrome: Option<bool>,
+    pub rotation: Option<f64>,
+    pub touch_support: Option<String>,
 }
 impl PartialEq for ElectronDisplay {
     fn eq(&self, other: &Self) -> bool {
@@ -591,7 +604,10 @@ impl PartialEq for ElectronDisplay {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:207 (sha256:ab6146195cf3d5f0895805e0a528b8207527d7647de26fc39d59bdb154e03cf1)
+// Source: upstream/packages/types/src/ElectronApi.ts:229 (sha256:3c7d0794ea10a03e51df6a0f1b58278a037193a10b0bb9bbef4002e0b0b86be3)
+pub type ElectronPowerMonitorEvent = String;
+
+// Source: upstream/packages/types/src/ElectronApi.ts:238 (sha256:60d0b0fa2f62f7c0d2ce2fc2f048646bb44f7e3da830df9fc502f5d756b1bc4e)
 #[derive(Clone)]
 pub struct ElectronPowerMonitor {
     #[doc(hidden)]
@@ -600,7 +616,7 @@ pub struct ElectronPowerMonitor {
         std::sync::Mutex<
             Box<
                 dyn FnMut(
-                        String,
+                        ElectronPowerMonitorEvent,
                         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
                     ) -> ()
                     + Send
@@ -612,7 +628,7 @@ pub struct ElectronPowerMonitor {
         std::sync::Mutex<
             Box<
                 dyn FnMut(
-                        String,
+                        ElectronPowerMonitorEvent,
                         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
                     ) -> ()
                     + Send
@@ -620,6 +636,8 @@ pub struct ElectronPowerMonitor {
             >,
         >,
     >,
+    pub get_current_thermal_state:
+        Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> String + Send + 'static>>>>,
     pub get_system_idle_state:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64) -> String + Send + 'static>>>,
     pub get_system_idle_time:
@@ -632,7 +650,7 @@ impl PartialEq for ElectronPowerMonitor {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:215 (sha256:7cbeef78e93c210affc14d15c20591cf956207433994019a1a4d9eb83acdc83c)
+// Source: upstream/packages/types/src/ElectronApi.ts:249 (sha256:7cbeef78e93c210affc14d15c20591cf956207433994019a1a4d9eb83acdc83c)
 #[derive(Clone)]
 pub struct ElectronPowerSaveBlocker {
     #[doc(hidden)]
@@ -647,7 +665,7 @@ impl PartialEq for ElectronPowerSaveBlocker {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:221 (sha256:589bf347c6ead3a929f66f4c297440232acd6743f01a8e605dc5f3f924571409)
+// Source: upstream/packages/types/src/ElectronApi.ts:255 (sha256:165f23f609737eb54b17d93f6a8c6f5d075a548b9302fd464d751c951ebbcd89)
 #[derive(Clone)]
 pub struct ElectronNativeImageModule {
     #[doc(hidden)]
@@ -665,13 +683,15 @@ impl PartialEq for ElectronNativeImageModule {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:226 (sha256:5450a82a9a903d3a90f4202ed6a175ce8a9882006dbc6f000ab659b5fcafaeb7)
+// Source: upstream/packages/types/src/ElectronApi.ts:260 (sha256:a04938d5f3d8792ac42960f0fbfa3ec49b27dd03fd8daa286e22e10ed791f04d)
 #[derive(Clone)]
 pub struct ElectronNativeImage {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub to_data_url: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> String + Send + 'static>>>,
     pub is_empty: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>,
+    pub set_template_image:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(bool) -> () + Send + 'static>>>,
 }
 impl PartialEq for ElectronNativeImage {
     fn eq(&self, other: &Self) -> bool {
@@ -679,7 +699,7 @@ impl PartialEq for ElectronNativeImage {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:231 (sha256:a3e022b01f8ff3799798939fa9dfe3c8b45a3b3b6d0226dc27609e95b5a8ebba)
+// Source: upstream/packages/types/src/ElectronApi.ts:266 (sha256:a3e022b01f8ff3799798939fa9dfe3c8b45a3b3b6d0226dc27609e95b5a8ebba)
 #[derive(Clone)]
 pub struct ElectronIpcMain {
     #[doc(hidden)]
@@ -757,7 +777,46 @@ impl PartialEq for ElectronIpcMain {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:238 (sha256:54269dc5a75480759f27567c41437ada927e78a88231111f2d1e04784437df7b)
+// Source: upstream/packages/types/src/ElectronApi.ts:275 (sha256:77df5d688ba61522868f14ee6de3e5e19974117868dfeb559225065105220ac4)
+#[derive(Clone)]
+pub struct ElectronIpcRenderer {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub invoke: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(String, Vec<crate::FlightValue>) -> crate::FlightTask<crate::FlightValue>
+                    + Send
+                    + 'static,
+            >,
+        >,
+    >,
+    pub send: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(String, Vec<crate::FlightValue>) -> () + Send + 'static>>,
+    >,
+}
+impl PartialEq for ElectronIpcRenderer {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/ElectronApi.ts:282 (sha256:f6629ad22fd41a9e066d157981181b900df1648cb92f41875acb1bd50f99b488)
+#[derive(Clone)]
+pub struct ElectronIpcTarget {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub send: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(String, Vec<crate::FlightValue>) -> () + Send + 'static>>,
+    >,
+}
+impl PartialEq for ElectronIpcTarget {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/ElectronApi.ts:286 (sha256:af9b44b45fd162436246f44f47fbd690e6070ac46912849ddeb93bdb4b92ed0c)
 #[derive(Clone, Default)]
 pub struct ElectronAutoUpdaterRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -818,7 +877,7 @@ impl PartialEq for ElectronAutoUpdater {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:246 (sha256:81548540680a9eb50124904aca9e5de3bf1f57a38972d526b4c36b1481df7b74)
+// Source: upstream/packages/types/src/ElectronApi.ts:294 (sha256:81548540680a9eb50124904aca9e5de3bf1f57a38972d526b4c36b1481df7b74)
 #[derive(Clone)]
 pub struct ElectronBrowserWindowConstructor {
     #[doc(hidden)]
@@ -837,7 +896,7 @@ impl PartialEq for ElectronBrowserWindowConstructor {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:252 (sha256:4ee853ac9175adb5aa59626ef098bbe401ea50a9aa6232495be4cc12f08b6759)
+// Source: upstream/packages/types/src/ElectronApi.ts:300 (sha256:4ee853ac9175adb5aa59626ef098bbe401ea50a9aa6232495be4cc12f08b6759)
 #[derive(Clone, Default)]
 pub struct ElectronBrowserWindowOptions {
     #[doc(hidden)]
@@ -864,7 +923,7 @@ impl PartialEq for ElectronBrowserWindowOptions {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:270 (sha256:b6d1c737450f66fa221301095025d2d5cc6e89f73afe45f736ec72dc3c1b39eb)
+// Source: upstream/packages/types/src/ElectronApi.ts:318 (sha256:b6d1c737450f66fa221301095025d2d5cc6e89f73afe45f736ec72dc3c1b39eb)
 #[derive(Clone, Default)]
 pub struct ElectronRectangle {
     #[doc(hidden)]
@@ -880,7 +939,7 @@ impl PartialEq for ElectronRectangle {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:277 (sha256:bc3a2197c47f8c817ae74ca6ac3aa5a6ee738834e6b29ab4d138034416593ca1)
+// Source: upstream/packages/types/src/ElectronApi.ts:325 (sha256:bead4386486ae947f8d57991302cc1e8ab46a26de23a0f85335490c4f0b6677c)
 #[derive(Clone)]
 pub struct ElectronBrowserWindow {
     #[doc(hidden)]
@@ -962,6 +1021,22 @@ pub struct ElectronBrowserWindow {
             >,
         >,
     >,
+    pub off: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(
+                        String,
+                        std::sync::Arc<
+                            std::sync::Mutex<
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
+                            >,
+                        >,
+                    ) -> ()
+                    + Send
+                    + 'static,
+            >,
+        >,
+    >,
     pub remove_all_listeners:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Option<String>) -> () + Send + 'static>>>,
 }
@@ -971,7 +1046,7 @@ impl PartialEq for ElectronBrowserWindow {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:321 (sha256:15d49d7434da77722a9aefa0f8a302076546eb87294860bc811bebf51aa3beb9)
+// Source: upstream/packages/types/src/ElectronApi.ts:370 (sha256:15d49d7434da77722a9aefa0f8a302076546eb87294860bc811bebf51aa3beb9)
 #[derive(Clone)]
 pub struct ElectronMenuConstructor {
     #[doc(hidden)]
@@ -992,7 +1067,7 @@ impl PartialEq for ElectronMenuConstructor {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:327 (sha256:0274aea886bef8b32ee3250ce1253c4c6bd44762e30ea3b78d96754109f0d941)
+// Source: upstream/packages/types/src/ElectronApi.ts:376 (sha256:0274aea886bef8b32ee3250ce1253c4c6bd44762e30ea3b78d96754109f0d941)
 #[derive(Clone, Default)]
 pub struct ElectronMenuRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -1019,7 +1094,7 @@ impl PartialEq for ElectronMenu {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:331 (sha256:48f819590bb46794cfa6855b04a1e69cac8327dbd65ee3a756f754898a613e81)
+// Source: upstream/packages/types/src/ElectronApi.ts:380 (sha256:525b6aa03f442c444cfbf86f1e5344387e15e10ff940082398b36053c63502a4)
 #[derive(Clone, Default)]
 pub struct ElectronMenuItemOptions {
     #[doc(hidden)]
@@ -1027,7 +1102,7 @@ pub struct ElectronMenuItemOptions {
     pub id: Option<String>,
     pub label: Option<String>,
     pub type_: Option<String>,
-    pub role: Option<String>,
+    pub role: Option<ElectronMenuItemRole>,
     pub accelerator: Option<String>,
     pub enabled: Option<bool>,
     pub checked: Option<bool>,
@@ -1040,7 +1115,10 @@ impl PartialEq for ElectronMenuItemOptions {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:343 (sha256:2d53e9b7bc654216df32ecd30d6dc22c6655e51f7821e164c6c7a0928f21488b)
+// Source: upstream/packages/types/src/ElectronApi.ts:392 (sha256:02e836b781698a458feb57bc7601e2d9faad867b10aa6c2ebb72a019eb60bb83)
+pub type ElectronMenuItemRole = String;
+
+// Source: upstream/packages/types/src/ElectronApi.ts:438 (sha256:2d53e9b7bc654216df32ecd30d6dc22c6655e51f7821e164c6c7a0928f21488b)
 #[derive(Clone, Default)]
 pub struct ElectronTrayConstructor {
     #[doc(hidden)]
@@ -1053,7 +1131,7 @@ impl PartialEq for ElectronTrayConstructor {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:347 (sha256:b8d4bd1f52699a80f879eb8276fdd10e44d4cd27e0e860a8253436dd591e17d1)
+// Source: upstream/packages/types/src/ElectronApi.ts:442 (sha256:533efb026d41c8a9b40da9e3989dcd5238c20fbc55c1118832f961aefe6e50b8)
 #[derive(Clone)]
 pub struct ElectronTray {
     #[doc(hidden)]
@@ -1108,6 +1186,22 @@ pub struct ElectronTray {
             >,
         >,
     >,
+    pub remove_listener: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(
+                        String,
+                        std::sync::Arc<
+                            std::sync::Mutex<
+                                Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>,
+                            >,
+                        >,
+                    ) -> ()
+                    + Send
+                    + 'static,
+            >,
+        >,
+    >,
     pub destroy: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
 }
 impl PartialEq for ElectronTray {
@@ -1116,7 +1210,7 @@ impl PartialEq for ElectronTray {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:363 (sha256:0d2f0683c620c6b7ef32add363313d448601146da2949cb8a59e01ddc7d41c10)
+// Source: upstream/packages/types/src/ElectronApi.ts:459 (sha256:0d2f0683c620c6b7ef32add363313d448601146da2949cb8a59e01ddc7d41c10)
 #[derive(Clone, Default)]
 pub struct ElectronTrayBalloonOptions {
     #[doc(hidden)]
@@ -1135,7 +1229,7 @@ impl PartialEq for ElectronTrayBalloonOptions {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:373 (sha256:95eaa8c7e991c382c61a92921f11e61f6cfac916d055e3c2a7ade0d98b37bd62)
+// Source: upstream/packages/types/src/ElectronApi.ts:469 (sha256:95eaa8c7e991c382c61a92921f11e61f6cfac916d055e3c2a7ade0d98b37bd62)
 #[derive(Clone)]
 pub struct ElectronNotificationConstructor {
     #[doc(hidden)]
@@ -1149,12 +1243,12 @@ impl PartialEq for ElectronNotificationConstructor {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:378 (sha256:1b95a52f1c24b6ca8a3475b028e62868cb15895af5d51341029041199f8a9a66)
+// Source: upstream/packages/types/src/ElectronApi.ts:474 (sha256:bc4df506aa878ff940de4e0e443a9e61273e6469794799381c148329b66e83b6)
 #[derive(Clone, Default)]
 pub struct ElectronNotificationOptionsRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub type_: String,
     pub text: String,
+    pub type_: String,
 }
 impl PartialEq for ElectronNotificationOptionsRecord1 {
     fn eq(&self, other: &Self) -> bool {
@@ -1171,6 +1265,7 @@ pub struct ElectronNotificationOptions {
     pub icon: Option<String>,
     pub silent: Option<bool>,
     pub actions: Option<Vec<ElectronNotificationOptionsRecord1>>,
+    pub has_reply: Option<bool>,
 }
 impl PartialEq for ElectronNotificationOptions {
     fn eq(&self, other: &Self) -> bool {
@@ -1178,7 +1273,7 @@ impl PartialEq for ElectronNotificationOptions {
     }
 }
 
-// Source: upstream/packages/types/src/ElectronApi.ts:386 (sha256:0d989ba938f51f702d3804b0618a355aeddc70312302547941a2fc803158af34)
+// Source: upstream/packages/types/src/ElectronApi.ts:483 (sha256:0d989ba938f51f702d3804b0618a355aeddc70312302547941a2fc803158af34)
 #[derive(Clone)]
 pub struct ElectronNotification {
     #[doc(hidden)]

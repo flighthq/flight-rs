@@ -6,17 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Signal;
+use crate::{EntityRuntime, Signal};
 
-// Source: upstream/packages/types/src/Connectivity.ts:3 (sha256:b9bbd32114106672af94b1a445e31e8c67f45986c74b8befb4fe833aac58903f)
+// Source: upstream/packages/types/src/Connectivity.ts:4 (sha256:b9bbd32114106672af94b1a445e31e8c67f45986c74b8befb4fe833aac58903f)
 pub type ConnectivityConnectionType = String;
 
-// Source: upstream/packages/types/src/Connectivity.ts:14 (sha256:5752a05f4ce927af1550ac0ac16f6c72448f9047937cc7c5763607805eda30ac)
+// Source: upstream/packages/types/src/Connectivity.ts:17 (sha256:e7e0444ebc69cb31a5ec215ccbe937c6ea19c6a0b3c634fb7af068552740de07)
 #[derive(Clone, Default)]
 pub struct ConnectivityStatus {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub online: bool,
+    pub online: Option<bool>,
     pub type_: ConnectivityConnectionType,
     pub downlink: f64,
     pub downlink_max: f64,
@@ -31,7 +31,7 @@ impl PartialEq for ConnectivityStatus {
     }
 }
 
-// Source: upstream/packages/types/src/Connectivity.ts:33 (sha256:4a5a0a696af9982bef1e5f820e58d16adc7bae99cd95ca4ab2e96f8b4102e502)
+// Source: upstream/packages/types/src/Connectivity.ts:36 (sha256:4a5a0a696af9982bef1e5f820e58d16adc7bae99cd95ca4ab2e96f8b4102e502)
 #[derive(Clone, Default)]
 pub struct ConnectivityReachability {
     #[doc(hidden)]
@@ -45,7 +45,7 @@ impl PartialEq for ConnectivityReachability {
     }
 }
 
-// Source: upstream/packages/types/src/Connectivity.ts:40 (sha256:04eb504c78a104034fcf12550f79a5fa4e3c1cce0567add6b5870616ea27e511)
+// Source: upstream/packages/types/src/Connectivity.ts:43 (sha256:04eb504c78a104034fcf12550f79a5fa4e3c1cce0567add6b5870616ea27e511)
 #[derive(Clone, Default)]
 pub struct ConnectivityReachabilityOptions {
     #[doc(hidden)]
@@ -60,53 +60,79 @@ impl PartialEq for ConnectivityReachabilityOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Connectivity.ts:51 (sha256:84127482c4a5519250ea7aeb0cf5c4a1509933a2cd6500691c4ae6db765ca634)
+// Source: upstream/packages/types/src/Connectivity.ts:55 (sha256:36130bcbc7f8dedd52c884d9ca54da3421d5d72f13bbb22351b486eb03be8fe9)
 #[derive(Clone)]
-pub struct ConnectivityBackend {
+pub struct HostConnectivityStatusCapability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub get_status: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(ConnectivityStatus) -> ConnectivityStatus + Send + 'static>>,
     >,
-    pub detect_reachability: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(
-                            ConnectivityReachabilityOptions,
-                            ConnectivityReachability,
-                        )
-                            -> crate::FlightTask<ConnectivityReachability>
-                        + Send
-                        + 'static,
-                >,
-            >,
-        >,
-    >,
+}
+impl PartialEq for HostConnectivityStatusCapability {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Connectivity.ts:59 (sha256:692751dd321662bea4c96d952d2fd288a7f6a1eeaa47842dc96af2e6c6ba0bea)
+#[derive(Clone)]
+pub struct HostConnectivityChangeCapability {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub destroy: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
     pub subscribe: std::sync::Arc<
         std::sync::Mutex<
             Box<
                 dyn FnMut(
                         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
-                    ) -> std::sync::Arc<
-                        std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
+                    ) -> Option<
+                        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
                     > + Send
                     + 'static,
             >,
         >,
     >,
 }
-impl PartialEq for ConnectivityBackend {
+impl PartialEq for HostConnectivityChangeCapability {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Connectivity.ts:63 (sha256:1e7a7736565afeffa04eb8884a9de690fc2fc2f0b0a08c7c5e4ab07ee486356e)
+// Source: upstream/packages/types/src/Connectivity.ts:67 (sha256:8d66c78a7538f7a25e5afd267dc69bf1b3199fcc96e94dab7094ae856f0dc02b)
+#[derive(Clone)]
+pub struct HostConnectivityReachabilityCapability {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub detect_reachability: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(
+                        ConnectivityReachabilityOptions,
+                        ConnectivityReachability,
+                    ) -> crate::FlightTask<ConnectivityReachability>
+                    + Send
+                    + 'static,
+            >,
+        >,
+    >,
+}
+impl PartialEq for HostConnectivityReachabilityCapability {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Connectivity.ts:76 (sha256:2666f7f3c34a1f14e7a24f487ffdf5d60c6511f3168a868313db802eaf9cf4d8)
 #[derive(Clone)]
 pub struct Connectivity {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub on_change: Signal<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(ConnectivityStatus) -> () + Send + 'static>>>,
     >,
@@ -125,5 +151,23 @@ pub struct Connectivity {
 impl PartialEq for Connectivity {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for Connectivity {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

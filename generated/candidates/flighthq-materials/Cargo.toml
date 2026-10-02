@@ -12,5 +12,6 @@ path = "src/lib.rs"
 [dependencies]
 flighthq-color = { path = "../flighthq-color" }
 flighthq-entity = { path = "../flighthq-entity" }
+flighthq-log = { path = "../flighthq-log" }
 flighthq-runtime = { path = "../../crates/flighthq-runtime" }
 flighthq-types = { path = "../../crates/flighthq-types" }

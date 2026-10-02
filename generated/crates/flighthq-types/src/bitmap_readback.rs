@@ -20,5 +20,5 @@ impl PartialEq for BitmapReadbackExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/BitmapReadback.ts:20 (sha256:3fd2efe803cbac6644d4c5a5ac54dc286fc519cc708e87c2ed2926cda30ea987)
+// Source: upstream/packages/types/src/BitmapReadback.ts:20 (sha256:d9d1d14cee1db640a077db8ed0fff8faf17d366b55df2a2aa56ddf4da0b884b5)
 pub type BitmapReadbackBlockReason = String;

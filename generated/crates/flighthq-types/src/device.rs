@@ -61,9 +61,9 @@ impl PartialEq for SafeAreaInsets {
     }
 }
 
-// Source: upstream/packages/types/src/Device.ts:48 (sha256:d9234d0fef6bd22728456865cec0d55d8c5ad54e516c9d2687070fec558bb782)
+// Source: upstream/packages/types/src/Device.ts:48 (sha256:72a67cf00c1bcb1d5629fd13b18efa3e1089f709643a312ad71fa6335b1b5967)
 #[derive(Clone)]
-pub struct DeviceBackend {
+pub struct HostDeviceCapability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub get_capabilities: std::sync::Arc<
@@ -80,8 +80,9 @@ pub struct DeviceBackend {
     pub get_safe_area_insets: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(SafeAreaInsets) -> SafeAreaInsets + Send + 'static>>,
     >,
+    pub refresh: Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
 }
-impl PartialEq for DeviceBackend {
+impl PartialEq for HostDeviceCapability {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/GlShadedProgram.ts:8 (sha256:e8637779d2b6f50007a0f9ff44cd55be821a811e872fa22640f98f86f00afed8)
+// Source: upstream/packages/types/src/GlShadedProgram.ts:8 (sha256:8d1cb06349de29b13fd173f6906cdb77eb272ba46ea284542f5b1e07a400cdbc)
 #[derive(Clone, Default)]
 pub struct GlShadedDefineKey {
     #[doc(hidden)]
@@ -15,6 +15,7 @@ pub struct GlShadedDefineKey {
     pub has_color_adjustment: Option<bool>,
     pub has_color_matrix: Option<bool>,
     pub has_diffuse_map: bool,
+    pub has_instances: Option<bool>,
     pub has_normal_map: bool,
     pub has_skin: Option<bool>,
     pub has_specular_map: bool,
@@ -26,7 +27,7 @@ impl PartialEq for GlShadedDefineKey {
     }
 }
 
-// Source: upstream/packages/types/src/GlShadedProgram.ts:31 (sha256:ea78be613c04f60f3a3dfb6529793a1e50fdf4a6d96d13246cb23de6e92ccdab)
+// Source: upstream/packages/types/src/GlShadedProgram.ts:32 (sha256:ea78be613c04f60f3a3dfb6529793a1e50fdf4a6d96d13246cb23de6e92ccdab)
 #[derive(Clone, Default)]
 pub struct GlShadedProgram {
     #[doc(hidden)]
@@ -41,6 +42,8 @@ pub struct GlShadedProgram {
     pub loc_object_alpha: Option<crate::OpaqueHostValue>,
     pub loc_alpha_is_coverage: Option<crate::OpaqueHostValue>,
     pub loc_joint_texture: Option<crate::OpaqueHostValue>,
+    pub loc_instance_palette: Option<crate::OpaqueHostValue>,
+    pub loc_instance_color_palette: Option<crate::OpaqueHostValue>,
     pub loc_joint_normal_texture: Option<crate::OpaqueHostValue>,
     pub loc_model: Option<crate::OpaqueHostValue>,
     pub loc_normal_matrix: Option<crate::OpaqueHostValue>,

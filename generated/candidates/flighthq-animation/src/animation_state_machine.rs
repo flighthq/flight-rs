@@ -10,23 +10,56 @@ use crate::{
     advance_animation_state_machine_with_scratch, blend_animation_samples,
     sample_animation_blend_tree_channel,
 };
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_types::{
     AnimationBlendTree, AnimationChannel, AnimationStateMachine, AnimationStateMachineChannel,
-    AnimationStateMachineState, EasingFunction,
+    AnimationStateMachineState, EasingFunction, EntityConstruction,
 };
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:18 (sha256:84251c436fde0aee9a986b6eb18556691b1f2da377d728687955a06249bfe046)
+// Source: upstream/packages/animation/src/animationStateMachine.ts:19 (sha256:84251c436fde0aee9a986b6eb18556691b1f2da377d728687955a06249bfe046)
 pub fn advance_animation_state_machine(machine: &mut AnimationStateMachine, dt: f64) -> () {
     machine.advance_scratch.clear();
     advance_animation_state_machine_with_scratch(machine, dt, &mut machine.advance_scratch);
 }
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:26 (sha256:01ee69c81534b0afd7feef68ff01e03034870411d950b4f9d55d774ab34a3eec)
+// Source: upstream/packages/animation/src/animationStateMachine.ts:25 (sha256:8023d791531f8f4c3cd7b55b82f5e1b14bd8e2b5de946d6460d295988d9381f5)
 pub fn create_animation_state_machine(
     states: &Vec<AnimationStateMachineState>,
     initial_state: Option<crate::FlightUnion2<String, f64>>,
 ) -> AnimationStateMachine {
+    let initial_state = initial_state.unwrap_or(crate::FlightUnion2::<String, f64>::B(0.0_f64));
+    let mut out = allocate_entity();
+    initialize_animation_state_machine(
+        (out).clone(),
+        states,
+        Some(((initial_state).clone()).clone()),
+    );
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/animation/src/animationStateMachine.ts:34 (sha256:a826c849d8994d039570b470cec9fec0017d6bc1548c64808b9abdef73c0c056)
+pub fn create_animation_state_machine_state(
+    name: String,
+    blend_tree: &AnimationBlendTree,
+) -> AnimationStateMachineState {
+    let mut out = allocate_entity();
+    initialize_animation_state_machine_state((out).clone(), (name).clone(), blend_tree);
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/animation/src/animationStateMachine.ts:44 (sha256:dbc286556ce5e96a4d70a9c18addb8ff0ec00eb27ffcf5e3a54f6af57ab7ee18)
+pub fn get_animation_state_machine_current_state(
+    machine: &AnimationStateMachine,
+) -> AnimationStateMachineState {
+    return machine.states[machine.current_state_index as usize].clone();
+}
+
+// Source: upstream/packages/animation/src/animationStateMachine.ts:52 (sha256:227f7569eb7bc04ff2a0d1a2f5b77e221a52f53cfcbe473a6c9d366bf32ef78a)
+pub fn initialize_animation_state_machine(
+    out: EntityConstruction<AnimationStateMachine>,
+    states: &Vec<AnimationStateMachineState>,
+    initial_state: Option<crate::FlightUnion2<String, f64>>,
+) -> () {
     let initial_state = initial_state.unwrap_or(crate::FlightUnion2::<String, f64>::B(0.0_f64));
     if ((states.len() as f64) == 0.0_f64) {
         panic!("{}", "generated Flight function threw");
@@ -96,57 +129,36 @@ pub fn create_animation_state_machine(
     for entry in (channels).iter().cloned() {
         sample_width = (sample_width).max(entry.channel.track.components);
     }
-    return create_entity(Some(AnimationStateMachine {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        advance_scratch: vec![],
-        channels: (channels).clone(),
-        current_state_index: initial_state_index,
-        from_sample: vec![0.0_f32; (sample_width) as usize],
-        states: (copied_states).clone(),
-        to_sample: vec![0.0_f32; (sample_width) as usize],
-        transition_curve: std::sync::Arc::new(std::sync::Mutex::new(Box::new(
-            move |__flight_argument_0: f64| -> f64 {
-                linear_animation_state_machine_curve(__flight_argument_0)
-            },
-        )
-            as Box<dyn FnMut(f64) -> f64 + Send + 'static>)),
-        transition_duration: 0.0_f64,
-        transition_elapsed: 0.0_f64,
-        transition_from_state_index: None,
-        transition_to_state_index: None,
-        transition_weight: 0.0_f64,
-    }));
+    crate::host_set("host.advanceScratch", vec![]);
+    crate::host_set("host.channels", channels);
+    crate::host_set("host.currentStateIndex", initial_state_index);
+    crate::host_set("host.fromSample", vec![0.0_f32; (sample_width) as usize]);
+    crate::host_set("host.states", copied_states);
+    crate::host_set("host.toSample", vec![0.0_f32; (sample_width) as usize]);
+    crate::host_set("host.transitionCurve", linear_animation_state_machine_curve);
+    crate::host_set("host.transitionDuration", 0.0_f64);
+    crate::host_set("host.transitionElapsed", 0.0_f64);
+    crate::host_set("host.transitionFromStateIndex", None);
+    crate::host_set("host.transitionToStateIndex", None);
+    crate::host_set("host.transitionWeight", 0.0_f64);
 }
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:64 (sha256:b9918e8c52bdf40ff213b90c1e582ba02e08f9db922cdf69092aa6964a10f437)
-pub fn create_animation_state_machine_state(
+// Source: upstream/packages/animation/src/animationStateMachine.ts:88 (sha256:d787c0be7149057a1a3e319b49d8f3296a4e760e069b45a0318fe91b11225f34)
+pub fn initialize_animation_state_machine_state(
+    out: EntityConstruction<AnimationStateMachineState>,
     name: String,
     blend_tree: &AnimationBlendTree,
-) -> AnimationStateMachineState {
-    return create_entity(Some(AnimationStateMachineState {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        blend_tree: (*blend_tree).clone(),
-        name: (name).clone(),
-    }));
+) -> () {
+    crate::host_set("host.blendTree", blend_tree);
+    crate::host_set("host.name", name);
 }
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:72 (sha256:dbc286556ce5e96a4d70a9c18addb8ff0ec00eb27ffcf5e3a54f6af57ab7ee18)
-pub fn get_animation_state_machine_current_state(
-    machine: &AnimationStateMachine,
-) -> AnimationStateMachineState {
-    return machine.states[machine.current_state_index as usize].clone();
-}
-
-// Source: upstream/packages/animation/src/animationStateMachine.ts:79 (sha256:934923e4fada469f931f9b3be90fa4ddb20b12e7acf9599071f07e053de4009d)
+// Source: upstream/packages/animation/src/animationStateMachine.ts:98 (sha256:934923e4fada469f931f9b3be90fa4ddb20b12e7acf9599071f07e053de4009d)
 pub fn is_animation_state_machine_transitioning(machine: &AnimationStateMachine) -> bool {
     return (machine.transition_to_state_index).is_some();
 }
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:85 (sha256:23b3f7192b54924e7720e6b401570e8c0e7d5bc81b6179db95e5717faa785a2e)
+// Source: upstream/packages/animation/src/animationStateMachine.ts:104 (sha256:23b3f7192b54924e7720e6b401570e8c0e7d5bc81b6179db95e5717faa785a2e)
 pub fn sample_animation_state_machine(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     machine: &mut AnimationStateMachine,
@@ -170,7 +182,7 @@ pub fn sample_animation_state_machine(
     }
 }
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:98 (sha256:e6abecb60b719dbc044a6508b24692da8be3652d387fd3fd5dcd88a4e08cefcf)
+// Source: upstream/packages/animation/src/animationStateMachine.ts:117 (sha256:e6abecb60b719dbc044a6508b24692da8be3652d387fd3fd5dcd88a4e08cefcf)
 pub fn sample_animation_state_machine_channel(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     machine: &mut AnimationStateMachine,
@@ -298,7 +310,7 @@ pub fn sample_animation_state_machine_channel(
     return true;
 }
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:141 (sha256:cf18427cfa53b87c26277212d5482e11a20160aad438a2371a954c85ef2a97ae)
+// Source: upstream/packages/animation/src/animationStateMachine.ts:160 (sha256:cf18427cfa53b87c26277212d5482e11a20160aad438a2371a954c85ef2a97ae)
 pub fn transition_animation_state_machine(
     machine: &mut AnimationStateMachine,
     to_state: &crate::FlightUnion2<String, f64>,
@@ -341,7 +353,7 @@ pub fn transition_animation_state_machine(
     return true;
 }
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:164 (sha256:08f2910203454be9fc49da3bea3ff136a28824948d749af1e3b6a41b95ffad2b)
+// Source: upstream/packages/animation/src/animationStateMachine.ts:183 (sha256:08f2910203454be9fc49da3bea3ff136a28824948d749af1e3b6a41b95ffad2b)
 fn assert_compatible_animation_state_machine_channels(
     existing: &AnimationChannel,
     channel: &AnimationChannel,
@@ -353,7 +365,7 @@ fn assert_compatible_animation_state_machine_channels(
     }
 }
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:176 (sha256:3556dfa5557d192ef9e59cd381666e5b16ad1666ba171262bf1c722a84be4433)
+// Source: upstream/packages/animation/src/animationStateMachine.ts:195 (sha256:3556dfa5557d192ef9e59cd381666e5b16ad1666ba171262bf1c722a84be4433)
 fn create_animation_state_machine_channels(
     states: &Vec<AnimationStateMachineState>,
 ) -> Vec<AnimationStateMachineChannel> {
@@ -456,7 +468,7 @@ fn create_animation_state_machine_channels(
     return channels;
 }
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:201 (sha256:31dc00b9b705579f6bd8ff097185c0c933fed00c4d3d15bd8c91d16ea83afa45)
+// Source: upstream/packages/animation/src/animationStateMachine.ts:220 (sha256:31dc00b9b705579f6bd8ff097185c0c933fed00c4d3d15bd8c91d16ea83afa45)
 fn find_animation_state_machine_state_index(
     states: &Vec<AnimationStateMachineState>,
     state: &crate::FlightUnion2<String, f64>,
@@ -516,7 +528,7 @@ fn find_animation_state_machine_state_index(
     return (-1.0_f64);
 }
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:212 (sha256:b1a9aceaa22994c623d57f431df632361fb95b43e591a826f306b80c8b601bce)
+// Source: upstream/packages/animation/src/animationStateMachine.ts:231 (sha256:b1a9aceaa22994c623d57f431df632361fb95b43e591a826f306b80c8b601bce)
 fn get_linear_animation_state_machine_transition_weight(elapsed: f64, duration: f64) -> f64 {
     if (duration <= 0.0_f64) {
         return 1.0_f64;
@@ -533,7 +545,7 @@ fn get_linear_animation_state_machine_transition_weight(elapsed: f64, duration: 
     };
 }
 
-// Source: upstream/packages/animation/src/animationStateMachine.ts:218 (sha256:593388a69166c6ee7fc4bbcfe31dda37f8c107308c925575a99575a7b0e5b4b7)
+// Source: upstream/packages/animation/src/animationStateMachine.ts:237 (sha256:593388a69166c6ee7fc4bbcfe31dda37f8c107308c925575a99575a7b0e5b4b7)
 fn linear_animation_state_machine_curve(t: f64) -> f64 {
     return t;
 }

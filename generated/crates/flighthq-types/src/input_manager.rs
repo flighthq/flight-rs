@@ -7,8 +7,8 @@
 #![allow(unused_parens)]
 
 use crate::{
-    InputGamepadAxisData, InputGamepadButtonData, InputGamepadConnectData, InputKeyboardData,
-    InputPointerData, InputTextData, Signal,
+    EntityRuntime, InputGamepadAxisData, InputGamepadButtonData, InputGamepadConnectData,
+    InputKeyboardData, InputPointerData, InputTextData, Signal,
 };
 
 // Source: upstream/packages/types/src/InputManager.ts:3 (sha256:9c46b3880e43cd53f90eb927e6182f0408e9d8f24a051e786fb4992850ce7eb2)
@@ -29,6 +29,10 @@ impl PartialEq for AttachInputOptions {
 pub struct InputManager {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub on_gamepad_axis_move: Signal<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(InputGamepadAxisData) -> () + Send + 'static>>,
@@ -89,5 +93,23 @@ pub struct InputManager {
 impl PartialEq for InputManager {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for InputManager {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

@@ -7,7 +7,8 @@
 #![allow(unused_parens)]
 
 use crate::{COLOR_LUT_DEFAULT_SIZE as color_lut_default_size_constant, bake_color_lut};
-use flighthq_types::{ColorLut, ColorLutCache, ColorTransformFunction};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{ColorLut, ColorLutCache, ColorTransformFunction, EntityConstruction};
 
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord1 {
@@ -20,7 +21,7 @@ impl PartialEq for SharedStructuralRecord1 {
     }
 }
 
-// Source: upstream/packages/adjustments/src/colorLutCache.ts:20 (sha256:43b7051bda2b12fe9ccb47c39eaebd4ec760dff96ad22db73055c349ecefe0c7)
+// Source: upstream/packages/adjustments/src/colorLutCache.ts:21 (sha256:43b7051bda2b12fe9ccb47c39eaebd4ec760dff96ad22db73055c349ecefe0c7)
 pub fn bake_color_lut_for_run(
     cache: &mut ColorLutCache,
     run: &Vec<SharedStructuralRecord1>,
@@ -121,16 +122,20 @@ pub fn bake_color_lut_for_run(
     return lut;
 }
 
-// Source: upstream/packages/adjustments/src/colorLutCache.ts:40 (sha256:57f403fdf8d5bd7afff86bdc44e1c23863c0e2d90257ec4d19180469fd165e93)
+// Source: upstream/packages/adjustments/src/colorLutCache.ts:41 (sha256:91b972ad779b93d560ebf72f1355a22f5c6a531ac8123d89dd21531dfcebac85)
 pub fn create_color_lut_cache() -> ColorLutCache {
-    return ColorLutCache {
-        __flight_identity: std::sync::Arc::new(()),
-        signature: None,
-        lut: None,
-    };
+    let mut out = allocate_entity();
+    initialize_color_lut_cache((out).clone());
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/adjustments/src/colorLutCache.ts:48 (sha256:15cbc958713f0e9b3b31ba476d3c5cb73ef8c6673ab1b45d8837bed603377581)
+// Source: upstream/packages/adjustments/src/colorLutCache.ts:47 (sha256:246c67dd29eb97894a2eacdd63f128b85dbb6c21a42889e17213d6de71b36ed9)
+pub fn initialize_color_lut_cache(out: EntityConstruction<ColorLutCache>) -> () {
+    crate::host_set("host.signature", None);
+    crate::host_set("host.lut", None);
+}
+
+// Source: upstream/packages/adjustments/src/colorLutCache.ts:56 (sha256:15cbc958713f0e9b3b31ba476d3c5cb73ef8c6673ab1b45d8837bed603377581)
 fn color_lut_run_signature(run: &Vec<SharedStructuralRecord1>, size: f64) -> String {
     return format!(
         "{}\n{}",

@@ -8,9 +8,13 @@
 
 use crate::Signal;
 
-// Source: upstream/packages/types/src/SignalConnection.ts:11 (sha256:91655ac3159a3beced78493debe1fafd9a7bd7d8955b20146b5d6596a63265ca)
+// Source: upstream/packages/types/src/SignalConnection.ts:10 (sha256:91655ac3159a3beced78493debe1fafd9a7bd7d8955b20146b5d6596a63265ca)
 #[derive(Clone)]
-pub struct SignalConnection<T> {
+pub struct SignalConnection<
+    T = std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Vec<crate::OpaqueHostValue>) -> () + Send + 'static>>,
+    >,
+> {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub signal: Signal<T>,

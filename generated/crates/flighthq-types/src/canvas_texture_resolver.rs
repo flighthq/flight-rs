@@ -6,9 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{Bitmap, Kind, RenderRegistry, Texture, TextureSourceKind};
+use crate::{
+    Bitmap, CanvasSurface, EntityRuntime, HostCanvasCapability, Kind, RenderRegistryTable, Texture,
+    TextureSourceKind,
+};
 
-// Source: upstream/packages/types/src/CanvasTextureResolver.ts:7 (sha256:67692df08bcef88ba0edfb6d1ec9be31c5515ebde25f4e372ad757f39796cfb9)
+// Source: upstream/packages/types/src/CanvasTextureResolver.ts:10 (sha256:67692df08bcef88ba0edfb6d1ec9be31c5515ebde25f4e372ad757f39796cfb9)
 pub type CanvasTextureResolver = std::sync::Arc<
     std::sync::Mutex<
         Box<
@@ -19,11 +22,12 @@ pub type CanvasTextureResolver = std::sync::Arc<
     >,
 >;
 
-// Source: upstream/packages/types/src/CanvasTextureResolver.ts:23 (sha256:f60a25b918ccf0e081d0b367d63c9ac47bcfeb8b5587c5bfa07de896892b07c8)
+// Source: upstream/packages/types/src/CanvasTextureResolver.ts:26 (sha256:fd5908a4a33b54f1d0972b8133d3bc9b4dbfeae8ff2b208c6836ec7b3a641c89)
 #[derive(Clone, Default)]
 pub struct CanvasTextureResolversRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub element: crate::OpaqueHostValue,
+    pub surface: CanvasSurface,
     pub flip_x: bool,
     pub flip_y: bool,
     pub image_version: f64,
@@ -53,21 +57,44 @@ impl PartialEq for CanvasTextureResolversRecord2 {
     }
 }
 
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct CanvasTextureResolvers {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
+    pub canvas_host: HostCanvasCapability,
     pub registry: Option<Vec<(TextureSourceKind, CanvasTextureResolver)>>,
     pub bitmap_element_cache: Option<Vec<(Bitmap, CanvasTextureResolversRecord2)>>,
     pub texture_window_element_cache: Option<Vec<(Texture, CanvasTextureResolversRecord1)>>,
     pub registry_miss: Option<
         std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(RenderRegistry, Kind) -> () + Send + 'static>>,
+            std::sync::Mutex<Box<dyn FnMut(RenderRegistryTable, Kind) -> () + Send + 'static>>,
         >,
     >,
 }
 impl PartialEq for CanvasTextureResolvers {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for CanvasTextureResolvers {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

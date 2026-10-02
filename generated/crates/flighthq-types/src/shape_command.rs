@@ -6,30 +6,30 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{Matrix, Texture};
+use crate::{Matrix, Texture, TriangleCulling};
 
-// Source: upstream/packages/types/src/ShapeCommand.ts:4 (sha256:4296b59e30cf2f2065cbcc75e866f661ca9c7ed3d4a26124ac823be98385ffc1)
+// Source: upstream/packages/types/src/ShapeCommand.ts:5 (sha256:4296b59e30cf2f2065cbcc75e866f661ca9c7ed3d4a26124ac823be98385ffc1)
 pub type CapsStyle = String;
 
-// Source: upstream/packages/types/src/ShapeCommand.ts:6 (sha256:d5a969dd13970ec044b58790b934cd34d835432b0bff462be5ac496e19717d66)
+// Source: upstream/packages/types/src/ShapeCommand.ts:7 (sha256:d5a969dd13970ec044b58790b934cd34d835432b0bff462be5ac496e19717d66)
 pub type GradientType = String;
 
-// Source: upstream/packages/types/src/ShapeCommand.ts:8 (sha256:b8c91976c5029faacc310589281c8d002d6fe3693919a47131759fc2f87edcef)
+// Source: upstream/packages/types/src/ShapeCommand.ts:9 (sha256:b8c91976c5029faacc310589281c8d002d6fe3693919a47131759fc2f87edcef)
 pub type PathWinding = String;
 
-// Source: upstream/packages/types/src/ShapeCommand.ts:10 (sha256:57608fd0d901b735c548bb720897e73cc0267f71a9731b09b3851d71c5a44cb5)
+// Source: upstream/packages/types/src/ShapeCommand.ts:11 (sha256:57608fd0d901b735c548bb720897e73cc0267f71a9731b09b3851d71c5a44cb5)
 pub type InterpolationMethod = String;
 
-// Source: upstream/packages/types/src/ShapeCommand.ts:12 (sha256:0bfd1d751e9a9812454feac90111c6c615c086e0a3c63fb87d85bf75ce6c941c)
+// Source: upstream/packages/types/src/ShapeCommand.ts:13 (sha256:0bfd1d751e9a9812454feac90111c6c615c086e0a3c63fb87d85bf75ce6c941c)
 pub type JointStyle = String;
 
-// Source: upstream/packages/types/src/ShapeCommand.ts:14 (sha256:c68453d28d184240b3c58d97977b9d6b52cdcd29bd80fc8b825183447035a22d)
+// Source: upstream/packages/types/src/ShapeCommand.ts:15 (sha256:c68453d28d184240b3c58d97977b9d6b52cdcd29bd80fc8b825183447035a22d)
 pub type LineScaleMode = String;
 
-// Source: upstream/packages/types/src/ShapeCommand.ts:16 (sha256:023e9c7b0bef77eb8c04171ba53ff3c5be45cef5f7de11f1405be050bc35699a)
+// Source: upstream/packages/types/src/ShapeCommand.ts:17 (sha256:023e9c7b0bef77eb8c04171ba53ff3c5be45cef5f7de11f1405be050bc35699a)
 pub type SpreadMethod = String;
 
-// Source: upstream/packages/types/src/ShapeCommand.ts:19 (sha256:37b3682a37e157b148313db2686c19681142364534a08e6870d7bc239944103c)
+// Source: upstream/packages/types/src/ShapeCommand.ts:20 (sha256:8747538a89df792b1df243af650c69a10e758a39e1d4b8cf3ea28f33fa4bbfa4)
 #[derive(Clone, Default)]
 pub struct ShapeCommandRegistry {
     #[doc(hidden)]
@@ -52,12 +52,14 @@ pub struct ShapeCommandRegistry {
         >,
     >,
     pub cubic_curve_to: Vec<f64>,
-    pub curve_to: Vec<f64>,
+    pub quadratic_curve_to: Vec<f64>,
     pub draw_circle: Vec<f64>,
     pub draw_ellipse: Vec<f64>,
     pub draw_path: Vec<crate::FlightUnion2<Vec<f64>, PathWinding>>,
     pub draw_rectangle: Vec<f64>,
-    pub draw_round_rectangle: Vec<f64>,
+    pub draw_rounded_rectangle: Vec<f64>,
+    pub draw_triangles:
+        Vec<crate::FlightUnion2<Vec<f64>, crate::FlightUnion2<Option<Vec<f64>>, TriangleCulling>>>,
     pub end_fill: Vec<crate::OpaqueHostValue>,
     pub line_texture_style: Vec<crate::FlightUnion2<Texture, Option<Matrix>>>,
     pub line_gradient_style: Vec<

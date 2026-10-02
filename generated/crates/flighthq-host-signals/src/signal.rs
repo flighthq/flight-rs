@@ -8,11 +8,9 @@
 
 use flighthq_types::Signal;
 
-// Source: upstream/packages/signals/src/signal.ts:7 (sha256:6e00ef651edec68c43fe8e917dc888ae5de0ae45586e74d222c40522445ee01e)
+// Source: upstream/packages/signals/src/signal.ts:8 (sha256:234213c0985fd4de6b3d193b7f5859e4112463ca2956cae36ce8c9b019eec4a8)
 pub fn create_signal<T: crate::FlightCallback>() -> Signal<T> {
-    return Signal::<T> {
-        __flight_identity: std::sync::Arc::new(()),
-        emit: T::flight_noop(),
-        data: None,
-    };
+    let out = allocate_entity();
+    initialize_signal((out).clone());
+    return finish_entity((out).clone());
 }

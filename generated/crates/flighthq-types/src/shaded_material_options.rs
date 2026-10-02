@@ -8,7 +8,7 @@
 
 use crate::{BlendMode, MaterialAlphaMode, Modifier, Texture};
 
-// Source: upstream/packages/types/src/ShadedMaterialOptions.ts:8 (sha256:3f073246cc4c3bc480231452c128a1e7887dfcbe84ace00b3cabb63a2b5a4f9b)
+// Source: upstream/packages/types/src/ShadedMaterialOptions.ts:8 (sha256:899baee68a77d6e79f89604f36582b807cda30631adbb64722cd348b8d23491e)
 #[derive(Clone, Default)]
 pub struct ShadedMaterialOptions {
     #[doc(hidden)]

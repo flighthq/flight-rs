@@ -6,9 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_signals::{clear_signal, create_signal, emit_signal};
 use flighthq_types::{
-    Signal, Spritesheet, SpritesheetAnimation, SpritesheetFrame, SpritesheetPlayer,
+    EntityConstruction, Signal, Spritesheet, SpritesheetAnimation, SpritesheetFrame,
+    SpritesheetPlayer,
 };
 
 #[inline]
@@ -45,7 +47,7 @@ impl PartialEq for FlightPartialRecord4043335526 {
     }
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:4 (sha256:e66ce9c760beb40f555bed7ad4b6d99d8157b80986f3d23f1c510c866c8d8779)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:11 (sha256:e66ce9c760beb40f555bed7ad4b6d99d8157b80986f3d23f1c510c866c8d8779)
 pub fn acquire_spritesheet_player() -> SpritesheetPlayer {
     if ((PLAYER_POOL.lock().unwrap().len() as f64) > 0.0_f64) {
         let mut p = PLAYER_POOL.lock().unwrap().pop();
@@ -61,45 +63,50 @@ pub fn acquire_spritesheet_player() -> SpritesheetPlayer {
     return create_spritesheet_player(None);
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:20 (sha256:191bfc8c641e4858140c4910fb3168c72a8bfa39034c8638cb2189162d0ca061)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:27 (sha256:c1a9309494f9fb282452fea40134a3809dcc26e9f3cfca7994bc149b1e19fd31)
 pub fn clone_spritesheet_player(player: &SpritesheetPlayer) -> SpritesheetPlayer {
-    return SpritesheetPlayer {
-        __flight_identity: std::sync::Arc::new(()),
-        animation: (player.animation).clone(),
-        complete: player.complete,
-        elapsed: player.elapsed,
-        frame_index: player.frame_index,
-        on_complete: create_signal(),
-        on_loop: create_signal(),
-        paused: player.paused,
-        queue: {
-            let mut __flight_array = Vec::new();
-            __flight_array.extend(((player.queue).clone()).iter().cloned());
-            __flight_array
-        },
-        speed: player.speed,
-    };
+    let mut out = allocate_entity();
+    crate::host_set("host.animation", (player.animation).clone());
+    crate::host_set("host.complete", player.complete);
+    crate::host_set("host.elapsed", player.elapsed);
+    crate::host_set("host.frameIndex", player.frame_index);
+    crate::host_set("host.onComplete", create_signal());
+    crate::host_set("host.onLoop", create_signal());
+    crate::host_set("host.paused", player.paused);
+    crate::host_set("host.queue", {
+        let mut __flight_array = Vec::new();
+        __flight_array.extend(((player.queue).clone()).iter().cloned());
+        __flight_array
+    });
+    crate::host_set("host.speed", player.speed);
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:34 (sha256:367882272258fe1ac565e85e6cf5f8623fa9c3b7d64c5c998a686eadea8994ef)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:41 (sha256:ad75459af26b1508ecd1284e349169ca0d4c7733e13cb22543bb32b68fe60dd6)
 pub fn create_spritesheet_player(obj: Option<FlightPartialRecord4043335526>) -> SpritesheetPlayer {
-    return SpritesheetPlayer {
-        __flight_identity: std::sync::Arc::new(()),
-        animation: obj.as_ref().and_then(|value| (value.animation).clone()),
-        complete: (obj.as_ref().and_then(|value| value.complete)).unwrap_or(true),
-        elapsed: (obj.as_ref().and_then(|value| value.elapsed)).unwrap_or(0.0_f64),
-        frame_index: (obj.as_ref().and_then(|value| value.frame_index)).unwrap_or(0.0_f64),
-        on_complete: (obj.as_ref().and_then(|value| (value.on_complete).clone()))
-            .unwrap_or(create_signal()),
-        on_loop: (obj.as_ref().and_then(|value| (value.on_loop).clone()))
-            .unwrap_or(create_signal()),
-        paused: (obj.as_ref().and_then(|value| value.paused)).unwrap_or(false),
-        queue: (obj.as_ref().and_then(|value| (value.queue).clone())).unwrap_or(vec![]),
-        speed: (obj.as_ref().and_then(|value| value.speed)).unwrap_or(1.0_f64),
-    };
+    let mut out = allocate_entity();
+    initialize_spritesheet_player(
+        (out).clone(),
+        ((obj).clone()).as_ref().map(|__flight_value| {
+            let __flight_source = &(__flight_value);
+            FlightPartialRecord4043335526 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                animation: (__flight_source.animation).clone(),
+                complete: __flight_source.complete,
+                elapsed: __flight_source.elapsed,
+                paused: __flight_source.paused,
+                speed: __flight_source.speed,
+                frame_index: __flight_source.frame_index,
+                on_complete: (__flight_source.on_complete).clone(),
+                on_loop: (__flight_source.on_loop).clone(),
+                queue: (__flight_source.queue).clone(),
+            }
+        }),
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:48 (sha256:21057375ba25d677ec22ca9637db2bd70b6bbbcdd1f2ad816ecbc5ae7629cfc9)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:47 (sha256:21057375ba25d677ec22ca9637db2bd70b6bbbcdd1f2ad816ecbc5ae7629cfc9)
 pub fn dispose_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
     clear_signal(&mut player.on_complete);
     clear_signal(&mut player.on_loop);
@@ -108,7 +115,7 @@ pub fn dispose_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
     player.queue.clear();
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:56 (sha256:924de533b474b3a692b914c65d06ee98842dc0723a420e2372d3dfc9e3dec913)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:55 (sha256:924de533b474b3a692b914c65d06ee98842dc0723a420e2372d3dfc9e3dec913)
 pub fn get_spritesheet_player_frame(
     player: &SpritesheetPlayer,
     spritesheet: &Spritesheet,
@@ -122,7 +129,7 @@ pub fn get_spritesheet_player_frame(
     return Some(spritesheet.frames[sprite_frame_index as usize].clone());
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:71 (sha256:4afa5c1327d9da3346f6a9c76b49155a3fb8bbdb1522e90f9ec93ac27fbcd086)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:70 (sha256:4afa5c1327d9da3346f6a9c76b49155a3fb8bbdb1522e90f9ec93ac27fbcd086)
 pub fn get_spritesheet_player_frame_at(
     player: &SpritesheetPlayer,
     spritesheet: &Spritesheet,
@@ -139,12 +146,55 @@ pub fn get_spritesheet_player_frame_at(
     return Some(spritesheet.frames[sprite_frame_index as usize].clone());
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:85 (sha256:7f9a9b39306e1d67c6001918ed4ab4a3e5a4019e62e6f455cf430443bb038888)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:84 (sha256:c27eec8cfc7f0cc8132e89f1fd2379df08bb25b9e0db35a9d468c2127b44c9b5)
+pub fn initialize_spritesheet_player(
+    out: EntityConstruction<SpritesheetPlayer>,
+    obj: Option<FlightPartialRecord4043335526>,
+) -> () {
+    crate::host_set(
+        "host.animation",
+        obj.as_ref().and_then(|value| (value.animation).clone()),
+    );
+    crate::host_set(
+        "host.complete",
+        (obj.as_ref().and_then(|value| value.complete)).unwrap_or(true),
+    );
+    crate::host_set(
+        "host.elapsed",
+        (obj.as_ref().and_then(|value| value.elapsed)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.frameIndex",
+        (obj.as_ref().and_then(|value| value.frame_index)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.onComplete",
+        (obj.as_ref().and_then(|value| (value.on_complete).clone())).unwrap_or(create_signal()),
+    );
+    crate::host_set(
+        "host.onLoop",
+        (obj.as_ref().and_then(|value| (value.on_loop).clone())).unwrap_or(create_signal()),
+    );
+    crate::host_set(
+        "host.paused",
+        (obj.as_ref().and_then(|value| value.paused)).unwrap_or(false),
+    );
+    crate::host_set(
+        "host.queue",
+        (obj.as_ref().and_then(|value| (value.queue).clone())).unwrap_or(vec![]),
+    );
+    crate::host_set(
+        "host.speed",
+        (obj.as_ref().and_then(|value| value.speed)).unwrap_or(1.0_f64),
+    );
+}
+
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:99 (sha256:7f9a9b39306e1d67c6001918ed4ab4a3e5a4019e62e6f455cf430443bb038888)
 pub fn pause_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
     player.paused = true;
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:89 (sha256:418f1ba0e5f5f8523198c38082aa80da56ffb6bcf363b0db777849ed92b2d4ad)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:103 (sha256:418f1ba0e5f5f8523198c38082aa80da56ffb6bcf363b0db777849ed92b2d4ad)
 pub fn play_spritesheet_animation(
     player: &mut SpritesheetPlayer,
     animation: &Option<SpritesheetAnimation>,
@@ -161,7 +211,7 @@ pub fn play_spritesheet_animation(
     player.queue.clear();
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:102 (sha256:97b719c03dcf78c1d0cbb62c56e4acf1b214c95fc4663a67be5b4e9f67577ded)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:116 (sha256:97b719c03dcf78c1d0cbb62c56e4acf1b214c95fc4663a67be5b4e9f67577ded)
 pub fn queue_spritesheet_animation(
     player: &mut SpritesheetPlayer,
     animation: &SpritesheetAnimation,
@@ -169,7 +219,7 @@ pub fn queue_spritesheet_animation(
     player.queue.push(((*animation).clone()).clone());
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:109 (sha256:72f908bdc82f3a6752d0468102c3124bfef57eba81ab1f9bd7a339275682acc8)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:123 (sha256:72f908bdc82f3a6752d0468102c3124bfef57eba81ab1f9bd7a339275682acc8)
 pub fn release_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
     clear_signal(&mut player.on_complete);
     clear_signal(&mut player.on_loop);
@@ -186,12 +236,12 @@ pub fn release_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
         .push(((*player).clone()).clone());
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:122 (sha256:c2d68d7c6255aaae2c7348c1b37063c50bcbae94ed352fe44e29c1064f6d1bcb)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:136 (sha256:c2d68d7c6255aaae2c7348c1b37063c50bcbae94ed352fe44e29c1064f6d1bcb)
 pub fn resume_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
     player.paused = false;
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:126 (sha256:fe05d9c137d0ebade35838eb19a5630223a7492c234b4ad6b68de2c2f00b1e84)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:140 (sha256:fe05d9c137d0ebade35838eb19a5630223a7492c234b4ad6b68de2c2f00b1e84)
 pub fn seek_spritesheet_player_to_frame(player: &mut SpritesheetPlayer, frame_index: f64) -> () {
     let animation = (player.animation).clone();
     if ((animation).is_none()) || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64) {
@@ -205,7 +255,7 @@ pub fn seek_spritesheet_player_to_frame(player: &mut SpritesheetPlayer, frame_in
     player.elapsed = resolve_virtual_index_start_time(&animation.as_ref().unwrap(), virtual_index);
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:135 (sha256:ccc956a8d2a9290e2da714a354e13a5ca831edd50d23565edfcace178931fefe)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:149 (sha256:ccc956a8d2a9290e2da714a354e13a5ca831edd50d23565edfcace178931fefe)
 pub fn seek_spritesheet_player_to_time(player: &mut SpritesheetPlayer, time: f64) -> () {
     let animation = (player.animation).clone();
     if ((animation).is_none()) || ((animation.as_ref().unwrap().frames.len() as f64) == 0.0_f64) {
@@ -217,7 +267,7 @@ pub fn seek_spritesheet_player_to_time(player: &mut SpritesheetPlayer, time: f64
         resolve_frame_index_from_elapsed(&animation.as_ref().unwrap(), player.elapsed);
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:143 (sha256:e58eb6d0ffc8d267cfb7dc16871520a81d93cd9262e357e6ae88a286d9f718b4)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:157 (sha256:e58eb6d0ffc8d267cfb7dc16871520a81d93cd9262e357e6ae88a286d9f718b4)
 pub fn stop_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
     player.elapsed = 0.0_f64;
     player.frame_index = 0.0_f64;
@@ -225,7 +275,7 @@ pub fn stop_spritesheet_player(player: &mut SpritesheetPlayer) -> () {
     player.queue.clear();
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:150 (sha256:246e26abdbbe61bd05443071069d7c87018de3f419aee19a8d0df5869c24dce8)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:164 (sha256:246e26abdbbe61bd05443071069d7c87018de3f419aee19a8d0df5869c24dce8)
 pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64) -> bool {
     let animation = (player.animation).clone();
     if ((((animation).is_none()) || (player.complete)) || (player.paused))
@@ -267,7 +317,7 @@ pub fn update_spritesheet_player(player: &mut SpritesheetPlayer, delta_time: f64
     return true;
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:185 (sha256:358cb61eb1e96fd070ccf23280682d1944b5a11d1771b989ad72b42a7a702bf6)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:199 (sha256:358cb61eb1e96fd070ccf23280682d1944b5a11d1771b989ad72b42a7a702bf6)
 fn resolve_display_index_to_first_virtual_index(
     animation: &SpritesheetAnimation,
     display_index: f64,
@@ -302,7 +352,7 @@ fn resolve_display_index_to_first_virtual_index(
     }
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:203 (sha256:a9f619e74d5b534e4218f39ef9ea7713f7d18af1070f3d475f9248d21449cf6f)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:217 (sha256:a9f619e74d5b534e4218f39ef9ea7713f7d18af1070f3d475f9248d21449cf6f)
 fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
     let cached = (*CUMULATIVE_DURATIONS_CACHE.lock().unwrap())
         .iter()
@@ -344,7 +394,7 @@ fn get_cumulative_durations(animation: &SpritesheetAnimation) -> Vec<f64> {
     return arr;
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:223 (sha256:3dfbedac804471a0bfcf4076a98171721b64056c643553365388d4e6c31b78ea)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:237 (sha256:3dfbedac804471a0bfcf4076a98171721b64056c643553365388d4e6c31b78ea)
 fn resolve_animation_total_time(animation: &SpritesheetAnimation) -> f64 {
     let frame_duration = animation.frame_duration;
     let frame_durations = (animation.frame_durations).clone();
@@ -360,7 +410,7 @@ fn resolve_animation_total_time(animation: &SpritesheetAnimation) -> f64 {
     };
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:235 (sha256:586efc36ba013bc396181e2b1fa43675d59d79cb9a7d3636da2320251a06b1c3)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:249 (sha256:586efc36ba013bc396181e2b1fa43675d59d79cb9a7d3636da2320251a06b1c3)
 fn resolve_frame_index_from_elapsed(animation: &SpritesheetAnimation, elapsed: f64) -> f64 {
     let total_time = resolve_animation_total_time(animation);
     let time_in_loop = (elapsed % total_time);
@@ -368,7 +418,7 @@ fn resolve_frame_index_from_elapsed(animation: &SpritesheetAnimation, elapsed: f
     return resolve_virtual_index_to_display_index(animation, vi);
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:244 (sha256:5af18316f0e4425342a0804179ccea8c6b44d3c00788f21ef25125870d4add70)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:258 (sha256:5af18316f0e4425342a0804179ccea8c6b44d3c00788f21ef25125870d4add70)
 fn resolve_virtual_frame_count(animation: &SpritesheetAnimation) -> f64 {
     let n = (animation.frames.len() as f64);
     let is_pingpong = ((animation.direction).clone() == "pingpong")
@@ -379,7 +429,7 @@ fn resolve_virtual_frame_count(animation: &SpritesheetAnimation) -> f64 {
     return n;
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:253 (sha256:c7035f6a8845978643557eb8f95452c6f761ac513552e6a58a90222f03cea403)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:267 (sha256:c7035f6a8845978643557eb8f95452c6f761ac513552e6a58a90222f03cea403)
 fn resolve_virtual_index_from_time(animation: &SpritesheetAnimation, time_in_loop: f64) -> f64 {
     let frame_duration = animation.frame_duration;
     let frame_durations = (animation.frame_durations).clone();
@@ -402,7 +452,7 @@ fn resolve_virtual_index_from_time(animation: &SpritesheetAnimation, time_in_loo
     return ((time_in_loop / frame_duration).floor()).min((virtual_count - 1.0_f64));
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:276 (sha256:a9be8e40102778c51d88aa7eb532e32e5df5252edecffedeefa32a151cafeeed)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:290 (sha256:a9be8e40102778c51d88aa7eb532e32e5df5252edecffedeefa32a151cafeeed)
 fn resolve_virtual_index_start_time(animation: &SpritesheetAnimation, virtual_index: f64) -> f64 {
     let frame_duration = animation.frame_duration;
     let frame_durations = (animation.frame_durations).clone();
@@ -413,7 +463,7 @@ fn resolve_virtual_index_start_time(animation: &SpritesheetAnimation, virtual_in
     return (virtual_index * frame_duration);
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:287 (sha256:8220a77b748dc9d3bb57add872ccca2976b362536b56cd8e1d616a909a908b05)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:301 (sha256:8220a77b748dc9d3bb57add872ccca2976b362536b56cd8e1d616a909a908b05)
 fn resolve_virtual_index_to_display_index(
     animation: &SpritesheetAnimation,
     virtual_index: f64,
@@ -462,11 +512,11 @@ fn resolve_virtual_index_to_display_index(
     }
 }
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:307 (sha256:81b485783a84d6aeb1957d7e8e71063a07ef663d6abe35942e49c4edd77f4b08)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:321 (sha256:81b485783a84d6aeb1957d7e8e71063a07ef663d6abe35942e49c4edd77f4b08)
 static PLAYER_POOL: std::sync::LazyLock<std::sync::Mutex<Vec<SpritesheetPlayer>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(vec![]));
 
-// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:313 (sha256:89e7d6c15d1c6d28355c2714daca6ccea98cab9e5cf1620d5a77dcfffe517337)
+// Source: upstream/packages/spritesheet/src/spritesheetPlayer.ts:327 (sha256:89e7d6c15d1c6d28355c2714daca6ccea98cab9e5cf1620d5a77dcfffe517337)
 static CUMULATIVE_DURATIONS_CACHE: std::sync::LazyLock<
     std::sync::Mutex<Vec<(SpritesheetAnimation, Vec<f64>)>>,
 > = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));

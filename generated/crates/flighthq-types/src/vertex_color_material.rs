@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode};
-use crate::{PbrExtension, StandardPbrMaterialProperties, Texture};
+use crate::{Modifier, PbrExtension, StandardPbrMaterialProperties, Texture};
 
-// Source: upstream/packages/types/src/VertexColorMaterial.ts:6 (sha256:9d8cc36eaecca7c66c0ce29413c59ec9780d206a161003fb62f06b580efd7d2b)
+// Source: upstream/packages/types/src/VertexColorMaterial.ts:6 (sha256:02fd2910de6dcf4312b4eb943885dc121d206613c7975a6a535fdfbeaeec6fc6)
 #[derive(Clone, Default)]
 pub struct VertexColorMaterial {
     #[doc(hidden)]
@@ -24,12 +24,40 @@ pub struct VertexColorMaterial {
     pub alpha_mode: MaterialAlphaMode,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub color: f64,
+    pub thickness: f64,
+    pub tint: f64,
+    pub base_color: f64,
+    pub base_color_map: Option<Texture>,
+    pub ramp: Option<Texture>,
+    pub steps: f64,
+    pub alpha_map: Option<Texture>,
+    pub emissive: f64,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: f64,
+    pub metallic: f64,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: f64,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: f64,
+    pub roughness: f64,
+    pub diffuse: f64,
+    pub diffuse_map: Option<Texture>,
+    pub glossiness: f64,
+    pub specular: f64,
+    pub specular_glossiness_map: Option<Texture>,
+    pub modifiers: Vec<Modifier>,
+    pub shininess: f64,
+    pub specular_map: Option<Texture>,
+    pub matcap: Option<Texture>,
     pub extensions: Vec<PbrExtension>,
     pub standard: StandardPbrMaterialProperties,
+    pub far: f64,
+    pub near: f64,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
-    pub tint: f64,
 }
 impl PartialEq for VertexColorMaterial {
     fn eq(&self, other: &Self) -> bool {
@@ -55,5 +83,5 @@ impl crate::FlightEntity for VertexColorMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/VertexColorMaterial.ts:10 (sha256:663ec1ea4d52c1b7c256befac8cd831121c0c0bd0dc46b845b553ec773b8becd)
+// Source: upstream/packages/types/src/VertexColorMaterial.ts:11 (sha256:663ec1ea4d52c1b7c256befac8cd831121c0c0bd0dc46b845b553ec773b8becd)
 pub const VERTEX_COLOR_MATERIAL_KIND: &'static str = "VertexColorMaterial";

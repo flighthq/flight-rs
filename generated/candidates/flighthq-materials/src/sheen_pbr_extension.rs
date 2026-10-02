@@ -7,10 +7,10 @@
 #![allow(unused_parens)]
 
 use crate::{is_valid_material_weight, is_valid_pbr_uv_set};
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_types::{
-    Kind, PbrUvSet, SHEEN_PBR_EXTENSION_KIND as sheen_pbr_extension_kind_constant,
-    SheenPbrExtension, Texture,
+    EntityConstruction, Kind, PbrUvSet,
+    SHEEN_PBR_EXTENSION_KIND as sheen_pbr_extension_kind_constant, SheenPbrExtension, Texture,
 };
 
 #[derive(Clone, Default)]
@@ -70,34 +70,108 @@ impl PartialEq for FlightPartialRecord1860699151 {
     }
 }
 
-// Source: upstream/packages/materials/src/sheenPbrExtension.ts:8 (sha256:bad19531bcb91e470292c790b19a1b294e8d7fb3b615d82a6fd3635ee7d93a45)
+// Source: upstream/packages/materials/src/sheenPbrExtension.ts:8 (sha256:efd2afea3fd997e167a682dec0a3d240c2b98faf4d62b10872c47eea082d9c50)
 pub fn create_sheen_pbr_extension(
     opts: Option<FlightPartialRecord1860699151>,
 ) -> SheenPbrExtension {
-    return create_entity(Some(SheenPbrExtension {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        kind: (sheen_pbr_extension_kind_constant).to_owned(),
-        sheen_color: (opts.as_ref().and_then(|value| value.sheen_color)).unwrap_or(255.0_f64),
-        sheen_color_map: opts
-            .as_ref()
+    let mut out = allocate_entity();
+    initialize_sheen_pbr_extension(
+        (out).clone(),
+        ((opts).clone()).as_ref().map(|__flight_value| {
+            let __flight_source = &(__flight_value);
+            FlightPartialRecord1860699151 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                kind: (__flight_source.kind).clone(),
+                thickness: __flight_source.thickness,
+                thickness_map: (__flight_source.thickness_map).clone(),
+                thickness_map_uv_set: __flight_source.thickness_map_uv_set,
+                wrapped_diffuse_color: __flight_source.wrapped_diffuse_color,
+                wrapped_diffuse_map: (__flight_source.wrapped_diffuse_map).clone(),
+                wrapped_diffuse_map_uv_set: __flight_source.wrapped_diffuse_map_uv_set,
+                wrapped_diffuse_strength: __flight_source.wrapped_diffuse_strength,
+                attenuation_color: __flight_source.attenuation_color,
+                attenuation_distance: __flight_source.attenuation_distance,
+                ior: __flight_source.ior,
+                transmission: __flight_source.transmission,
+                transmission_map: (__flight_source.transmission_map).clone(),
+                transmission_map_uv_set: __flight_source.transmission_map_uv_set,
+                specular: __flight_source.specular,
+                specular_color: __flight_source.specular_color,
+                specular_color_map: (__flight_source.specular_color_map).clone(),
+                specular_color_map_uv_set: __flight_source.specular_color_map_uv_set,
+                specular_map: (__flight_source.specular_map).clone(),
+                specular_map_uv_set: __flight_source.specular_map_uv_set,
+                sheen_color: __flight_source.sheen_color,
+                sheen_color_map: (__flight_source.sheen_color_map).clone(),
+                sheen_color_map_uv_set: __flight_source.sheen_color_map_uv_set,
+                sheen_roughness: __flight_source.sheen_roughness,
+                sheen_roughness_map: (__flight_source.sheen_roughness_map).clone(),
+                sheen_roughness_map_uv_set: __flight_source.sheen_roughness_map_uv_set,
+                iridescence: __flight_source.iridescence,
+                iridescence_ior: __flight_source.iridescence_ior,
+                iridescence_map: (__flight_source.iridescence_map).clone(),
+                iridescence_map_uv_set: __flight_source.iridescence_map_uv_set,
+                iridescence_thickness_map: (__flight_source.iridescence_thickness_map).clone(),
+                iridescence_thickness_map_uv_set: __flight_source.iridescence_thickness_map_uv_set,
+                iridescence_thickness_max: __flight_source.iridescence_thickness_max,
+                iridescence_thickness_min: __flight_source.iridescence_thickness_min,
+                clearcoat: __flight_source.clearcoat,
+                clearcoat_map: (__flight_source.clearcoat_map).clone(),
+                clearcoat_map_uv_set: __flight_source.clearcoat_map_uv_set,
+                clearcoat_normal_map: (__flight_source.clearcoat_normal_map).clone(),
+                clearcoat_normal_map_uv_set: __flight_source.clearcoat_normal_map_uv_set,
+                clearcoat_normal_scale: __flight_source.clearcoat_normal_scale,
+                clearcoat_roughness: __flight_source.clearcoat_roughness,
+                clearcoat_roughness_map: (__flight_source.clearcoat_roughness_map).clone(),
+                clearcoat_roughness_map_uv_set: __flight_source.clearcoat_roughness_map_uv_set,
+                anisotropy_map: (__flight_source.anisotropy_map).clone(),
+                anisotropy_map_uv_set: __flight_source.anisotropy_map_uv_set,
+                anisotropy_rotation: __flight_source.anisotropy_rotation,
+                anisotropy_strength: __flight_source.anisotropy_strength,
+            }
+        }),
+    );
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/materials/src/sheenPbrExtension.ts:14 (sha256:6e9bd4ee1161ebf3b0e8c1a9ef06c87ebad5f85ec81cf9773040794dcd672c01)
+pub fn initialize_sheen_pbr_extension(
+    out: EntityConstruction<SheenPbrExtension>,
+    opts: Option<FlightPartialRecord1860699151>,
+) -> () {
+    crate::host_set("host.kind", sheen_pbr_extension_kind_constant);
+    crate::host_set(
+        "host.sheenColor",
+        (opts.as_ref().and_then(|value| value.sheen_color)).unwrap_or(255.0_f64),
+    );
+    crate::host_set(
+        "host.sheenColorMap",
+        opts.as_ref()
             .and_then(|value| (value.sheen_color_map).clone()),
-        sheen_color_map_uv_set: (opts.as_ref().and_then(|value| value.sheen_color_map_uv_set))
-            .unwrap_or(0.0_f64),
-        sheen_roughness: (opts.as_ref().and_then(|value| value.sheen_roughness)).unwrap_or(0.0_f64),
-        sheen_roughness_map: opts
-            .as_ref()
+    );
+    crate::host_set(
+        "host.sheenColorMapUvSet",
+        (opts.as_ref().and_then(|value| value.sheen_color_map_uv_set)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.sheenRoughness",
+        (opts.as_ref().and_then(|value| value.sheen_roughness)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.sheenRoughnessMap",
+        opts.as_ref()
             .and_then(|value| (value.sheen_roughness_map).clone()),
-        sheen_roughness_map_uv_set: (opts
+    );
+    crate::host_set(
+        "host.sheenRoughnessMapUvSet",
+        (opts
             .as_ref()
             .and_then(|value| value.sheen_roughness_map_uv_set))
         .unwrap_or(0.0_f64),
-        ..Default::default()
-    }));
+    );
 }
 
-// Source: upstream/packages/materials/src/sheenPbrExtension.ts:20 (sha256:bcd21e33932a285777c418874a51c4a243732daa6a94ed290f3830656e68b057)
+// Source: upstream/packages/materials/src/sheenPbrExtension.ts:27 (sha256:bcd21e33932a285777c418874a51c4a243732daa6a94ed290f3830656e68b057)
 pub fn is_valid_sheen_pbr_extension(value: &SheenPbrExtension) -> bool {
     return ((is_valid_material_weight(value.sheen_roughness))
         && (is_valid_pbr_uv_set(value.sheen_color_map_uv_set)))

@@ -21,6 +21,8 @@ pub struct GlPbrProgram {
     pub loc_object_alpha: Option<crate::OpaqueHostValue>,
     pub loc_alpha_is_coverage: Option<crate::OpaqueHostValue>,
     pub loc_joint_texture: Option<crate::OpaqueHostValue>,
+    pub loc_instance_palette: Option<crate::OpaqueHostValue>,
+    pub loc_instance_color_palette: Option<crate::OpaqueHostValue>,
     pub loc_joint_normal_texture: Option<crate::OpaqueHostValue>,
     pub loc_model: Option<crate::OpaqueHostValue>,
     pub loc_normal_matrix: Option<crate::OpaqueHostValue>,
@@ -72,7 +74,7 @@ impl PartialEq for GlPbrProgram {
     }
 }
 
-// Source: upstream/packages/types/src/GlPbrProgram.ts:34 (sha256:fd5550d5ea237e39bba5b83eeece0fe25bbacac7c185a05f49e04afac6abe72f)
+// Source: upstream/packages/types/src/GlPbrProgram.ts:34 (sha256:8c26009bb2b395538494d31cd01450f6f52d75b65ae85e627c99b1b8f5e87f9e)
 #[derive(Clone, Default)]
 pub struct GlPbrDefineKey {
     #[doc(hidden)]
@@ -83,6 +85,7 @@ pub struct GlPbrDefineKey {
     pub has_color_adjustment: Option<bool>,
     pub has_color_matrix: Option<bool>,
     pub has_emissive_map: bool,
+    pub has_instances: Option<bool>,
     pub has_metallic_roughness_map: bool,
     pub has_normal_map: bool,
     pub has_occlusion_map: bool,

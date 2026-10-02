@@ -6,12 +6,13 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_types::{
-    Matrix, Matrix3Like, Matrix4Like, MatrixLike, RectangleLike, Vector2Like, Vector3Like,
+    EntityConstruction, Matrix, Matrix3Like, Matrix4Like, MatrixLike, RectangleLike, Vector2Like,
+    Vector3Like,
 };
 
-// Source: upstream/packages/geometry/src/matrix.ts:12 (sha256:223003a4ea40b7e755dceb8e680fb160423275d8e153f5291242decc27161cde)
+// Source: upstream/packages/geometry/src/matrix.ts:13 (sha256:223003a4ea40b7e755dceb8e680fb160423275d8e153f5291242decc27161cde)
 pub fn clone_matrix(source: &MatrixLike) -> Matrix {
     let mut m = create_matrix(None, None, None, None, None, None);
     {
@@ -33,7 +34,7 @@ pub fn clone_matrix(source: &MatrixLike) -> Matrix {
     return m;
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:18 (sha256:beaf76418a2fae4710a9224541e3988304f940929d0016e15a70d8cdc8ac1edc)
+// Source: upstream/packages/geometry/src/matrix.ts:19 (sha256:beaf76418a2fae4710a9224541e3988304f940929d0016e15a70d8cdc8ac1edc)
 pub fn copy_matrix(out: &mut MatrixLike, source: &MatrixLike) -> () {
     let a = source.a;
     let b = source.b;
@@ -44,7 +45,7 @@ pub fn copy_matrix(out: &mut MatrixLike, source: &MatrixLike) -> () {
     set_matrix(out, a, b, c, d, tx, ty);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:26 (sha256:470259954fa7b9115b445fd930c333e73114755e4ee8854909e87e5dad16fc0a)
+// Source: upstream/packages/geometry/src/matrix.ts:27 (sha256:470259954fa7b9115b445fd930c333e73114755e4ee8854909e87e5dad16fc0a)
 pub fn copy_matrix_column_from_vector3(
     out: &mut MatrixLike,
     column: f64,
@@ -87,7 +88,7 @@ pub fn copy_matrix_column_from_vector3(
     }
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:50 (sha256:135015d17151ceaac7945646bbe8ba7e2c105c532682e4b53e832c62e7abc79b)
+// Source: upstream/packages/geometry/src/matrix.ts:51 (sha256:135015d17151ceaac7945646bbe8ba7e2c105c532682e4b53e832c62e7abc79b)
 pub fn copy_matrix_column_to_vector3(
     out: &mut Vector3Like,
     column: f64,
@@ -137,7 +138,7 @@ pub fn copy_matrix_column_to_vector3(
     }
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:76 (sha256:728b33c3c94979e34b9c46ae660dc7b31f698734fc618eff3c95cd210a4b0b71)
+// Source: upstream/packages/geometry/src/matrix.ts:77 (sha256:728b33c3c94979e34b9c46ae660dc7b31f698734fc618eff3c95cd210a4b0b71)
 pub fn copy_matrix_row_from_vector3(out: &mut MatrixLike, row: f64, source: &Vector3Like) -> () {
     let x = source.x;
     let y = source.y;
@@ -177,7 +178,7 @@ pub fn copy_matrix_row_from_vector3(out: &mut MatrixLike, row: f64, source: &Vec
     }
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:101 (sha256:050548f7b3fcd280e8d4cae15653da53e4cb21c283c6395225b9ca422348c40b)
+// Source: upstream/packages/geometry/src/matrix.ts:102 (sha256:050548f7b3fcd280e8d4cae15653da53e4cb21c283c6395225b9ca422348c40b)
 pub fn copy_matrix_row_to_vector3(out: &mut Vector3Like, row: f64, source: &MatrixLike) -> () {
     let a = source.a;
     let b = source.b;
@@ -223,7 +224,7 @@ pub fn copy_matrix_row_to_vector3(out: &mut Vector3Like, row: f64, source: &Matr
     }
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:124 (sha256:0dd9fbb07cfa575d7ccb20ff833694b48f02b206f72906f76eba7ae1e1208f64)
+// Source: upstream/packages/geometry/src/matrix.ts:125 (sha256:0dd9fbb07cfa575d7ccb20ff833694b48f02b206f72906f76eba7ae1e1208f64)
 pub fn create_gradient_transform_matrix(
     width: f64,
     height: f64,
@@ -255,7 +256,7 @@ pub fn create_gradient_transform_matrix(
     return out;
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:148 (sha256:8c42ee692d5afe71d3726d329431375adda696bd7d1f9ffa103c47a4c5e31704)
+// Source: upstream/packages/geometry/src/matrix.ts:149 (sha256:eeb859d0386b7c534b9580b6b97d7f4fa7d447210175f0077a8beff7a170f0f5)
 pub fn create_matrix(
     a: Option<f64>,
     b: Option<f64>,
@@ -264,20 +265,20 @@ pub fn create_matrix(
     tx: Option<f64>,
     ty: Option<f64>,
 ) -> Matrix {
-    return create_entity(Some(Matrix {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        a: (a).unwrap_or(1.0_f64),
-        b: (b).unwrap_or(0.0_f64),
-        c: (c).unwrap_or(0.0_f64),
-        d: (d).unwrap_or(1.0_f64),
-        tx: (tx).unwrap_or(0.0_f64),
-        ty: (ty).unwrap_or(0.0_f64),
-    }));
+    let mut out = allocate_entity();
+    initialize_matrix(
+        (out).clone(),
+        (a).unwrap_or(1.0_f64),
+        (b).unwrap_or(0.0_f64),
+        (c).unwrap_or(0.0_f64),
+        (d).unwrap_or(1.0_f64),
+        (tx).unwrap_or(0.0_f64),
+        (ty).unwrap_or(0.0_f64),
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:152 (sha256:49e85917c9c271567d2953da1c3dbc000a7b35440d2dd3f2ca85f0da9cb3345b)
+// Source: upstream/packages/geometry/src/matrix.ts:155 (sha256:49e85917c9c271567d2953da1c3dbc000a7b35440d2dd3f2ca85f0da9cb3345b)
 pub fn create_transform_matrix(
     scale_x: f64,
     scale_y: f64,
@@ -309,7 +310,7 @@ pub fn create_transform_matrix(
     return out;
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:164 (sha256:c9d73338df7aab825e46232685ce9fc6e9decebfca5773a7f5b5aa30d8479928)
+// Source: upstream/packages/geometry/src/matrix.ts:167 (sha256:c9d73338df7aab825e46232685ce9fc6e9decebfca5773a7f5b5aa30d8479928)
 pub fn equals_matrix(
     a: &Option<MatrixLike>,
     b: &Option<MatrixLike>,
@@ -331,7 +332,25 @@ pub fn equals_matrix(
         && (a.as_ref().unwrap().d == b.as_ref().unwrap().d);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:188 (sha256:c021a7a92fa7399f6b1e4aa2477bbdef2c560d530531c10546d366d91caf740c)
+// Source: upstream/packages/geometry/src/matrix.ts:183 (sha256:05c2d9d354d2ec1afcc810a83390ff306c8ff68ea66c300c7fe61df6c22fbb3e)
+pub fn initialize_matrix(
+    out: EntityConstruction<Matrix>,
+    a: f64,
+    b: f64,
+    c: f64,
+    d: f64,
+    tx: f64,
+    ty: f64,
+) -> () {
+    crate::host_set("host.a", a);
+    crate::host_set("host.b", b);
+    crate::host_set("host.c", c);
+    crate::host_set("host.d", d);
+    crate::host_set("host.tx", tx);
+    crate::host_set("host.ty", ty);
+}
+
+// Source: upstream/packages/geometry/src/matrix.ts:208 (sha256:c021a7a92fa7399f6b1e4aa2477bbdef2c560d530531c10546d366d91caf740c)
 pub fn inverse_matrix(out: &mut MatrixLike, source: &MatrixLike) -> bool {
     let a = source.a;
     let b = source.b;
@@ -369,7 +388,7 @@ pub fn inverse_matrix(out: &mut MatrixLike, source: &MatrixLike) -> bool {
     return true;
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:221 (sha256:9e7f3725a29805a0cb8b0e183b2bae6d552de8935bbf76e511f1047acae5a6e3)
+// Source: upstream/packages/geometry/src/matrix.ts:241 (sha256:9e7f3725a29805a0cb8b0e183b2bae6d552de8935bbf76e511f1047acae5a6e3)
 pub fn inverse_matrix_transform_point(
     out: &mut Vector2Like,
     matrix: &MatrixLike,
@@ -378,7 +397,7 @@ pub fn inverse_matrix_transform_point(
     inverse_matrix_transform_point_xy(out, matrix, point.x, point.y);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:229 (sha256:0945005b329ccf99d8c5ac291f34972cb0875a1682f888708db45f5ee2cf1ec5)
+// Source: upstream/packages/geometry/src/matrix.ts:249 (sha256:0945005b329ccf99d8c5ac291f34972cb0875a1682f888708db45f5ee2cf1ec5)
 pub fn inverse_matrix_transform_point_xy(
     out: &mut Vector2Like,
     source: &MatrixLike,
@@ -396,7 +415,7 @@ pub fn inverse_matrix_transform_point_xy(
     }
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:251 (sha256:1a8b8af520177bbedc283cb44822312e123ced462c1e098fcd8f0462da23a5ce)
+// Source: upstream/packages/geometry/src/matrix.ts:271 (sha256:1a8b8af520177bbedc283cb44822312e123ced462c1e098fcd8f0462da23a5ce)
 pub fn inverse_matrix_transform_vector(
     out: &mut Vector2Like,
     matrix: &MatrixLike,
@@ -405,7 +424,7 @@ pub fn inverse_matrix_transform_vector(
     inverse_matrix_transform_vector_xy(out, matrix, vector.x, vector.y);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:259 (sha256:f61560663ecc50bc5d35ce3e8f923dcee791c96041344839ad6c2c6b8715555f)
+// Source: upstream/packages/geometry/src/matrix.ts:279 (sha256:f61560663ecc50bc5d35ce3e8f923dcee791c96041344839ad6c2c6b8715555f)
 pub fn inverse_matrix_transform_vector_xy(
     out: &mut Vector2Like,
     source: &MatrixLike,
@@ -423,7 +442,7 @@ pub fn inverse_matrix_transform_vector_xy(
     }
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:285 (sha256:856dec812c552b0c3580d438842703e5fdfefef16ba71d494742fd2393d6863e)
+// Source: upstream/packages/geometry/src/matrix.ts:305 (sha256:856dec812c552b0c3580d438842703e5fdfefef16ba71d494742fd2393d6863e)
 pub fn matrix_transform_bounds(
     out: &mut RectangleLike,
     source: &MatrixLike,
@@ -497,7 +516,7 @@ pub fn matrix_transform_bounds(
     out.height = (ty1 - ty0);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:339 (sha256:45f938d4c8d9beca19d39c07032d7b13c24c59f306c801cabfb3f14c93a1861c)
+// Source: upstream/packages/geometry/src/matrix.ts:359 (sha256:45f938d4c8d9beca19d39c07032d7b13c24c59f306c801cabfb3f14c93a1861c)
 pub fn matrix_transform_bounds_vector2(
     out: &mut RectangleLike,
     matrix: &MatrixLike,
@@ -507,7 +526,7 @@ pub fn matrix_transform_bounds_vector2(
     matrix_transform_bounds(out, matrix, a.x, a.y, b.x, b.y);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:352 (sha256:16bbeda9bc34da7facc9f272c9137fa8b56307a8b89899870e51aada2651c8d7)
+// Source: upstream/packages/geometry/src/matrix.ts:372 (sha256:16bbeda9bc34da7facc9f272c9137fa8b56307a8b89899870e51aada2651c8d7)
 pub fn matrix_transform_point(
     out: &mut Vector2Like,
     matrix: &MatrixLike,
@@ -516,13 +535,13 @@ pub fn matrix_transform_point(
     matrix_transform_point_xy(out, matrix, point.x, point.y);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:363 (sha256:21336cb8910f1acb4692d68a18e1fcb7820b1d0b8a02c322f76289e067bc639e)
+// Source: upstream/packages/geometry/src/matrix.ts:383 (sha256:21336cb8910f1acb4692d68a18e1fcb7820b1d0b8a02c322f76289e067bc639e)
 pub fn matrix_transform_point_xy(out: &mut Vector2Like, source: &MatrixLike, x: f64, y: f64) -> () {
     out.x = (((x * source.a) + (y * source.c)) + source.tx);
     out.y = (((x * source.b) + (y * source.d)) + source.ty);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:378 (sha256:3b777157deb027c06e7d1f003f029c4320da9897f6fa7a5d0f7d55b99567c50b)
+// Source: upstream/packages/geometry/src/matrix.ts:398 (sha256:3b777157deb027c06e7d1f003f029c4320da9897f6fa7a5d0f7d55b99567c50b)
 pub fn matrix_transform_rectangle(
     out: &mut RectangleLike,
     matrix: &MatrixLike,
@@ -538,7 +557,7 @@ pub fn matrix_transform_rectangle(
     );
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:395 (sha256:4ccf309f68ab81c6eee016a411da214f1019ade0ac4ec5fe16133918861074fe)
+// Source: upstream/packages/geometry/src/matrix.ts:415 (sha256:4ccf309f68ab81c6eee016a411da214f1019ade0ac4ec5fe16133918861074fe)
 pub fn matrix_transform_vector(
     out: &mut Vector2Like,
     matrix: &MatrixLike,
@@ -547,7 +566,7 @@ pub fn matrix_transform_vector(
     matrix_transform_vector_xy(out, matrix, vector.x, vector.y);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:403 (sha256:c2f1458fa9b76d0b6cd21ede251926d579677ff5fc6d8d9dfd44a9bcd0dc2ef4)
+// Source: upstream/packages/geometry/src/matrix.ts:423 (sha256:c2f1458fa9b76d0b6cd21ede251926d579677ff5fc6d8d9dfd44a9bcd0dc2ef4)
 pub fn matrix_transform_vector_xy(
     out: &mut Vector2Like,
     source: &MatrixLike,
@@ -558,7 +577,7 @@ pub fn matrix_transform_vector_xy(
     out.y = ((x * source.b) + (y * source.d));
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:413 (sha256:202f4e1396559a00cb5d86ecaa86ce585ab9955ee116b873d429432b123a18c5)
+// Source: upstream/packages/geometry/src/matrix.ts:433 (sha256:202f4e1396559a00cb5d86ecaa86ce585ab9955ee116b873d429432b123a18c5)
 pub fn multiply_matrix(out: &mut MatrixLike, a: &MatrixLike, b: &MatrixLike) -> () {
     let a1 = a.a;
     let b1 = a.b;
@@ -580,7 +599,7 @@ pub fn multiply_matrix(out: &mut MatrixLike, a: &MatrixLike, b: &MatrixLike) -> 
     out.ty = (((b1 * tx2) + (d1 * ty2)) + ty1);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:441 (sha256:1e9d38a140a20f57844fb483236a8b8d9bb0a20cbcd38e0c78780c18e6c43eb3)
+// Source: upstream/packages/geometry/src/matrix.ts:461 (sha256:1e9d38a140a20f57844fb483236a8b8d9bb0a20cbcd38e0c78780c18e6c43eb3)
 pub fn rotate_matrix(out: &mut MatrixLike, source: &MatrixLike, theta: f64) -> () {
     let cos = (theta).cos();
     let sin = (theta).sin();
@@ -601,7 +620,7 @@ pub fn rotate_matrix(out: &mut MatrixLike, source: &MatrixLike, theta: f64) -> (
     out.tx = tx1;
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:465 (sha256:b9d3d8d725842242568ce37a8417fc6358fd381ceac3639fbff494b53a921e64)
+// Source: upstream/packages/geometry/src/matrix.ts:485 (sha256:b9d3d8d725842242568ce37a8417fc6358fd381ceac3639fbff494b53a921e64)
 pub fn scale_matrix(out: &mut MatrixLike, source: &MatrixLike, sx: f64, sy: f64) -> () {
     let a = source.a;
     let b = source.b;
@@ -617,7 +636,7 @@ pub fn scale_matrix(out: &mut MatrixLike, source: &MatrixLike, sx: f64, sy: f64)
     out.ty = (ty * sy);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:481 (sha256:63ac57572d30259517af9ed7f6bed322d4e1845ea253fb79fbe12203983e4608)
+// Source: upstream/packages/geometry/src/matrix.ts:501 (sha256:63ac57572d30259517af9ed7f6bed322d4e1845ea253fb79fbe12203983e4608)
 pub fn set_gradient_transform_matrix(
     out: &mut MatrixLike,
     width: f64,
@@ -646,7 +665,7 @@ pub fn set_gradient_transform_matrix(
     out.ty = (ty + (height / 2.0_f64));
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:510 (sha256:58a550dd4388f993c35d13773d652bd3767b6f57ecf4f539b5c1745eca5ff651)
+// Source: upstream/packages/geometry/src/matrix.ts:530 (sha256:58a550dd4388f993c35d13773d652bd3767b6f57ecf4f539b5c1745eca5ff651)
 pub fn set_matrix(out: &mut MatrixLike, a: f64, b: f64, c: f64, d: f64, tx: f64, ty: f64) -> () {
     out.a = a;
     out.b = b;
@@ -656,7 +675,7 @@ pub fn set_matrix(out: &mut MatrixLike, a: f64, b: f64, c: f64, d: f64, tx: f64,
     out.ty = ty;
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:519 (sha256:ab06e48deda4fc6356ba12aedb00b5c53ca1b170d8c85ebaefca0e3d3ae56f1f)
+// Source: upstream/packages/geometry/src/matrix.ts:539 (sha256:ab06e48deda4fc6356ba12aedb00b5c53ca1b170d8c85ebaefca0e3d3ae56f1f)
 pub fn set_matrix_from_float32_array(out: &mut MatrixLike, offset: f64, source: &Vec<f32>) -> () {
     out.a = (source[offset as usize] as f64);
     out.b = (source[(offset + 1.0_f64) as usize] as f64);
@@ -666,7 +685,7 @@ pub fn set_matrix_from_float32_array(out: &mut MatrixLike, offset: f64, source: 
     out.ty = (source[(offset + 5.0_f64) as usize] as f64);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:528 (sha256:6082b8297cadd9e1a42e300a15b9166bb02865f97a87990e2df72e7db5d195e5)
+// Source: upstream/packages/geometry/src/matrix.ts:548 (sha256:6082b8297cadd9e1a42e300a15b9166bb02865f97a87990e2df72e7db5d195e5)
 pub fn set_matrix_from_matrix3(out: &mut MatrixLike, source: &Matrix3Like) -> () {
     set_matrix(
         out,
@@ -679,7 +698,7 @@ pub fn set_matrix_from_matrix3(out: &mut MatrixLike, source: &Matrix3Like) -> ()
     );
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:534 (sha256:abc1c832dfa335af5bf8bb416b954fb05e1292492358bf6ed86860c59ae32fc4)
+// Source: upstream/packages/geometry/src/matrix.ts:554 (sha256:abc1c832dfa335af5bf8bb416b954fb05e1292492358bf6ed86860c59ae32fc4)
 pub fn set_matrix_from_matrix4(out: &mut MatrixLike, source: &Matrix4Like) -> () {
     out.a = (source.m[0.0_f64 as usize] as f64);
     out.b = (source.m[4.0_f64 as usize] as f64);
@@ -689,12 +708,12 @@ pub fn set_matrix_from_matrix4(out: &mut MatrixLike, source: &Matrix4Like) -> ()
     out.ty = (source.m[13.0_f64 as usize] as f64);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:551 (sha256:5487d6a18e8ac0ad3f7b95c715dacf602df7b015f27fec301d8d24dc85f558e4)
+// Source: upstream/packages/geometry/src/matrix.ts:571 (sha256:5487d6a18e8ac0ad3f7b95c715dacf602df7b015f27fec301d8d24dc85f558e4)
 pub fn set_matrix_identity(out: &mut MatrixLike) -> () {
     set_matrix(out, 1.0_f64, 0.0_f64, 0.0_f64, 1.0_f64, 0.0_f64, 0.0_f64);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:560 (sha256:ba0670e7942cf8867a3f68111edef25eebd0c0cc3ac5d0f145fa2548461d68b5)
+// Source: upstream/packages/geometry/src/matrix.ts:580 (sha256:ba0670e7942cf8867a3f68111edef25eebd0c0cc3ac5d0f145fa2548461d68b5)
 pub fn set_transform_matrix(
     out: &mut MatrixLike,
     scale_x: f64,
@@ -723,7 +742,7 @@ pub fn set_transform_matrix(
     out.ty = ty;
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:598 (sha256:8b0f25b23728c8e60a55a6fafa3f9048b6fb29fe85cfd6c035084b64353b908c)
+// Source: upstream/packages/geometry/src/matrix.ts:618 (sha256:8b0f25b23728c8e60a55a6fafa3f9048b6fb29fe85cfd6c035084b64353b908c)
 pub fn translate_matrix(out: &mut MatrixLike, source: &MatrixLike, dx: f64, dy: f64) -> () {
     let a = source.a;
     let b = source.b;
@@ -734,7 +753,7 @@ pub fn translate_matrix(out: &mut MatrixLike, source: &MatrixLike, dx: f64, dy: 
     set_matrix(out, a, b, c, d, (tx + dx), (ty + dy));
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:606 (sha256:7a37aac5684c9937b7dde91a8d2a85dd8a6efe609e0cf85f39e89e99d283eda8)
+// Source: upstream/packages/geometry/src/matrix.ts:626 (sha256:7a37aac5684c9937b7dde91a8d2a85dd8a6efe609e0cf85f39e89e99d283eda8)
 pub fn translate_matrix_by_vector(
     out: &mut MatrixLike,
     matrix: &MatrixLike,
@@ -743,7 +762,7 @@ pub fn translate_matrix_by_vector(
     translate_matrix_by_vector_xy(out, matrix, vector.x, vector.y);
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:614 (sha256:b52f3edb76b09c9f94d12da13f5d7cf0f8f44a7e7f340e3c6db63c14e8c7ecc4)
+// Source: upstream/packages/geometry/src/matrix.ts:634 (sha256:b52f3edb76b09c9f94d12da13f5d7cf0f8f44a7e7f340e3c6db63c14e8c7ecc4)
 pub fn translate_matrix_by_vector_xy(
     out: &mut MatrixLike,
     source: &MatrixLike,
@@ -767,7 +786,7 @@ pub fn translate_matrix_by_vector_xy(
     );
 }
 
-// Source: upstream/packages/geometry/src/matrix.ts:619 (sha256:c3ef28cb3fc57f071dd65fbe87d806d870eec6652dbf7fb223dc08b9cda4cb71)
+// Source: upstream/packages/geometry/src/matrix.ts:639 (sha256:c3ef28cb3fc57f071dd65fbe87d806d870eec6652dbf7fb223dc08b9cda4cb71)
 pub fn write_matrix_to_float32_array(out: &mut Vec<f32>, offset: f64, source: &MatrixLike) -> () {
     out[offset as usize] = (source.a) as f32;
     out[(offset + 1.0_f64) as usize] = (source.b) as f32;

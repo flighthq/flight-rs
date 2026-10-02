@@ -11,6 +11,7 @@ path = "src/lib.rs"
 
 [dependencies]
 flighthq-bitmap = { path = "../flighthq-bitmap" }
+flighthq-bitmap-core = { path = "../../../crates/flighthq-bitmap-core" }
 flighthq-runtime = { path = "../flighthq-runtime" }
 flighthq-types = { path = "../flighthq-types" }
 wasm-bindgen = "0.2"

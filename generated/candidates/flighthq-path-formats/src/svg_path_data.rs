@@ -7,10 +7,11 @@
 #![allow(unused_parens)]
 
 use flighthq_path::{
-    append_path_arc_to, append_path_close, append_path_cubic_curve_to, append_path_curve_to,
-    append_path_line_to, append_path_move_to, create_path, for_each_path_segment,
+    append_path_close, append_path_cubic_curve_to, append_path_elliptical_arc_to,
+    append_path_line_to, append_path_move_to, append_path_quadratic_curve_to, create_path,
+    for_each_path_segment,
 };
-use flighthq_types::{Path, PathSegment};
+use flighthq_types::{Path, PathSegment, SvgPathDataFormatOptions};
 
 #[inline]
 
@@ -106,7 +107,8 @@ fn __flight_parse_float(value: &str) -> f64 {
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub precision: Option<f64>,
+    pub position: f64,
+    pub reason: String,
 }
 impl PartialEq for SharedStructuralRecord1 {
     fn eq(&self, other: &Self) -> bool {
@@ -114,8 +116,31 @@ impl PartialEq for SharedStructuralRecord1 {
     }
 }
 
-// Source: upstream/packages/path-formats/src/svgPathData.ts:26 (sha256:47740f889abfd44be81e63395000f16345b23c75821a0adc73f58ce86f7c11e3)
+// Source: upstream/packages/path-formats/src/svgPathData.ts:27 (sha256:35f27f661bb3b01374ef8906648c87ccee46691703b02cd1db095dcacf407975)
 pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
+    let mut scratch = create_path(None);
+    if (parse_svg_path_data_into(&mut scratch, (d).clone())).is_some() {
+        return false;
+    }
+    {
+        path.commands
+            .extend(((scratch.commands).clone()).iter().cloned());
+        path.commands.len() as f64
+    };
+    {
+        path.data.extend(((scratch.data).clone()).iter().cloned());
+        path.data.len() as f64
+    };
+    return true;
+}
+
+// Source: upstream/packages/path-formats/src/svgPathData.ts:39 (sha256:a6cb9857ca19fe83b0146bb02a0720c91c9aa6e967e8d003825314536991c428)
+pub fn explain_svg_path_data(d: String) -> Option<SharedStructuralRecord1> {
+    return parse_svg_path_data_into(&mut create_path(None), (d).clone());
+}
+
+// Source: upstream/packages/path-formats/src/svgPathData.ts:43 (sha256:5d04f0d2f3f08f97d702f041b58902d469e6f3d10f26dcb43544841eadaee778)
+fn parse_svg_path_data_into(path: &mut Path, d: String) -> Option<SharedStructuralRecord1> {
     let __flight_utf16_d: std::sync::Arc<Vec<u16>> =
         std::sync::Arc::new(d.encode_utf16().collect());
     let length = (__flight_utf16_d.len() as f64);
@@ -524,7 +549,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
             }
         };
         if (!is_svg_command_letter((command_letter).clone())) {
-            return false;
+            return Some(SharedStructuralRecord1 {
+                __flight_identity: std::sync::Arc::new(()),
+                position: (*pos.lock().unwrap()).clone(),
+                reason: "expected-command".to_owned(),
+            });
         }
         {
             (*pos.lock().unwrap()) += 1.0;
@@ -533,7 +562,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
         if ((last_kind == "") && ((command_letter).clone() != "M"))
             && ((command_letter).clone() != "m")
         {
-            return false;
+            return Some(SharedStructuralRecord1 {
+                __flight_identity: std::sync::Arc::new(()),
+                position: ((*pos.lock().unwrap()).clone() - 1.0_f64),
+                reason: "expected-moveto".to_owned(),
+            });
         }
         if ((command_letter).clone() == "Z") || ((command_letter).clone() == "z") {
             append_path_close(path);
@@ -554,7 +587,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                 if ((*pos.lock().unwrap()).clone() >= length) {
                     break;
                 }
-                if is_svg_command_letter({
+                if is_ascii_letter({
                     let __flight_units: &[u16] = &__flight_utf16_d;
                     let __flight_raw_index = (*pos.lock().unwrap()).clone();
                     if __flight_raw_index.is_finite()
@@ -589,7 +622,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                     __flight_result
                 };
                 if ((nx).is_none()) || ((ny).is_none()) {
-                    return false;
+                    return Some(SharedStructuralRecord1 {
+                        __flight_identity: std::sync::Arc::new(()),
+                        position: (*pos.lock().unwrap()).clone(),
+                        reason: "expected-coordinate-pair".to_owned(),
+                    });
                 }
                 current_x = if relative {
                     (current_x + *(nx.as_ref().unwrap()))
@@ -618,7 +655,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                         __flight_result
                     };
                     if ((nx).is_none()) || ((ny).is_none()) {
-                        return false;
+                        return Some(SharedStructuralRecord1 {
+                            __flight_identity: std::sync::Arc::new(()),
+                            position: (*pos.lock().unwrap()).clone(),
+                            reason: "expected-coordinate-pair".to_owned(),
+                        });
                     }
                     current_x = if relative {
                         (current_x + *(nx.as_ref().unwrap()))
@@ -640,7 +681,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                             __flight_result
                         };
                         if (nx).is_none() {
-                            return false;
+                            return Some(SharedStructuralRecord1 {
+                                __flight_identity: std::sync::Arc::new(()),
+                                position: (*pos.lock().unwrap()).clone(),
+                                reason: "expected-coordinate".to_owned(),
+                            });
                         }
                         current_x = if relative {
                             (current_x + *(nx.as_ref().unwrap()))
@@ -657,7 +702,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                 __flight_result
                             };
                             if (ny).is_none() {
-                                return false;
+                                return Some(SharedStructuralRecord1 {
+                                    __flight_identity: std::sync::Arc::new(()),
+                                    position: (*pos.lock().unwrap()).clone(),
+                                    reason: "expected-coordinate".to_owned(),
+                                });
                             }
                             current_y = if relative {
                                 (current_y + *(ny.as_ref().unwrap()))
@@ -703,7 +752,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                     || ((x).is_none()))
                                     || ((y).is_none())
                                 {
-                                    return false;
+                                    return Some(SharedStructuralRecord1 {
+                                        __flight_identity: std::sync::Arc::new(()),
+                                        position: (*pos.lock().unwrap()).clone(),
+                                        reason: "expected-cubic-coordinates".to_owned(),
+                                    });
                                 }
                                 let c1x = if relative {
                                     (current_x + *(x1.as_ref().unwrap()))
@@ -766,7 +819,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                     if ((((x2).is_none()) || ((y2).is_none())) || ((x).is_none()))
                                         || ((y).is_none())
                                     {
-                                        return false;
+                                        return Some(SharedStructuralRecord1 {
+                                            __flight_identity: std::sync::Arc::new(()),
+                                            position: (*pos.lock().unwrap()).clone(),
+                                            reason: "expected-smooth-cubic-coordinates".to_owned(),
+                                        });
                                     }
                                     let reflect = (last_kind == "C") || (last_kind == "S");
                                     let c1x = if reflect {
@@ -835,7 +892,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                             || ((x).is_none()))
                                             || ((y).is_none())
                                         {
-                                            return false;
+                                            return Some(SharedStructuralRecord1 {
+                                                __flight_identity: std::sync::Arc::new(()),
+                                                position: (*pos.lock().unwrap()).clone(),
+                                                reason: "expected-quadratic-coordinates".to_owned(),
+                                            });
                                         }
                                         let cx = if relative {
                                             (current_x + *(x1.as_ref().unwrap()))
@@ -857,7 +918,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                         } else {
                                             *(y.as_ref().unwrap())
                                         };
-                                        append_path_curve_to(path, cx, cy, ax, ay);
+                                        append_path_quadratic_curve_to(path, cx, cy, ax, ay);
                                         last_quad_control_x = cx;
                                         last_quad_control_y = cy;
                                         current_x = ax;
@@ -878,7 +939,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                                 __flight_result
                                             };
                                             if ((x).is_none()) || ((y).is_none()) {
-                                                return false;
+                                                return Some(SharedStructuralRecord1 {
+                                                    __flight_identity: std::sync::Arc::new(()),
+                                                    position: (*pos.lock().unwrap()).clone(),
+                                                    reason: "expected-coordinate-pair".to_owned(),
+                                                });
                                             }
                                             let reflect = (last_kind == "Q") || (last_kind == "T");
                                             let cx = if reflect {
@@ -901,7 +966,7 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                             } else {
                                                 *(y.as_ref().unwrap())
                                             };
-                                            append_path_curve_to(path, cx, cy, ax, ay);
+                                            append_path_quadratic_curve_to(path, cx, cy, ax, ay);
                                             last_quad_control_x = cx;
                                             last_quad_control_y = cy;
                                             current_x = ax;
@@ -958,7 +1023,12 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                                     || ((x).is_none()))
                                                     || ((y).is_none())
                                                 {
-                                                    return false;
+                                                    return Some(SharedStructuralRecord1 {
+                                                        __flight_identity: std::sync::Arc::new(()),
+                                                        position: (*pos.lock().unwrap()).clone(),
+                                                        reason: "expected-arc-parameters"
+                                                            .to_owned(),
+                                                    });
                                                 }
                                                 let ax = if relative {
                                                     (current_x + *(x.as_ref().unwrap()))
@@ -970,7 +1040,10 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                                 } else {
                                                     *(y.as_ref().unwrap())
                                                 };
-                                                append_path_arc_to(
+                                                if (last_kind == "Z") {
+                                                    append_path_move_to(path, current_x, current_y);
+                                                }
+                                                append_path_elliptical_arc_to(
                                                     path,
                                                     *(rx.as_ref().unwrap()),
                                                     *(ry.as_ref().unwrap()),
@@ -986,7 +1059,12 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
                                                 current_y = ay;
                                                 last_kind = "A".to_owned();
                                             } else {
-                                                return false;
+                                                return Some(SharedStructuralRecord1 {
+                                                    __flight_identity: std::sync::Arc::new(()),
+                                                    position: ((*pos.lock().unwrap()).clone()
+                                                        - 1.0_f64),
+                                                    reason: "unsupported-command".to_owned(),
+                                                });
                                             }
                                         }
                                     }
@@ -1006,11 +1084,11 @@ pub fn append_svg_path_data(path: &mut Path, d: String) -> bool {
             }
         }
     }
-    return true;
+    return None;
 }
 
-// Source: upstream/packages/path-formats/src/svgPathData.ts:283 (sha256:55264b4768f768b2ea3800cf3ca542d138e2f3b9614d0a30a9a7c965bbd9e588)
-pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1>) -> String {
+// Source: upstream/packages/path-formats/src/svgPathData.ts:313 (sha256:a7fdc13d446e833b9dc3819adeed9b9c511d0e5b4233ac51f87ab67581a6fcf4)
+pub fn format_svg_path_data(path: &Path, options: Option<SvgPathDataFormatOptions>) -> String {
     let precision = options.as_ref().and_then(|value| value.precision);
     let parts: std::sync::Arc<std::sync::Mutex<Vec<String>>> =
         std::sync::Arc::new(std::sync::Mutex::new(vec![]));
@@ -1185,7 +1263,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                                 },
                                             },
                                         })
-                                        .control1_x,
+                                        .control_x1,
                                         (precision).clone()
                                     ),
                                     format_svg_number(
@@ -1207,7 +1285,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                                 },
                                             },
                                         })
-                                        .control1_y,
+                                        .control_y1,
                                         (precision).clone()
                                     )
                                 ),
@@ -1232,7 +1310,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                                 },
                                             },
                                         })
-                                        .control2_x,
+                                        .control_x2,
                                         (precision).clone()
                                     ),
                                     format_svg_number(
@@ -1254,7 +1332,7 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
                                                 },
                                             },
                                         })
-                                        .control2_y,
+                                        .control_y2,
                                         (precision).clone()
                                     )
                                 )
@@ -1345,16 +1423,16 @@ pub fn format_svg_path_data(path: &Path, options: Option<SharedStructuralRecord1
         .join(("".to_owned()).as_str());
 }
 
-// Source: upstream/packages/path-formats/src/svgPathData.ts:314 (sha256:53f9355169e9a9fa6c28fe78487246e5ed91738942fde2c3834d0f527bcad355)
+// Source: upstream/packages/path-formats/src/svgPathData.ts:344 (sha256:958a6176be84359095dce92897aacd034a520ad66b966c6407e60728d726183c)
 pub fn parse_svg_path_data(d: String) -> Option<Path> {
     let mut path = create_path(None);
-    if (!append_svg_path_data(&mut path, (d).clone())) {
+    if (parse_svg_path_data_into(&mut path, (d).clone())).is_some() {
         return None;
     }
     return Some((path).clone());
 }
 
-// Source: upstream/packages/path-formats/src/svgPathData.ts:320 (sha256:3d55b5b9648b702cfeeefab18e92d5fe18956a550ceca1e8cd07b8810e636fef)
+// Source: upstream/packages/path-formats/src/svgPathData.ts:350 (sha256:3d55b5b9648b702cfeeefab18e92d5fe18956a550ceca1e8cd07b8810e636fef)
 fn format_svg_number(value: f64, precision: Option<f64>) -> String {
     if (precision).is_none() {
         return {
@@ -1375,8 +1453,34 @@ fn format_svg_number(value: f64, precision: Option<f64>) -> String {
     };
 }
 
-// Source: upstream/packages/path-formats/src/svgPathData.ts:327 (sha256:b96909a1054a73f2443e51c64f02be6673290494c302b7d1aa6b231cb00d229a)
+// Source: upstream/packages/path-formats/src/svgPathData.ts:357 (sha256:b96909a1054a73f2443e51c64f02be6673290494c302b7d1aa6b231cb00d229a)
 fn is_svg_command_letter(c: String) -> bool {
     return (__flight_string_index_of(&("MmLlHhVvCcSsQqTtAaZz"), &((c).clone()), 0.0_f64)
         != (-1.0_f64));
+}
+
+// Source: upstream/packages/path-formats/src/svgPathData.ts:361 (sha256:e4996d1bc16cbbe252c3986d1a52abe4190ae8a3ad9bc91b54b2f573f6793a35)
+fn is_ascii_letter(c: String) -> bool {
+    let __flight_utf16_c: std::sync::Arc<Vec<u16>> =
+        std::sync::Arc::new(c.encode_utf16().collect());
+    let code = {
+        let __flight_units: &[u16] = &__flight_utf16_c;
+        let __flight_raw_index = 0.0_f64;
+        let __flight_index = if __flight_raw_index.is_nan() {
+            0_i64
+        } else if __flight_raw_index.is_finite() {
+            __flight_raw_index.trunc() as i64
+        } else {
+            -1_i64
+        };
+        if __flight_index < 0 {
+            f64::NAN
+        } else {
+            __flight_units
+                .get(__flight_index as usize)
+                .map_or(f64::NAN, |unit| f64::from(*unit))
+        }
+    };
+    return ((code >= 65.0_f64) && (code <= 90.0_f64))
+        || ((code >= 97.0_f64) && (code <= 122.0_f64));
 }

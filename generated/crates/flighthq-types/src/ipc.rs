@@ -6,30 +6,51 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/Ipc.ts:3 (sha256:f7cdb31590d86af53e30d5330334731416dff4cc04d00950220c73694a5fb245)
-#[derive(Clone, Default)]
-pub struct IpcBackendCapabilities {
+use crate::EntityRuntime;
+
+// Source: upstream/packages/types/src/Ipc.ts:7 (sha256:a83bb039a71af505946af6757fa4c57f03be55593d4834a09c5253b904c95796)
+#[derive(Clone)]
+pub struct HostIpcHandleCapability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub can_handle: bool,
-    pub can_invoke: bool,
-    pub can_send: bool,
-    pub can_target: bool,
+    pub handle: std::sync::Arc<
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(
+                        String,
+                        std::sync::Arc<
+                            std::sync::Mutex<
+                                Box<
+                                    dyn FnMut(
+                                            Vec<crate::FlightValue>,
+                                        )
+                                            -> crate::FlightUnion2<
+                                            crate::FlightValue,
+                                            crate::FlightTask<crate::FlightValue>,
+                                        > + Send
+                                        + 'static,
+                                >,
+                            >,
+                        >,
+                    ) -> std::sync::Arc<
+                        std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
+                    > + Send
+                    + 'static,
+            >,
+        >,
+    >,
 }
-impl PartialEq for IpcBackendCapabilities {
+impl PartialEq for HostIpcHandleCapability {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Ipc.ts:14 (sha256:2180cfb257d9ae642240adc663e0e22b1b2b8939e38428e4ee19ae9c486a8583)
+// Source: upstream/packages/types/src/Ipc.ts:11 (sha256:7a666452c9995ba8150c2aaaa4eacc4a8aff81320d7f2e44df1589596af640b6)
 #[derive(Clone)]
-pub struct IpcBackend {
+pub struct HostIpcInvokeCapability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub send: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String, Vec<crate::FlightValue>) -> () + Send + 'static>>,
-    >,
     pub invoke: std::sync::Arc<
         std::sync::Mutex<
             Box<
@@ -39,6 +60,18 @@ pub struct IpcBackend {
             >,
         >,
     >,
+}
+impl PartialEq for HostIpcInvokeCapability {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Ipc.ts:15 (sha256:aed7e6de0793be5e86827701c46d1401421cbfbcde0dccf098efb166c5948a6c)
+#[derive(Clone)]
+pub struct HostIpcMessageCapability {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
     pub subscribe: std::sync::Arc<
         std::sync::Mutex<
             Box<
@@ -56,124 +89,65 @@ pub struct IpcBackend {
             >,
         >,
     >,
-    pub handle: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<
-                    dyn FnMut(
-                            String,
-                            std::sync::Arc<
-                                std::sync::Mutex<
-                                    Box<
-                                        dyn FnMut(
-                                                Vec<crate::FlightValue>,
-                                            )
-                                                -> crate::FlightUnion2<
-                                                crate::FlightValue,
-                                                crate::FlightTask<crate::FlightValue>,
-                                            > + Send
-                                            + 'static,
-                                    >,
-                                >,
-                            >,
-                        ) -> std::sync::Arc<
-                            std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>,
-                        > + Send
-                        + 'static,
-                >,
-            >,
-        >,
-    >,
-    pub send_to: Option<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(IpcTarget, String, Vec<crate::FlightValue>) -> () + Send + 'static>,
-            >,
-        >,
-    >,
-    pub get_capabilities: Option<
-        std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut() -> IpcBackendCapabilities + Send + 'static>>,
-        >,
-    >,
 }
-impl PartialEq for IpcBackend {
+impl PartialEq for HostIpcMessageCapability {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Ipc.ts:30 (sha256:e226e76590272b023938169c7a8a42aea87f7f146f9584181caa951ca6fe81bb)
-#[derive(Clone, Default)]
-pub struct IpcChannel {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub name: String,
-}
-impl PartialEq for IpcChannel {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/types/src/Ipc.ts:36 (sha256:e168782d01079d277401c4a6f52dedd961921b9079c16bbfcc1db98a15839ee1)
+// Source: upstream/packages/types/src/Ipc.ts:20 (sha256:d6bbcc40a4ad5311578dcf54025fcfe061543852580ba0dfe422c10c33997189)
 #[derive(Clone)]
-pub struct IpcMessageEvent {
+pub struct HostIpcSendCapability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub channel: String,
-    pub sender_id: f64,
-    pub args: Vec<crate::FlightValue>,
-    pub reply: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(Vec<crate::FlightValue>) -> () + Send + 'static>>,
+    pub send: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(String, Vec<crate::FlightValue>) -> () + Send + 'static>>,
     >,
 }
-impl PartialEq for IpcMessageEvent {
+impl PartialEq for HostIpcSendCapability {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Ipc.ts:44 (sha256:859db417db809b19f94bf2dde63794bf6868b68dd6a2dbdaa2e0b440207ba6da)
-#[derive(Clone, Default)]
-pub struct IpcTarget {
+// Source: upstream/packages/types/src/Ipc.ts:26 (sha256:98ceffcd5ff4d102835d86e97312fdf0eff51b9e9a0132cb5e6109d1b26a769f)
+#[derive(Clone)]
+pub struct HostIpcTargetedSendCapability<Target = std::convert::Infallible> {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub window_id: f64,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
+    pub send: std::sync::Arc<
+        std::sync::Mutex<
+            Box<dyn FnMut(Target, String, Vec<crate::FlightValue>) -> () + Send + 'static>,
+        >,
+    >,
 }
-impl PartialEq for IpcTarget {
+impl<Target> PartialEq for HostIpcTargetedSendCapability<Target> {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
-
-// Source: upstream/packages/types/src/Ipc.ts:50 (sha256:ae0eff05a15283e757bfd0eea4bb2fa83c79892c08d78cb719d64a75e62ad4c7)
-#[derive(Clone, Debug)]
-pub struct IpcTimeoutError {
-    pub message: String,
-    pub channel: String,
-    pub timeout_ms: f64,
-    pub name: String,
-}
-
-impl IpcTimeoutError {
-    pub fn new(channel: String, timeout_ms: f64) -> Self {
-        Self {
-            message: format!(
-                "IPC invoke on channel \"{}\" timed out after {}ms",
-                (channel).clone(),
-                timeout_ms
-            ),
-            channel: (channel).clone(),
-            timeout_ms: timeout_ms,
-            name: "IpcTimeoutError".to_owned(),
-        }
+impl<Target: Clone + Send + Sync + 'static> crate::FlightEntity
+    for HostIpcTargetedSendCapability<Target>
+{
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }
-
-impl std::fmt::Display for IpcTimeoutError {
-    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        formatter.write_str(&self.message)
-    }
-}
-impl std::error::Error for IpcTimeoutError {}

@@ -6,10 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
-use flighthq_types::{BoundingSphereLike, Capsule, CapsuleLike, Ray3DLike, Vector3Like};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{
+    AabbLike, BoundingSphereLike, Capsule, CapsuleLike, EntityConstruction, Ray3DLike, Vector3Like,
+};
 
-// Source: upstream/packages/geometry/src/capsule.ts:8 (sha256:2870eeaa46719202636291712981cb1c04ba3d53bf149b4d115f4613ca9e2472)
+// Source: upstream/packages/geometry/src/capsule.ts:16 (sha256:ba714a14e7ddf81c5ac4aba3a9a11f863bd77c2f2a2e6d8153901ab383dcd0f9)
 pub fn create_capsule(
     start_x: f64,
     start_y: f64,
@@ -19,21 +21,21 @@ pub fn create_capsule(
     end_z: f64,
     radius: f64,
 ) -> Capsule {
-    return create_entity(Some(Capsule {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        end_x: end_x,
-        end_y: end_y,
-        end_z: end_z,
-        radius: radius,
-        start_x: start_x,
-        start_y: start_y,
-        start_z: start_z,
-    }));
+    let mut out = allocate_entity();
+    initialize_capsule(
+        (out).clone(),
+        start_x,
+        start_y,
+        start_z,
+        end_x,
+        end_y,
+        end_z,
+        radius,
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/geometry/src/capsule.ts:28 (sha256:24b43918a2970d13271a24d6466d19dbabe9a72efdfd74fbd30d8475fd13a3fa)
+// Source: upstream/packages/geometry/src/capsule.ts:38 (sha256:24b43918a2970d13271a24d6466d19dbabe9a72efdfd74fbd30d8475fd13a3fa)
 pub fn get_closest_point_on_capsule(
     out: &mut Vector3Like,
     capsule: &CapsuleLike,
@@ -88,7 +90,27 @@ pub fn get_closest_point_on_capsule(
     }
 }
 
-// Source: upstream/packages/geometry/src/capsule.ts:90 (sha256:8c75f5da7df6f1a16c28ece1b917dd521208aa0f8d7bb187d4311cc2cedb8517)
+// Source: upstream/packages/geometry/src/capsule.ts:92 (sha256:f7326cb03915e2a831bbb11cc87e81557068d6f3d60bcc59cd39bd7cceda4e32)
+pub fn initialize_capsule(
+    out: EntityConstruction<Capsule>,
+    start_x: f64,
+    start_y: f64,
+    start_z: f64,
+    end_x: f64,
+    end_y: f64,
+    end_z: f64,
+    radius: f64,
+) -> () {
+    crate::host_set("host.startX", start_x);
+    crate::host_set("host.startY", start_y);
+    crate::host_set("host.startZ", start_z);
+    crate::host_set("host.endX", end_x);
+    crate::host_set("host.endY", end_y);
+    crate::host_set("host.endZ", end_z);
+    crate::host_set("host.radius", radius);
+}
+
+// Source: upstream/packages/geometry/src/capsule.ts:119 (sha256:8c75f5da7df6f1a16c28ece1b917dd521208aa0f8d7bb187d4311cc2cedb8517)
 pub fn intersect_ray3_d_capsule(ray: &Ray3DLike, capsule: &CapsuleLike) -> f64 {
     let ox = ray.origin.x;
     let oy = ray.origin.y;
@@ -200,7 +222,32 @@ pub fn intersect_ray3_d_capsule(ray: &Ray3DLike, capsule: &CapsuleLike) -> f64 {
     return t_best;
 }
 
-// Source: upstream/packages/geometry/src/capsule.ts:183 (sha256:21afe3a2c7f68e65b86a18cb5a6ad6798467795587a5c956f2737aae533760de)
+// Source: upstream/packages/geometry/src/capsule.ts:213 (sha256:216218f8ef2362df1fe9ed25538e55d8b26bca97df62c8db608abc6751a5c036)
+pub fn is_capsule_intersecting_aabb(capsule: &CapsuleLike, aabb: &AabbLike) -> bool {
+    if (capsule.radius < 0.0_f64) {
+        return false;
+    }
+    if ((aabb.min.x > aabb.max.x) || (aabb.min.y > aabb.max.y)) || (aabb.min.z > aabb.max.z) {
+        return false;
+    }
+    let dist2 = segment_to_aabb_distance_sq(
+        capsule.start_x,
+        capsule.start_y,
+        capsule.start_z,
+        capsule.end_x,
+        capsule.end_y,
+        capsule.end_z,
+        aabb.min.x,
+        aabb.min.y,
+        aabb.min.z,
+        aabb.max.x,
+        aabb.max.y,
+        aabb.max.z,
+    );
+    return (dist2 <= (capsule.radius * capsule.radius));
+}
+
+// Source: upstream/packages/geometry/src/capsule.ts:237 (sha256:21afe3a2c7f68e65b86a18cb5a6ad6798467795587a5c956f2737aae533760de)
 pub fn is_capsule_intersecting_capsule(a: &CapsuleLike, b: &CapsuleLike) -> bool {
     if (a.radius < 0.0_f64) || (b.radius < 0.0_f64) {
         return false;
@@ -213,7 +260,7 @@ pub fn is_capsule_intersecting_capsule(a: &CapsuleLike, b: &CapsuleLike) -> bool
     return (dist <= (sum_r * sum_r));
 }
 
-// Source: upstream/packages/geometry/src/capsule.ts:207 (sha256:91dd82175d4bb57b0bff839f0cc90adb669da2c946659c33f832f3f437fac390)
+// Source: upstream/packages/geometry/src/capsule.ts:261 (sha256:91dd82175d4bb57b0bff839f0cc90adb669da2c946659c33f832f3f437fac390)
 pub fn is_capsule_intersecting_sphere(capsule: &CapsuleLike, sphere: &BoundingSphereLike) -> bool {
     if (capsule.radius < 0.0_f64) || (sphere.radius < 0.0_f64) {
         return false;
@@ -233,7 +280,7 @@ pub fn is_capsule_intersecting_sphere(capsule: &CapsuleLike, sphere: &BoundingSp
     return (dist2 <= (sum_r * sum_r));
 }
 
-// Source: upstream/packages/geometry/src/capsule.ts:230 (sha256:83f3a0ed4d591e762547da8f8d8b79526503ac9e60d2329d5610a1791c1ca178)
+// Source: upstream/packages/geometry/src/capsule.ts:284 (sha256:83f3a0ed4d591e762547da8f8d8b79526503ac9e60d2329d5610a1791c1ca178)
 pub fn set_capsule(
     out: &mut CapsuleLike,
     start_x: f64,
@@ -253,7 +300,7 @@ pub fn set_capsule(
     out.radius = radius;
 }
 
-// Source: upstream/packages/geometry/src/capsule.ts:252 (sha256:75ada33010d6f3d43787614a91e71ce5ef22c5a2e8f5dfe0e91ed4297b69a9ac)
+// Source: upstream/packages/geometry/src/capsule.ts:306 (sha256:75ada33010d6f3d43787614a91e71ce5ef22c5a2e8f5dfe0e91ed4297b69a9ac)
 fn axis_perpendicular(abx: f64, aby: f64, abz: f64, ab_len2: f64) -> Vec<f64> {
     if (ab_len2 < 1e-20_f64) {
         return vec![1.0_f64, 0.0_f64, 0.0_f64];
@@ -283,7 +330,7 @@ fn axis_perpendicular(abx: f64, aby: f64, abz: f64, ab_len2: f64) -> Vec<f64> {
     return vec![(px / length), (py / length), (pz / length)];
 }
 
-// Source: upstream/packages/geometry/src/capsule.ts:270 (sha256:fb12acc176a00b7bdab104181788748c12ed431894799269a412f546a0c87aa6)
+// Source: upstream/packages/geometry/src/capsule.ts:324 (sha256:fb12acc176a00b7bdab104181788748c12ed431894799269a412f546a0c87aa6)
 fn point_to_segment_distance_sq(
     px: f64,
     py: f64,
@@ -314,7 +361,7 @@ fn point_to_segment_distance_sq(
     return (((cx * cx) + (cy * cy)) + (cz * cz));
 }
 
-// Source: upstream/packages/geometry/src/capsule.ts:297 (sha256:69fd095b4fc471d8bae3a166a738be2643c71bd62529571ce2e5f9b2f9536ded)
+// Source: upstream/packages/geometry/src/capsule.ts:351 (sha256:69fd095b4fc471d8bae3a166a738be2643c71bd62529571ce2e5f9b2f9536ded)
 fn segment_to_segment_distance_sq(
     ax: f64,
     ay: f64,
@@ -381,3 +428,175 @@ fn segment_to_segment_distance_sq(
     let qz = ((az + (s * d1z)) - (cz + (t * d2z)));
     return (((qx * qx) + (qy * qy)) + (qz * qz));
 }
+
+// Source: upstream/packages/geometry/src/capsule.ts:421 (sha256:0962ad4d3c19ad8f4ed138ffc22907958e5a4cb9d4a4b05de39facf08a332a3a)
+fn segment_to_aabb_distance_sq(
+    ax: f64,
+    ay: f64,
+    az: f64,
+    bx: f64,
+    by: f64,
+    bz: f64,
+    min_x: f64,
+    min_y: f64,
+    min_z: f64,
+    max_x: f64,
+    max_y: f64,
+    max_z: f64,
+) -> f64 {
+    let dx = (bx - ax);
+    let dy = (by - ay);
+    let dz = (bz - az);
+    let len2 = (((dx * dx) + (dy * dy)) + (dz * dz));
+    if (len2 < 1e-20_f64) {
+        let ex = ((min_x - ax).max(0.0_f64)).max((ax - max_x));
+        let ey = ((min_y - ay).max(0.0_f64)).max((ay - max_y));
+        let ez = ((min_z - az).max(0.0_f64)).max((az - max_z));
+        return (((ex * ex) + (ey * ey)) + (ez * ez));
+    }
+    let mut best_dist2 = f64::INFINITY;
+    let mut count = 2.0_f64;
+    {
+        let __flight_index = (0.0_f64) as usize;
+        let __flight_value = 0.0_f64;
+        if __flight_index == (*_SEG_CANDIDATES.lock().unwrap()).len() {
+            (*_SEG_CANDIDATES.lock().unwrap()).push(__flight_value);
+        } else {
+            (*_SEG_CANDIDATES.lock().unwrap())[__flight_index] = __flight_value;
+        }
+    };
+    {
+        let __flight_index = (1.0_f64) as usize;
+        let __flight_value = 1.0_f64;
+        if __flight_index == (*_SEG_CANDIDATES.lock().unwrap()).len() {
+            (*_SEG_CANDIDATES.lock().unwrap()).push(__flight_value);
+        } else {
+            (*_SEG_CANDIDATES.lock().unwrap())[__flight_index] = __flight_value;
+        }
+    };
+    if ((dx).abs() > 1e-20_f64) {
+        {
+            let __flight_index = ({
+                count += 1.0;
+                count
+            }) as usize;
+            let __flight_value = (((min_x - ax) / dx).max(0.0_f64)).min(1.0_f64);
+            if __flight_index == (*_SEG_CANDIDATES.lock().unwrap()).len() {
+                (*_SEG_CANDIDATES.lock().unwrap()).push(__flight_value);
+            } else {
+                (*_SEG_CANDIDATES.lock().unwrap())[__flight_index] = __flight_value;
+            }
+        };
+        {
+            let __flight_index = ({
+                count += 1.0;
+                count
+            }) as usize;
+            let __flight_value = (((max_x - ax) / dx).max(0.0_f64)).min(1.0_f64);
+            if __flight_index == (*_SEG_CANDIDATES.lock().unwrap()).len() {
+                (*_SEG_CANDIDATES.lock().unwrap()).push(__flight_value);
+            } else {
+                (*_SEG_CANDIDATES.lock().unwrap())[__flight_index] = __flight_value;
+            }
+        };
+    }
+    if ((dy).abs() > 1e-20_f64) {
+        {
+            let __flight_index = ({
+                count += 1.0;
+                count
+            }) as usize;
+            let __flight_value = (((min_y - ay) / dy).max(0.0_f64)).min(1.0_f64);
+            if __flight_index == (*_SEG_CANDIDATES.lock().unwrap()).len() {
+                (*_SEG_CANDIDATES.lock().unwrap()).push(__flight_value);
+            } else {
+                (*_SEG_CANDIDATES.lock().unwrap())[__flight_index] = __flight_value;
+            }
+        };
+        {
+            let __flight_index = ({
+                count += 1.0;
+                count
+            }) as usize;
+            let __flight_value = (((max_y - ay) / dy).max(0.0_f64)).min(1.0_f64);
+            if __flight_index == (*_SEG_CANDIDATES.lock().unwrap()).len() {
+                (*_SEG_CANDIDATES.lock().unwrap()).push(__flight_value);
+            } else {
+                (*_SEG_CANDIDATES.lock().unwrap())[__flight_index] = __flight_value;
+            }
+        };
+    }
+    if ((dz).abs() > 1e-20_f64) {
+        {
+            let __flight_index = ({
+                count += 1.0;
+                count
+            }) as usize;
+            let __flight_value = (((min_z - az) / dz).max(0.0_f64)).min(1.0_f64);
+            if __flight_index == (*_SEG_CANDIDATES.lock().unwrap()).len() {
+                (*_SEG_CANDIDATES.lock().unwrap()).push(__flight_value);
+            } else {
+                (*_SEG_CANDIDATES.lock().unwrap())[__flight_index] = __flight_value;
+            }
+        };
+        {
+            let __flight_index = ({
+                count += 1.0;
+                count
+            }) as usize;
+            let __flight_value = (((max_z - az) / dz).max(0.0_f64)).min(1.0_f64);
+            if __flight_index == (*_SEG_CANDIDATES.lock().unwrap()).len() {
+                (*_SEG_CANDIDATES.lock().unwrap()).push(__flight_value);
+            } else {
+                (*_SEG_CANDIDATES.lock().unwrap())[__flight_index] = __flight_value;
+            }
+        };
+    }
+    {
+        let mut i = 0.0_f64;
+        while (i < count) {
+            let t = (*_SEG_CANDIDATES.lock().unwrap())[i as usize].clone();
+            let px = (ax + (t * dx));
+            let py = (ay + (t * dy));
+            let pz = (az + (t * dz));
+            let ex = ((min_x - px).max(0.0_f64)).max((px - max_x));
+            let ey = ((min_y - py).max(0.0_f64)).max((py - max_y));
+            let ez = ((min_z - pz).max(0.0_f64)).max((pz - max_z));
+            let d2 = (((ex * ex) + (ey * ey)) + (ez * ez));
+            if (d2 < best_dist2) {
+                best_dist2 = d2;
+            }
+            {
+                i += 1.0;
+                i
+            };
+        }
+    }
+    let cx = ((min_x + max_x) * 0.5_f64);
+    let cy = ((min_y + max_y) * 0.5_f64);
+    let cz = ((min_z + max_z) * 0.5_f64);
+    let t_center = ((((((cx - ax) * dx) + ((cy - ay) * dy)) + ((cz - az) * dz)) / len2)
+        .max(0.0_f64))
+    .min(1.0_f64);
+    {
+        let px = (ax + (t_center * dx));
+        let py = (ay + (t_center * dy));
+        let pz = (az + (t_center * dz));
+        let ex = ((min_x - px).max(0.0_f64)).max((px - max_x));
+        let ey = ((min_y - py).max(0.0_f64)).max((py - max_y));
+        let ez = ((min_z - pz).max(0.0_f64)).max((pz - max_z));
+        let d2 = (((ex * ex) + (ey * ey)) + (ez * ez));
+        if (d2 < best_dist2) {
+            best_dist2 = d2;
+        }
+    }
+    return best_dist2;
+}
+
+// Source: upstream/packages/geometry/src/capsule.ts:498 (sha256:137e6adde58a1cf690aac82be68092240dcf9036ec77b0d74e3ffe93eacce3e8)
+static _SEG_CANDIDATES: std::sync::LazyLock<std::sync::Mutex<Vec<f64>>> =
+    std::sync::LazyLock::new(|| {
+        std::sync::Mutex::new(vec![
+            0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64,
+        ])
+    });

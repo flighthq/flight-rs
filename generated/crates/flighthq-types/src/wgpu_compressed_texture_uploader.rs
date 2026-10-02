@@ -7,17 +7,17 @@
 #![allow(unused_parens)]
 
 use crate::{
-    CompressedImage, TextureColorSpace, WgpuCompressedTextureDecoder, WgpuRenderState,
+    CompressedImageResource, TextureColorSpace, WgpuCompressedTextureDecoder, WgpuRenderState,
     WgpuTextureEntry,
 };
 
-// Source: upstream/packages/types/src/WgpuCompressedTextureUploader.ts:7 (sha256:30a94992373a8884b7dac6983ddc14c13ebe4e8f5f150cd113a46137e1ea86ac)
+// Source: upstream/packages/types/src/WgpuCompressedTextureUploader.ts:7 (sha256:4202c467f93912b113d7e9df973c5bc08c1c6c510553abdbffbb9d981289b85b)
 pub type WgpuCompressedTextureUploader = std::sync::Arc<
     std::sync::Mutex<
         Box<
             dyn FnMut(
                     WgpuRenderState,
-                    CompressedImage,
+                    CompressedImageResource,
                     Option<WgpuCompressedTextureDecoder>,
                     Option<TextureColorSpace>,
                 ) -> Option<WgpuTextureEntry>

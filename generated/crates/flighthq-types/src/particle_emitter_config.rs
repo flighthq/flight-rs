@@ -8,7 +8,7 @@
 
 use crate::ParticleCurve;
 
-// Source: upstream/packages/types/src/ParticleEmitterConfig.ts:3 (sha256:e864c5a7607ed38331bac348ec0f16af4014e8d8c8f1d74c772449c048cbbfb8)
+// Source: upstream/packages/types/src/ParticleEmitterConfig.ts:3 (sha256:99f44a19f321d2884aabcf80724737d698670119a41bb23d259755291ac2e104)
 pub type ParticleEmitterShape = String;
 
 // Source: upstream/packages/types/src/ParticleEmitterConfig.ts:8 (sha256:d74fd935c98480e89ab1c4ce86e82a0a53176feb88d6cf069d384f41a5f355c5)

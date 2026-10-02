@@ -19,6 +19,8 @@ pub use flighthq_types::{
 
 pub mod _internal_index;
 pub use _internal_index::*;
+pub mod adjustment;
+pub use adjustment::*;
 pub mod brightness_contrast_adjustment;
 pub use brightness_contrast_adjustment::*;
 pub mod channel_mixer_adjustment;

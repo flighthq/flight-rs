@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
-use crate::{PbrExtension, StandardPbrMaterialProperties};
+use crate::{Modifier, PbrExtension, StandardPbrMaterialProperties};
 
-// Source: upstream/packages/types/src/MatcapMaterial.ts:7 (sha256:8b4467696325ff69cdbe538077a2259a9bd9f7007df08e3a49a165bf267de4e8)
+// Source: upstream/packages/types/src/MatcapMaterial.ts:7 (sha256:57c06976196fc3e2ac5ae3565833b2285d005511d1a6a14c3c0ca8522bd70215)
 #[derive(Clone, Default)]
 pub struct MatcapMaterial {
     #[doc(hidden)]
@@ -24,13 +24,40 @@ pub struct MatcapMaterial {
     pub alpha_mode: MaterialAlphaMode,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub color: f64,
+    pub thickness: f64,
+    pub tint: f64,
+    pub base_color: f64,
+    pub base_color_map: Option<Texture>,
+    pub ramp: Option<Texture>,
+    pub steps: f64,
+    pub alpha_map: Option<Texture>,
+    pub emissive: f64,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: f64,
+    pub metallic: f64,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: f64,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: f64,
+    pub roughness: f64,
+    pub diffuse: f64,
+    pub diffuse_map: Option<Texture>,
+    pub glossiness: f64,
+    pub specular: f64,
+    pub specular_glossiness_map: Option<Texture>,
+    pub modifiers: Vec<Modifier>,
+    pub shininess: f64,
+    pub specular_map: Option<Texture>,
+    pub matcap: Option<Texture>,
     pub extensions: Vec<PbrExtension>,
     pub standard: StandardPbrMaterialProperties,
+    pub far: f64,
+    pub near: f64,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
-    pub matcap: Option<Texture>,
-    pub tint: f64,
 }
 impl PartialEq for MatcapMaterial {
     fn eq(&self, other: &Self) -> bool {
@@ -56,5 +83,5 @@ impl crate::FlightEntity for MatcapMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/MatcapMaterial.ts:12 (sha256:69bf12a40048345093a5b1586225cc07af7a37b16ec5fa67fd999291d501bfaa)
+// Source: upstream/packages/types/src/MatcapMaterial.ts:13 (sha256:69bf12a40048345093a5b1586225cc07af7a37b16ec5fa67fd999291d501bfaa)
 pub const MATCAP_MATERIAL_KIND: &'static str = "MatcapMaterial";

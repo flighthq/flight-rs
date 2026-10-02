@@ -7,10 +7,11 @@
 #![allow(unused_parens)]
 
 use crate::get_text_input_state;
-use flighthq_node::invalidate_node_appearance;
+use flighthq_node::{invalidate_node_appearance, invalidate_node_local_content};
 use flighthq_text::{set_rich_text_scroll_h, set_rich_text_scroll_v};
 use flighthq_textlayout::{
-    TEXT_BOUNDS_GUTTER as text_bounds_gutter_constant, get_rich_text_selection_rectangles,
+    TEXT_BOUNDS_GUTTER as text_bounds_gutter_constant, create_text_format_range,
+    get_rich_text_selection_rectangles,
 };
 use flighthq_types::{
     HandleTextInputKeyboardOptions, KeyCode, KeyboardEventData, ReplaceTextInputOptions, RichText,
@@ -59,10 +60,10 @@ impl PartialEq for SharedStructuralRecord1 {
     }
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:22 (sha256:e326b2d75f2adb4313b56534b50f4798e0e36564f5ff874ba3c7b3e5dcf6275e)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:26 (sha256:e326b2d75f2adb4313b56534b50f4798e0e36564f5ff874ba3c7b3e5dcf6275e)
 const DESIRED_CARET_X_UNSET: f64 = -1.0_f64;
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:24 (sha256:822ae4d1588ba3c539010c11d459e7b21b08b296f9c12a6adc83a440a65f57b3)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:28 (sha256:822ae4d1588ba3c539010c11d459e7b21b08b296f9c12a6adc83a440a65f57b3)
 pub fn append_text_input(source: &mut RichText, text: String) -> () {
     {
         let __flight_argument_1 = (source.data.text.encode_utf16().count() as f64);
@@ -78,7 +79,7 @@ pub fn append_text_input(source: &mut RichText, text: String) -> () {
     };
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:28 (sha256:2bcf55cee88568cda03c95371a3becad84d2b6c174a001685b1fc961891f3b60)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:32 (sha256:2bcf55cee88568cda03c95371a3becad84d2b6c174a001685b1fc961891f3b60)
 pub fn apply_text_input_restriction(
     source: &RichText,
     text: String,
@@ -111,25 +112,25 @@ pub fn apply_text_input_restriction(
     return value;
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:45 (sha256:b3e029e76f8082259d1b78518f18fab923268eabeaeecedb5132e5cf40c45797)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:49 (sha256:b3e029e76f8082259d1b78518f18fab923268eabeaeecedb5132e5cf40c45797)
 pub fn can_redo_text_input(source: &RichText) -> bool {
     let state = get_input_state(source);
     return (state.history_index < ((state.history.len() as f64) - 1.0_f64));
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:52 (sha256:47f4ee7687de190cef3caf62d51934012476beb154efe188704a4f0119560f1f)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:56 (sha256:47f4ee7687de190cef3caf62d51934012476beb154efe188704a4f0119560f1f)
 pub fn can_undo_text_input(source: &RichText) -> bool {
     return (get_input_state(source).history_index >= 0.0_f64);
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:57 (sha256:f4ad016c548b9283debcc9949177179748b9bf070d94cb5c5cc39d1aa7335848)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:61 (sha256:f4ad016c548b9283debcc9949177179748b9bf070d94cb5c5cc39d1aa7335848)
 pub fn clear_text_input_history(source: &RichText) -> () {
     let mut state = get_input_state(source);
     state.history = vec![];
     state.history_index = (-1.0_f64);
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:63 (sha256:d6623c8320caac904bd8373651ce5688b04a9a9bc7f0a15b58651147e877569f)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:67 (sha256:d6623c8320caac904bd8373651ce5688b04a9a9bc7f0a15b58651147e877569f)
 pub fn delete_text_input_backward(source: &mut RichText) -> () {
     let mut state = get_input_state(source);
     let start = get_text_input_selection_begin_index(source);
@@ -144,7 +145,7 @@ pub fn delete_text_input_backward(source: &mut RichText) -> () {
     state.selection_index = state.caret_index;
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:75 (sha256:5b82628e49ab8cccf75d4ec4c11269865016d320ff3b47c4ac16ebb5d733a346)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:79 (sha256:5b82628e49ab8cccf75d4ec4c11269865016d320ff3b47c4ac16ebb5d733a346)
 pub fn delete_text_input_forward(source: &mut RichText) -> () {
     let start = get_text_input_selection_begin_index(source);
     let end = get_text_input_selection_end_index(source);
@@ -157,7 +158,7 @@ pub fn delete_text_input_forward(source: &mut RichText) -> () {
     }
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:88 (sha256:1ae34b532e2d0622bef4a5dd47ea22be616947491d5a509b19ec2d53c83a1b31)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:92 (sha256:1ae34b532e2d0622bef4a5dd47ea22be616947491d5a509b19ec2d53c83a1b31)
 pub fn delete_text_input_word_backward(source: &mut RichText) -> () {
     let start = get_text_input_selection_begin_index(source);
     let end = get_text_input_selection_end_index(source);
@@ -171,7 +172,7 @@ pub fn delete_text_input_word_backward(source: &mut RichText) -> () {
     }
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:102 (sha256:26a2b10fe2a564477f8fc22e2b33a17e45f54f6b9fbd81527361ac8ff6d82122)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:106 (sha256:26a2b10fe2a564477f8fc22e2b33a17e45f54f6b9fbd81527361ac8ff6d82122)
 pub fn delete_text_input_word_forward(source: &mut RichText) -> () {
     let start = get_text_input_selection_begin_index(source);
     let end = get_text_input_selection_end_index(source);
@@ -185,7 +186,7 @@ pub fn delete_text_input_word_forward(source: &mut RichText) -> () {
     }
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:113 (sha256:f9fe38d5d6e63701c2907e4ed3c7c583a615a480a7fede9b36806a826de59423)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:117 (sha256:f9fe38d5d6e63701c2907e4ed3c7c583a615a480a7fede9b36806a826de59423)
 pub fn get_text_input_caret_index(source: &RichText) -> f64 {
     return clamp_index(
         get_input_state(source).caret_index,
@@ -193,7 +194,7 @@ pub fn get_text_input_caret_index(source: &RichText) -> f64 {
     );
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:117 (sha256:aeae66cdba43974af192034ba3c2869c9210e846dd2f83122c8ddcc4c2b6628d)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:121 (sha256:aeae66cdba43974af192034ba3c2869c9210e846dd2f83122c8ddcc4c2b6628d)
 pub fn get_text_input_caret_rectangle(
     out: &mut TextSelectionRectangle,
     source: &RichText,
@@ -216,7 +217,7 @@ pub fn get_text_input_caret_rectangle(
     out.line_index = group.as_ref().unwrap().line_index;
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:140 (sha256:af0e0e34d8f8aea0296d741b1a519c90b90da997dd57397e4b3d21f1969b4d3f)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:144 (sha256:af0e0e34d8f8aea0296d741b1a519c90b90da997dd57397e4b3d21f1969b4d3f)
 pub fn get_text_input_character_index_at_point(
     source: &RichText,
     layout: &TextLayoutResult,
@@ -274,7 +275,7 @@ pub fn get_text_input_character_index_at_point(
     };
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:173 (sha256:9a879d6139ef32775d6b5a52a414f52db8c30f2acc9963339c5137ca9c25c941)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:177 (sha256:9a879d6139ef32775d6b5a52a414f52db8c30f2acc9963339c5137ca9c25c941)
 pub fn get_text_input_display_text(source: &RichText) -> String {
     let state = get_input_state(source);
     if (!state.display_as_password) {
@@ -292,7 +293,7 @@ pub fn get_text_input_display_text(source: &RichText) -> String {
     );
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:180 (sha256:6b955d3b8c3ce332cbfce64fe58488f118427ef712bf4ef362d76ef72235ffec)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:184 (sha256:6b955d3b8c3ce332cbfce64fe58488f118427ef712bf4ef362d76ef72235ffec)
 pub fn get_text_input_selection_begin_index(source: &RichText) -> f64 {
     let state = get_input_state(source);
     return (clamp_index(
@@ -305,7 +306,7 @@ pub fn get_text_input_selection_begin_index(source: &RichText) -> f64 {
     ));
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:188 (sha256:cb2082e4f1f56ce7e9038bf85b683daceb8c1549a9c806485fdb8293086e4ebd)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:192 (sha256:cb2082e4f1f56ce7e9038bf85b683daceb8c1549a9c806485fdb8293086e4ebd)
 pub fn get_text_input_selection_end_index(source: &RichText) -> f64 {
     let state = get_input_state(source);
     return (clamp_index(
@@ -318,7 +319,7 @@ pub fn get_text_input_selection_end_index(source: &RichText) -> f64 {
     ));
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:196 (sha256:056bda6bbd20a4f4697f235a8bf9c5052e05fa7b9c2411e5128778ac83f852ab)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:200 (sha256:056bda6bbd20a4f4697f235a8bf9c5052e05fa7b9c2411e5128778ac83f852ab)
 pub fn get_text_input_selection_rectangles(
     out: &mut Vec<TextSelectionRectangle>,
     source: &RichText,
@@ -332,7 +333,7 @@ pub fn get_text_input_selection_rectangles(
     );
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:209 (sha256:e702e98a319e54cf229be449d6f3424d6f0a26495eb47a9b4e250379e7ac425e)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:213 (sha256:e702e98a319e54cf229be449d6f3424d6f0a26495eb47a9b4e250379e7ac425e)
 pub fn get_text_input_selection_text(source: &RichText) -> String {
     return __flight_string_slice(
         &((source.data.text).clone()),
@@ -341,7 +342,7 @@ pub fn get_text_input_selection_text(source: &RichText) -> String {
     );
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:213 (sha256:48308fe26a2b823b466181b0a142b24b09bddfe03fb3d0a068694ef2147188f7)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:217 (sha256:48308fe26a2b823b466181b0a142b24b09bddfe03fb3d0a068694ef2147188f7)
 pub fn handle_text_input_keyboard(
     source: &mut RichText,
     data: &KeyboardEventData,
@@ -537,13 +538,13 @@ pub fn handle_text_input_keyboard(
     }
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:290 (sha256:88cdbbf595a3131dbdf070e9075b980cd0b01b5bdcf2eb03c01ee4c92d4da133)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:294 (sha256:88cdbbf595a3131dbdf070e9075b980cd0b01b5bdcf2eb03c01ee4c92d4da133)
 #[derive(Clone, Default)]
-struct InsertTextInputRecord5 {
+struct InsertTextInputRecord2 {
     __flight_identity: std::sync::Arc<()>,
     apply_input_rules: bool,
 }
-impl PartialEq for InsertTextInputRecord5 {
+impl PartialEq for InsertTextInputRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -562,7 +563,7 @@ pub fn insert_text_input(source: &mut RichText, text: String) -> () {
     );
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:294 (sha256:88bf3add461c3f4d5a8be11cc63942ed1e5fc19ae9eec849509e97c5a4dd73a6)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:298 (sha256:88bf3add461c3f4d5a8be11cc63942ed1e5fc19ae9eec849509e97c5a4dd73a6)
 pub fn move_text_input_caret(source: &RichText, index: f64, extend_selection: Option<bool>) -> () {
     let extend_selection = extend_selection.unwrap_or(false);
     let caret = clamp_index(index, (source.data.text.encode_utf16().count() as f64));
@@ -575,7 +576,7 @@ pub fn move_text_input_caret(source: &RichText, index: f64, extend_selection: Op
     invalidate_node_appearance(source);
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:307 (sha256:d43d7e9993b000f9edae9a1b198ed818d51bf38a9c9314ab7c42ce671e1bafce)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:311 (sha256:d43d7e9993b000f9edae9a1b198ed818d51bf38a9c9314ab7c42ce671e1bafce)
 pub fn move_text_input_caret_by_word(
     source: &RichText,
     direction: f64,
@@ -593,7 +594,7 @@ pub fn move_text_input_caret_by_word(
     move_text_input_caret(source, target, Some(extend_selection));
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:322 (sha256:c4c887171789522899c4c567b4a05a684afceb74c4fef116c46a1d3f8329ccb5)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:326 (sha256:c4c887171789522899c4c567b4a05a684afceb74c4fef116c46a1d3f8329ccb5)
 pub fn move_text_input_caret_down(
     source: &RichText,
     layout: &Option<TextLayoutResult>,
@@ -657,7 +658,7 @@ pub fn move_text_input_caret_down(
     invalidate_node_appearance(source);
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:351 (sha256:1509412c2465dcc2b45e54eff96328a2d2c8922551280dceb60f5199928774c1)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:355 (sha256:1509412c2465dcc2b45e54eff96328a2d2c8922551280dceb60f5199928774c1)
 pub fn move_text_input_caret_to_line_end(
     source: &RichText,
     layout: &Option<TextLayoutResult>,
@@ -681,7 +682,7 @@ pub fn move_text_input_caret_to_line_end(
     move_text_input_caret(source, line_end, Some(extend_selection));
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:367 (sha256:f891c6a9baa7d8db48f8f7a6a3fa359b76e7532b3459d9c5a206c8304ab2e573)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:371 (sha256:f891c6a9baa7d8db48f8f7a6a3fa359b76e7532b3459d9c5a206c8304ab2e573)
 pub fn move_text_input_caret_to_line_start(
     source: &RichText,
     layout: &Option<TextLayoutResult>,
@@ -697,7 +698,7 @@ pub fn move_text_input_caret_to_line_start(
     move_text_input_caret(source, line_start, Some(extend_selection));
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:384 (sha256:231d5d2e12edbb8073adeb938af7d421b54bf085c93920fb512a9d0c211fe4ea)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:388 (sha256:231d5d2e12edbb8073adeb938af7d421b54bf085c93920fb512a9d0c211fe4ea)
 pub fn move_text_input_caret_up(
     source: &RichText,
     layout: &Option<TextLayoutResult>,
@@ -753,7 +754,7 @@ pub fn move_text_input_caret_up(
     invalidate_node_appearance(source);
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:413 (sha256:dab606cc4915822a4db327af96edcf10983917cb1548c16faa1783d46511942d)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:417 (sha256:dab606cc4915822a4db327af96edcf10983917cb1548c16faa1783d46511942d)
 pub fn redo_text_input(source: &mut RichText) -> () {
     let mut state = get_input_state(source);
     if (!can_redo_text_input(source)) {
@@ -773,7 +774,7 @@ pub fn redo_text_input(source: &mut RichText) -> () {
     );
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:421 (sha256:c0ef8d8deb35a2463049e212244310d297978816cdae0b83901a183768c8b862)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:425 (sha256:c0ef8d8deb35a2463049e212244310d297978816cdae0b83901a183768c8b862)
 pub fn replace_selected_text_input(
     source: &mut RichText,
     text: String,
@@ -793,7 +794,7 @@ pub fn replace_selected_text_input(
     };
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:435 (sha256:002b130522137d99169e98e9e4013aeb5ac3f118aa7002ffe92dbb426354a182)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:439 (sha256:2fedef9d0012ae4d8dfec8eea87bef825989e26b8f13501d8ea64aff03dfc92c)
 pub fn replace_text_input(
     source: &mut RichText,
     begin_index: f64,
@@ -1012,10 +1013,10 @@ pub fn replace_text_input(
             .clone(),
         );
     }
-    invalidate_node_appearance(source);
+    invalidate_node_local_content(source);
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:476 (sha256:cca2ef0f83eee72cca02f10736892f7f070bd25a7c7fcbf0765981f222bad398)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:480 (sha256:cca2ef0f83eee72cca02f10736892f7f070bd25a7c7fcbf0765981f222bad398)
 pub fn scroll_text_input_caret_into_view(
     source: &mut RichText,
     layout: &TextLayoutResult,
@@ -1110,7 +1111,7 @@ pub fn scroll_text_input_caret_into_view(
     }
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:523 (sha256:a94512389b36f72031c31c9c2261138fca7672614a4cbd035d7d4b7351110c98)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:527 (sha256:a94512389b36f72031c31c9c2261138fca7672614a4cbd035d7d4b7351110c98)
 pub fn select_all_text_input(source: &RichText) -> () {
     set_text_input_selection(
         source,
@@ -1119,7 +1120,7 @@ pub fn select_all_text_input(source: &RichText) -> () {
     );
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:527 (sha256:f1ec87a198f30c2104bbbcd69dc33c92c3d93487931e103f7ecbc1aedef3895e)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:531 (sha256:f1ec87a198f30c2104bbbcd69dc33c92c3d93487931e103f7ecbc1aedef3895e)
 pub fn select_line_at_text_input_index(source: &RichText, index: f64) -> () {
     let text = (source.data.text).clone();
     let clamped = (0.0_f64).max((text.encode_utf16().count() as f64).min(index));
@@ -1140,7 +1141,7 @@ pub fn select_line_at_text_input_index(source: &RichText, index: f64) -> () {
     set_text_input_selection(source, start, end);
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:537 (sha256:a2d982c0f9f31526ed53ad92848dff3fe8e5cc10e8367d3b0d60d3323f3fc3ef)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:541 (sha256:a2d982c0f9f31526ed53ad92848dff3fe8e5cc10e8367d3b0d60d3323f3fc3ef)
 pub fn select_word_at_text_input_index(source: &RichText, index: f64) -> () {
     let text = (source.data.text).clone();
     let clamped = (0.0_f64).max((text.encode_utf16().count() as f64).min(index));
@@ -1175,7 +1176,7 @@ pub fn select_word_at_text_input_index(source: &RichText, index: f64) -> () {
     set_text_input_selection(source, start, end);
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:551 (sha256:b558229e1bb188cad26e6a65e43c9f813fa6ce65f99100f53e0f698a36fd9593)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:555 (sha256:b558229e1bb188cad26e6a65e43c9f813fa6ce65f99100f53e0f698a36fd9593)
 pub fn set_text_input_selection(source: &RichText, begin_index: f64, end_index: f64) -> () {
     let mut state = get_input_state(source);
     state.selection_index = clamp_index(
@@ -1186,7 +1187,7 @@ pub fn set_text_input_selection(source: &RichText, begin_index: f64, end_index: 
     invalidate_node_appearance(source);
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:560 (sha256:d3ebe80a72c277594e0e8700a1f8a362245bac81edcebf416f37eab6adeb7528)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:564 (sha256:d3ebe80a72c277594e0e8700a1f8a362245bac81edcebf416f37eab6adeb7528)
 pub fn undo_text_input(source: &mut RichText) -> () {
     let mut state = get_input_state(source);
     if (!can_undo_text_input(source)) {
@@ -1206,7 +1207,7 @@ pub fn undo_text_input(source: &mut RichText) -> () {
     );
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:568 (sha256:0d449368501740a90589be55056512dba6699118161cc4a2d70c1fb9c53f6a88)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:572 (sha256:6e3445cf04285cde058057b57108dcf6e5f581e2cd11a2e46b443b8552e25f3c)
 fn adjust_text_format_ranges(
     ranges: &mut Vec<TextFormatRange>,
     default_format: crate::OpaqueHostValue,
@@ -1313,16 +1314,15 @@ fn adjust_text_format_ranges(
         }
     }
     if ((ranges.len() as f64) == 0.0_f64) && (insert_length > 0.0_f64) {
-        ranges.push(TextFormatRange {
-            __flight_identity: std::sync::Arc::new(()),
-            end: (begin_index + insert_length),
-            format: (default_format).clone(),
-            start: begin_index,
-        });
+        ranges.push(create_text_format_range(
+            &(default_format).clone(),
+            begin_index,
+            (begin_index + insert_length),
+        ));
     }
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:618 (sha256:297a701669f30ba2dc47d492cac1e006a761cf5fe12aa441f67fbd5dda53f69d)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:622 (sha256:e9d300182ada392ae42c4484d1054c848dc52becb0fc13d0d97dc243696ddf6f)
 fn apply_history_record(
     source: &mut RichText,
     state: &mut TextInputState,
@@ -1336,10 +1336,10 @@ fn apply_history_record(
     state.caret_index = clamp_index(caret_index, (__flight_utf16_text.len() as f64));
     state.selection_index = clamp_index(selection_index, (__flight_utf16_text.len() as f64));
     state.desired_caret_x = DESIRED_CARET_X_UNSET;
-    invalidate_node_appearance(source);
+    invalidate_node_local_content(source);
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:632 (sha256:0b764cf844894884927d1f7b88e07a85e0b069b7be78938f86370d48c1938486)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:636 (sha256:0b764cf844894884927d1f7b88e07a85e0b069b7be78938f86370d48c1938486)
 fn clamp_index(value: f64, length: f64) -> f64 {
     if (!(value).is_finite()) {
         return 0.0_f64;
@@ -1347,7 +1347,7 @@ fn clamp_index(value: f64, length: f64) -> f64 {
     return (0.0_f64).max((length).min((value).trunc()));
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:639 (sha256:0b4306825609746f5ef1e7e8ef8a03d4a13bd52bb3da6edbbc21ca7096c4c02a)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:643 (sha256:0b4306825609746f5ef1e7e8ef8a03d4a13bd52bb3da6edbbc21ca7096c4c02a)
 fn get_caret_line_index(source: &RichText, layout: &TextLayoutResult) -> f64 {
     (|| -> () {
         let caret_index = get_text_input_caret_index(&source);
@@ -1369,12 +1369,12 @@ fn get_caret_line_index(source: &RichText, layout: &TextLayoutResult) -> f64 {
     return (*SCRATCH_RECT.lock().unwrap()).line_index;
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:645 (sha256:eb161c6f6ab166b1769dc6be2bde0ad05e6adcd63bd8a4ee1d7b41cba66e2310)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:649 (sha256:eb161c6f6ab166b1769dc6be2bde0ad05e6adcd63bd8a4ee1d7b41cba66e2310)
 fn get_fallback_line_height(layout: &TextLayoutResult) -> f64 {
     return layout.line_heights[0.0_f64 as usize].clone();
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:651 (sha256:65c34441612ab225520e48a928b9ce2e0c5f35afc2dafb0a88e06cc0546d6ae5)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:655 (sha256:65c34441612ab225520e48a928b9ce2e0c5f35afc2dafb0a88e06cc0546d6ae5)
 fn get_input_state(source: &RichText) -> TextInputState {
     let state = get_text_input_state(source);
     if (state).is_none() {
@@ -1386,7 +1386,7 @@ fn get_input_state(source: &RichText) -> TextInputState {
     return ((state.as_ref().unwrap()).clone()).clone();
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:657 (sha256:b3ebba0e62bbc63048faf9a23e621cc28707b9164f0c9fe2ce6071ffc677d87d)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:661 (sha256:b3ebba0e62bbc63048faf9a23e621cc28707b9164f0c9fe2ce6071ffc677d87d)
 fn get_keyboard_command(data: &KeyboardEventData) -> KeyboardCommand {
     if (data.ctrl_key) || (data.meta_key) {
         let key = ((data.key).clone()).to_lowercase();
@@ -1466,7 +1466,7 @@ fn get_keyboard_command(data: &KeyboardEventData) -> KeyboardCommand {
     return "none".to_owned();
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:696 (sha256:57109af3ee76c15113f0c33ac98572d8f9b9fa9e82daeed8a761ccc5cd299641)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:700 (sha256:57109af3ee76c15113f0c33ac98572d8f9b9fa9e82daeed8a761ccc5cd299641)
 fn get_line_end_index(layout: &TextLayoutResult, line_index: f64, text_length: f64) -> f64 {
     let mut end = (-1.0_f64);
     for group in ((layout.groups).clone()).iter().cloned() {
@@ -1477,7 +1477,7 @@ fn get_line_end_index(layout: &TextLayoutResult, line_index: f64, text_length: f
     return if (end < 0.0_f64) { text_length } else { end };
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:704 (sha256:4933f618f6def32d3cde1fe3656ca3a04b68d4c74aa48f0cc4e82682731353e9)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:708 (sha256:4933f618f6def32d3cde1fe3656ca3a04b68d4c74aa48f0cc4e82682731353e9)
 fn get_line_offset_y(layout: &TextLayoutResult, line_index: f64) -> f64 {
     for group in ((layout.groups).clone()).iter().cloned() {
         if (group.line_index == line_index) {
@@ -1498,7 +1498,7 @@ fn get_line_offset_y(layout: &TextLayoutResult, line_index: f64) -> f64 {
     return y;
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:715 (sha256:b060e975bd7d4c2e1715db4f89fd5097010365cd554749ec6ff7e67ba06db378)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:719 (sha256:b060e975bd7d4c2e1715db4f89fd5097010365cd554749ec6ff7e67ba06db378)
 fn get_line_start_index(layout: &TextLayoutResult, line_index: f64) -> f64 {
     let mut start = (-1.0_f64);
     for group in ((layout.groups).clone()).iter().cloned() {
@@ -1509,7 +1509,7 @@ fn get_line_start_index(layout: &TextLayoutResult, line_index: f64) -> f64 {
     return if (start < 0.0_f64) { 0.0_f64 } else { start };
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:723 (sha256:cf395338835ed4f057b8d31a23cf6651624f35254b9c443ce62ba87c184c4282)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:727 (sha256:cf395338835ed4f057b8d31a23cf6651624f35254b9c443ce62ba87c184c4282)
 fn get_text_layout_group_at_index(
     layout: &TextLayoutResult,
     index: f64,
@@ -1522,7 +1522,7 @@ fn get_text_layout_group_at_index(
     return Some(layout.groups[((layout.groups.len() as f64) - 1.0_f64) as usize].clone());
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:733 (sha256:f10829642510b105e7a6afe4e4ffcc19b3938cbf88343db7486babef07b94dca)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:737 (sha256:f10829642510b105e7a6afe4e4ffcc19b3938cbf88343db7486babef07b94dca)
 fn get_text_layout_group_caret_x(group: &TextLayoutGroup, index: f64) -> f64 {
     let mut x = group.offset_x;
     let limit = (0.0_f64).max(((index).min(group.end_index) - group.start_index));
@@ -1539,7 +1539,7 @@ fn get_text_layout_group_caret_x(group: &TextLayoutGroup, index: f64) -> f64 {
     return x;
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:740 (sha256:f2a2b80414b786299703b32d7520f092c7e5384ef4f64b0348950bf457362e97)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:744 (sha256:f2a2b80414b786299703b32d7520f092c7e5384ef4f64b0348950bf457362e97)
 fn get_text_layout_group_character_index_at_x(group: &TextLayoutGroup, x: f64) -> f64 {
     let mut current_x = group.offset_x;
     {
@@ -1559,7 +1559,7 @@ fn get_text_layout_group_character_index_at_x(group: &TextLayoutGroup, x: f64) -
     return group.end_index;
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:754 (sha256:4006c76eb119a6ed41ae4503a80c0e49a1d26700b27b30181938f01015bb6863)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:758 (sha256:4006c76eb119a6ed41ae4503a80c0e49a1d26700b27b30181938f01015bb6863)
 fn record_text_input_edit(
     state: &mut TextInputState,
     text_before: String,
@@ -1614,7 +1614,7 @@ fn record_text_input_edit(
     }
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:794 (sha256:3f0b23bb62c98647447578fd8f6e1a9c3b2d87f69c2e9aeb2b77405cb829cd5a)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:798 (sha256:3f0b23bb62c98647447578fd8f6e1a9c3b2d87f69c2e9aeb2b77405cb829cd5a)
 fn restrict_text_input(text: String, restrict: String) -> String {
     let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
         std::sync::Arc::new(text.encode_utf16().collect());
@@ -1641,7 +1641,7 @@ fn restrict_text_input(text: String, restrict: String) -> String {
     return out;
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:807 (sha256:5ec18eb9e2021e2b4c9df750ff90a2c0a31b4f64ed62f5e82484dd1303753774)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:811 (sha256:5ec18eb9e2021e2b4c9df750ff90a2c0a31b4f64ed62f5e82484dd1303753774)
 fn matches_restrict_ranges(char: String, ranges: String) -> bool {
     let __flight_utf16_char: std::sync::Arc<Vec<u16>> =
         std::sync::Arc::new(char.encode_utf16().collect());
@@ -1703,7 +1703,7 @@ fn matches_restrict_ranges(char: String, ranges: String) -> bool {
     return false;
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:825 (sha256:d2a615ef67c355856c20d433446309bf66a747a0bc9b5c1c7c6a46c0a0227ee1)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:829 (sha256:d2a615ef67c355856c20d433446309bf66a747a0bc9b5c1c7c6a46c0a0227ee1)
 fn split_restrict_ranges(restrict: String) -> SharedStructuralRecord1 {
     let __flight_utf16_restrict: std::sync::Arc<Vec<u16>> =
         std::sync::Arc::new(restrict.encode_utf16().collect());
@@ -1749,10 +1749,10 @@ fn split_restrict_ranges(restrict: String) -> SharedStructuralRecord1 {
     };
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:849 (sha256:720f2b25f91ba85604ad37408e8482ab435fcd5b0ce3d9ddaf5762c9110b59ec)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:853 (sha256:720f2b25f91ba85604ad37408e8482ab435fcd5b0ce3d9ddaf5762c9110b59ec)
 pub(crate) type KeyboardCommand = String;
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:874 (sha256:050b27a35b02df39a3fc90980f133783be4f9664f3b949d4b83db163e23e8b91)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:878 (sha256:050b27a35b02df39a3fc90980f133783be4f9664f3b949d4b83db163e23e8b91)
 fn find_word_start_before(text: String, index: f64) -> f64 {
     let mut i = index;
     while (i > 0.0_f64) && (!is_word_char((text.char_at)((i - 1.0_f64)))) {
@@ -1770,7 +1770,7 @@ fn find_word_start_before(text: String, index: f64) -> f64 {
     return i;
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:883 (sha256:de59b7e56679d4df27ddc24ed1632145cb5e86dc12179b53206cc627e13b832e)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:887 (sha256:de59b7e56679d4df27ddc24ed1632145cb5e86dc12179b53206cc627e13b832e)
 fn find_word_end_after(text: String, index: f64) -> f64 {
     let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
         std::sync::Arc::new(text.encode_utf16().collect());
@@ -1790,7 +1790,7 @@ fn find_word_end_after(text: String, index: f64) -> f64 {
     return i;
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:890 (sha256:fde0c21474c9deb12a3b07d9f774d8db35e0d78b44b745eccd6c2cccba313dcf)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:894 (sha256:fde0c21474c9deb12a3b07d9f774d8db35e0d78b44b745eccd6c2cccba313dcf)
 fn is_word_char(char: String) -> bool {
     return (regex::RegexBuilder::new("\\w")
         .case_insensitive(false)
@@ -1801,7 +1801,7 @@ fn is_word_char(char: String) -> bool {
     .is_match(&(char));
 }
 
-// Source: upstream/packages/textinput/src/textInputEditing.ts:897 (sha256:7351f720a26190716f486bc006c1865a3cf502a56fdb176ccb12b37771be5e07)
+// Source: upstream/packages/textinput/src/textInputEditing.ts:901 (sha256:7351f720a26190716f486bc006c1865a3cf502a56fdb176ccb12b37771be5e07)
 #[derive(Clone, Default)]
 pub(crate) struct ScratchRect {
     #[doc(hidden)]

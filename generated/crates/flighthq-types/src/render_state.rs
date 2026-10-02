@@ -7,15 +7,15 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, CanvasShapeCommand, EntityRuntime, KeyedTable, Matrix, Path, PathMesh,
-    RenderEffectPaddingResolver, RenderProxy, RenderRegistrySignals, Renderable, Renderer,
-    Scene2DClipHooks, SlotTable, StrokeStyle,
+    BlendMode, CanvasShapeCommand, EffectPaddingResolver, EntityRuntime, HostCanvasCapability,
+    HostImageCapability, Kind, NodeAny, NodeRenderer, Path, PathMesh, RenderProxy,
+    RenderRegistrySignals, Scene2DClipHooks, StrokeStyle,
 };
 
 // Source: upstream/packages/types/src/RenderState.ts:25 (sha256:774d9b5364bf64a92a4ee998bc4ef3d6effcacc87376b78caf211241fa145de9)
 pub type Scene3DGraphSyncPolicy = String;
 
-// Source: upstream/packages/types/src/RenderState.ts:27 (sha256:2f1b22ab88295c563dd5bc4c915601d3bfb0ceb7a0cf9390902bf8134147b6a3)
+// Source: upstream/packages/types/src/RenderState.ts:27 (sha256:9a5616988aae1bcb350042d2433c0745766edbef7e53ff2a551676151729b2aa)
 #[derive(Clone, Default)]
 pub struct RenderState {
     #[doc(hidden)]
@@ -25,15 +25,13 @@ pub struct RenderState {
     #[doc(hidden)]
     pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub allow_smoothing: bool,
-    pub background_color: f64,
-    pub background_color_rgba: Vec<f64>,
-    pub background_color_string: String,
     pub current_clip_depth: f64,
     pub display_object_clip_hooks: Option<Scene2DClipHooks>,
     pub pixel_ratio: f64,
+    pub canvas_host: Option<HostCanvasCapability>,
+    pub image_host: Option<HostImageCapability>,
     pub render_alpha: f64,
     pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
     pub scene_graph_sync_policy: Scene3DGraphSyncPolicy,
     pub round_pixels: bool,
 }
@@ -61,36 +59,26 @@ impl crate::FlightEntity for RenderState {
     }
 }
 
-// Source: upstream/packages/types/src/RenderState.ts:46 (sha256:025737da9ae647cb9dbb97d5b4a0fcee009a6fde35836d07bb03683375d9a3dc)
+// Source: upstream/packages/types/src/RenderState.ts:44 (sha256:4720d25f452d6cdd33c300a75fb8fa00210530353524da68255b47bd111d77ae)
 #[derive(Clone, Default)]
 pub struct RenderRegistries {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub canvas_shape_commands: Option<KeyedTable<CanvasShapeCommand<crate::OpaqueHostValue>>>,
+    pub canvas_shape_commands: Option<Vec<(Kind, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
     pub color_adjustments: Option<
-        SlotTable<
-            std::sync::Arc<
-                std::sync::Mutex<
-                    Box<
-                        dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> ()
-                            + Send
-                            + 'static,
-                    >,
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
                 >,
             >,
         >,
     >,
-    pub color_adjustment_unsupported_guard: Option<SlotTable<ColorAdjustmentUnsupportedGuard>>,
-    pub effect_padding_resolvers: Option<KeyedTable<RenderEffectPaddingResolver>>,
-    pub renderers: KeyedTable<Renderer>,
-    pub render_root_guard: Option<SlotTable<RenderRootGuard>>,
-    pub stroke_tessellator: SlotTable<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
-            >,
-        >,
-    >,
+    pub color_adjustment_unsupported_guard: Option<ColorAdjustmentUnsupportedGuard>,
+    pub effect_padding_resolvers: Option<Vec<(Kind, EffectPaddingResolver)>>,
+    pub node_renderers: Vec<(Kind, NodeRenderer)>,
+    pub render_root_guard: Option<RenderRootGuard>,
+    pub stroke_tessellator: Option<StrokeTessellator>,
 }
 impl PartialEq for RenderRegistries {
     fn eq(&self, other: &Self) -> bool {
@@ -98,17 +86,22 @@ impl PartialEq for RenderRegistries {
     }
 }
 
-// Source: upstream/packages/types/src/RenderState.ts:66 (sha256:c881e221a4581ec571bf702bb20885948eae7a78582f3a6bfc79f7183d5656a4)
-pub type ColorAdjustmentUnsupportedGuard = std::sync::Arc<
-    std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
+// Source: upstream/packages/types/src/RenderState.ts:64 (sha256:b1dc141bea32c444c8f795578aad8580220731980af56f0b73a812b4d41b6841)
+pub type ColorAdjustmentUnsupportedGuard =
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(RenderState, NodeAny) -> () + Send + 'static>>>;
+
+// Source: upstream/packages/types/src/RenderState.ts:65 (sha256:30548f6aeaf62330e89a2de67bd2324534c60ed84008f1cce166a80aba39c431)
+pub type RenderRootGuard =
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(RenderState, NodeAny) -> () + Send + 'static>>>;
+
+// Source: upstream/packages/types/src/RenderState.ts:86 (sha256:7a17b9297eaaf53e88968590f4cb20acfcb417c7af5fd8609ed8214d4e7e4184)
+pub type StrokeTessellator = std::sync::Arc<
+    std::sync::Mutex<
+        Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
+    >,
 >;
 
-// Source: upstream/packages/types/src/RenderState.ts:67 (sha256:18be36bffc729f37df5be1626ec7d20c9592417d1213fa795a217ab5b5182278)
-pub type RenderRootGuard = std::sync::Arc<
-    std::sync::Mutex<Box<dyn FnMut(RenderState, Renderable) -> () + Send + 'static>>,
->;
-
-// Source: upstream/packages/types/src/RenderState.ts:74 (sha256:1c285541caead8d5b1b57d898fffaf5eb240a01f1ca74a91bb910133f58947eb)
+// Source: upstream/packages/types/src/RenderState.ts:97 (sha256:63a5697bee0139c22e6fef10b085d6b1a9ab5c4383096099df0592c49b6a9d05)
 #[derive(Clone)]
 pub struct RenderStateRuntimeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,

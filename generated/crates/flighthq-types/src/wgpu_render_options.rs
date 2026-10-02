@@ -6,19 +6,18 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Scene3DGraphSyncPolicy;
+use crate::{HostCanvasCapability, HostImageCapability, Scene3DGraphSyncPolicy};
 
-// Source: upstream/packages/types/src/WgpuRenderOptions.ts:3 (sha256:cfc1746d136ddf34026e1c7e71cf59ee94dfc90edf8e66824bacfcdd8682dac6)
+// Source: upstream/packages/types/src/WgpuRenderOptions.ts:5 (sha256:bc55f71e56190449f22e72b5c1f786a653fee083c0e58f7a3a8f54b0737836a6)
 #[derive(Clone, Default)]
 pub struct WgpuRenderOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub antialias: Option<bool>,
-    pub background_color: Option<f64>,
+    pub canvas_host: Option<HostCanvasCapability>,
+    pub image_host: Option<HostImageCapability>,
     pub format: Option<crate::OpaqueHostValue>,
     pub image_smoothing_enabled: Option<bool>,
     pub pixel_ratio: Option<f64>,
-    pub power_preference: Option<crate::OpaqueHostValue>,
     pub round_pixels: Option<bool>,
     pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
 }

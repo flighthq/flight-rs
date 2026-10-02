@@ -21,7 +21,7 @@ impl PartialEq for HasBlendMode {
     }
 }
 
-// Source: upstream/packages/types/src/HasBlendMode.ts:12 (sha256:682dc986a960120460ce15424fdc03b0f86e4e790640b3452e845120e89c6535)
+// Source: upstream/packages/types/src/HasBlendMode.ts:12 (sha256:8ab7810474cd276837ffe05bc3883d0e526ff405635e30f79288701019f6255b)
 #[derive(Clone, Default)]
 pub struct BlendModeNode {
     #[doc(hidden)]

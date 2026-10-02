@@ -7,8 +7,8 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, NodeDataFactory,
-    NodeRuntimeFactory,
+    BlendMode, ClipRegion, EntityRuntime, Kind, Material2D, MaterialData, NodeData,
+    NodeDataFactory, NodeRuntimeFactory,
 };
 
 // Source: upstream/packages/types/src/Node2D.ts:9 (sha256:4f148d8cf9aaff3a8798edcf7f8509330963a70e7fdb27c925ea34469a9a0862)
@@ -20,7 +20,7 @@ pub struct Node2D {
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     #[doc(hidden)]
     pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
-    pub data: Option<Node2DData>,
+    pub data: Option<NodeData>,
     pub enabled: bool,
     pub kind: Kind,
     pub name: Option<String>,
@@ -28,7 +28,7 @@ pub struct Node2D {
     pub visible: bool,
     pub blend_mode: Option<BlendMode>,
     pub clip: Option<ClipRegion>,
-    pub material: Option<Material>,
+    pub material: Option<Material2D>,
     pub material_data: Option<MaterialData>,
     pub pivot_x: f64,
     pub pivot_y: f64,
@@ -73,7 +73,7 @@ pub struct Node2DTraits {
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     #[doc(hidden)]
     pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
-    pub data: Option<Node2DData>,
+    pub data: Option<NodeData>,
     pub enabled: bool,
     pub kind: Kind,
     pub name: Option<String>,
@@ -81,7 +81,7 @@ pub struct Node2DTraits {
     pub visible: bool,
     pub blend_mode: Option<BlendMode>,
     pub clip: Option<ClipRegion>,
-    pub material: Option<Material>,
+    pub material: Option<Material2D>,
     pub material_data: Option<MaterialData>,
     pub pivot_x: f64,
     pub pivot_y: f64,
@@ -122,10 +122,32 @@ impl crate::FlightEntity for Node2DTraits {
 pub struct Node2DData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
 }
 impl PartialEq for Node2DData {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for Node2DData {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }
 
@@ -136,11 +158,11 @@ pub const DISPLAY_OBJECT_KIND: &'static str = "DisplayObject";
 pub static NODE2_D_TRAITS_KEY: std::sync::LazyLock<crate::FlightSymbol> =
     std::sync::LazyLock::new(|| crate::FlightSymbol::new());
 
-// Source: upstream/packages/types/src/Node2D.ts:22 (sha256:7381345a7afd9c6557ad169752ed3366f892462da9be113e230ac2828c2c82be)
+// Source: upstream/packages/types/src/Node2D.ts:25 (sha256:045a7eb342d4cbe6edcc12d5cfa127d1b08ffc24d5424112a88905ad4745933b)
 pub type Node2DRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/Node2D.ts:25 (sha256:349e58c2345c42daceec731365684d55df3f4c9fac5edc7d3f8429ebc9fce039)
+// Source: upstream/packages/types/src/Node2D.ts:29 (sha256:349e58c2345c42daceec731365684d55df3f4c9fac5edc7d3f8429ebc9fce039)
 pub type Node2DDataFactory = NodeDataFactory<Node2DData>;
 
-// Source: upstream/packages/types/src/Node2D.ts:26 (sha256:fe8acb7996de1b6837ddd87d054cd3733a15a0b2fb40c7d51ce9a98ed5635535)
+// Source: upstream/packages/types/src/Node2D.ts:30 (sha256:fe8acb7996de1b6837ddd87d054cd3733a15a0b2fb40c7d51ce9a98ed5635535)
 pub type Node2DRuntimeFactory<R> = NodeRuntimeFactory<R>;

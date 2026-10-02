@@ -6,13 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, TextureAtlas};
+use crate::{BlendMode, ClipRegion, EntityRuntime, Kind, Material2D, MaterialData, TextureAtlas};
 
 // Source: upstream/packages/types/src/ParticleEmitter2D.ts:5 (sha256:56265a2a70d16090bfde55d92b3f1b50be63638030ea3492c5e2dcbc857b32bd)
 #[derive(Clone, Default)]
 pub struct ParticleEmitterData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub alphas: Vec<f32>,
     pub atlas: Option<TextureAtlas>,
     pub colors: Vec<f32>,
@@ -26,6 +30,24 @@ pub struct ParticleEmitterData {
 impl PartialEq for ParticleEmitterData {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for ParticleEmitterData {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }
 
@@ -49,7 +71,7 @@ pub struct ParticleEmitter2D {
     pub visible: bool,
     pub blend_mode: Option<BlendMode>,
     pub clip: Option<ClipRegion>,
-    pub material: Option<Material>,
+    pub material: Option<Material2D>,
     pub material_data: Option<MaterialData>,
     pub pivot_x: f64,
     pub pivot_y: f64,

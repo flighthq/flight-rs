@@ -6,10 +6,10 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{EntityRuntime, Kind};
+use crate::{EntityRuntime, Kind, LightUnit};
 use crate::{Texture, Vector3};
 
-// Source: upstream/packages/types/src/HemisphereLight.ts:5 (sha256:68701c0cc28dd9805f8d8fb3d66e5ef450aebc299ed1638873ae1bef483dc713)
+// Source: upstream/packages/types/src/HemisphereLight.ts:6 (sha256:7291748fc594c0da57b6f04b6c14c077e002a732e27434803d6c611291c8870a)
 #[derive(Clone, Default)]
 pub struct HemisphereLight {
     #[doc(hidden)]
@@ -21,18 +21,30 @@ pub struct HemisphereLight {
     pub kind: Kind,
     pub casts_shadow: bool,
     pub color: f64,
+    pub decay: f64,
     pub direction: Vector3,
+    pub enabled: bool,
     pub inner_cone_cos: f64,
     pub intensity: f64,
+    pub intensity_unit: LightUnit,
+    pub layer_mask: f64,
+    pub priority: f64,
     pub normal_bias: f64,
     pub outer_cone_cos: f64,
     pub pcf_radius: f64,
     pub position: Vector3,
     pub range: f64,
     pub shadow_bias: f64,
+    pub shadow_far: f64,
+    pub shadow_map_size: f64,
+    pub shadow_near: f64,
+    pub shadow_strength: f64,
+    pub spot_blend: f64,
     pub ground_color: f64,
     pub sky_color: f64,
     pub environment: Option<Texture>,
+    pub cascade_count: f64,
+    pub cascade_splits: Vec<f64>,
     pub right: Vector3,
     pub up: Vector3,
 }
@@ -60,5 +72,5 @@ impl crate::FlightEntity for HemisphereLight {
     }
 }
 
-// Source: upstream/packages/types/src/HemisphereLight.ts:14 (sha256:268a35ad8a408e13922dadea642d2b952717c9e53a8781f99f739e86a679b98a)
+// Source: upstream/packages/types/src/HemisphereLight.ts:17 (sha256:268a35ad8a408e13922dadea642d2b952717c9e53a8781f99f739e86a679b98a)
 pub const HEMISPHERE_LIGHT_KIND: &'static str = "HemisphereLight";

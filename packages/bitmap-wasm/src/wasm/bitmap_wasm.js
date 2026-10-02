@@ -263,21 +263,6 @@ export function copy_bitmap_pixels_wasm(dest_data, dest_descriptor, source_data,
 /**
  * @param {Uint8Array} out
  * @param {Uint8Array} source_data
- * @param {number} source_width
- * @param {number} source_height
- * @param {number} grid_size
- */
-export function create_bitmap_fingerprint_wasm(out, source_data, source_width, source_height, grid_size) {
-    var ptr0 = passArray8ToWasm0(out, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ptr1 = passArray8ToWasm0(source_data, wasm.__wbindgen_malloc);
-    const len1 = WASM_VECTOR_LEN;
-    wasm.create_bitmap_fingerprint_wasm(ptr0, len0, out, ptr1, len1, source_width, source_height, grid_size);
-}
-
-/**
- * @param {Uint8Array} out
- * @param {Uint8Array} source_data
  * @param {Float64Array} source_descriptor
  * @param {number} radius
  */

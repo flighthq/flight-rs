@@ -6,12 +6,15 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{CanvasRenderState, CanvasRenderTarget, CanvasRenderTargetPool, RenderTexture};
+use crate::{
+    CanvasRenderState, CanvasRenderTargetPool, CanvasTextureRenderTarget, EntityRuntime,
+    RenderTexture,
+};
 
-// Source: upstream/packages/types/src/CanvasRenderTexture.ts:6 (sha256:fd069efe688deec5cc0c65e6a976dc2148345bf96474876535b91afd4f8b8943)
+// Source: upstream/packages/types/src/CanvasRenderTexture.ts:7 (sha256:fd069efe688deec5cc0c65e6a976dc2148345bf96474876535b91afd4f8b8943)
 pub type CanvasRenderTextureStatus = String;
 
-// Source: upstream/packages/types/src/CanvasRenderTexture.ts:8 (sha256:5110cc247aaba889f23dcefc02330f1204c91fbc99863105fe96425fa255bda2)
+// Source: upstream/packages/types/src/CanvasRenderTexture.ts:9 (sha256:5110cc247aaba889f23dcefc02330f1204c91fbc99863105fe96425fa255bda2)
 #[derive(Clone, Default)]
 pub struct CanvasRenderTextureExplanation {
     #[doc(hidden)]
@@ -26,13 +29,13 @@ impl PartialEq for CanvasRenderTextureExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/CanvasRenderTexture.ts:14 (sha256:347be02a5d0ddbe8c51171c42f0c6fbb5fd7c9a9ce57332156da8e12fbaf5722)
+// Source: upstream/packages/types/src/CanvasRenderTexture.ts:15 (sha256:07aefc1d3598be7fecb0b208403af8438c55ad1fd79b6f5f236c5d02348f6e17)
 #[derive(Clone, Default)]
 pub struct CanvasRenderTextureEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub status: CanvasRenderTextureStatus,
-    pub target: CanvasRenderTarget,
+    pub target: CanvasTextureRenderTarget,
 }
 impl PartialEq for CanvasRenderTextureEntry {
     fn eq(&self, other: &Self) -> bool {
@@ -40,11 +43,15 @@ impl PartialEq for CanvasRenderTextureEntry {
     }
 }
 
-// Source: upstream/packages/types/src/CanvasRenderTexture.ts:21 (sha256:bccbdac026b10fed057b1fa96baa3cd24ad093dbb672ca4714c9f87985872894)
-#[derive(Clone, Default)]
+// Source: upstream/packages/types/src/CanvasRenderTexture.ts:22 (sha256:394020aeb0da3c4fcffdbccca6e4114a8ac1f918c4bb2acf29ae07a3ac99198d)
+#[derive(Clone)]
 pub struct CanvasRenderTexturePool {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub destroyed: bool,
     pub effect_targets: CanvasRenderTargetPool,
     pub free: Vec<RenderTexture>,
@@ -54,5 +61,23 @@ pub struct CanvasRenderTexturePool {
 impl PartialEq for CanvasRenderTexturePool {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for CanvasRenderTexturePool {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

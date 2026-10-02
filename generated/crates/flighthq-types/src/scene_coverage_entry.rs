@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{Kind, RenderRegistry, RequirementFacet};
+use crate::{Kind, RenderRegistryTable, RequirementFacet};
 
 // Source: upstream/packages/types/src/SceneCoverageEntry.ts:8 (sha256:5c4dac21fc1d5e2bc900207560760ac7f645377fdc521885f615c9166c4fadae)
 #[derive(Clone, Default)]
@@ -38,14 +38,14 @@ pub static SCENE_COVERAGE: std::sync::LazyLock<SceneCoverageValues> =
 // Source: upstream/packages/types/src/SceneCoverageEntry.ts:16 (sha256:f63e413d0aeddd22744b0d0b2e13e6851df3dd28e976f0c3df014fe6916d81d1)
 pub type SceneCoverage = String;
 
-// Source: upstream/packages/types/src/SceneCoverageEntry.ts:31 (sha256:924b771a0cedb874d826c2c9763d173d2ca878030ed5fc5e97c6640ef3d4edaf)
+// Source: upstream/packages/types/src/SceneCoverageEntry.ts:31 (sha256:e3b2385db347741077dcc0a9631f343a40fec680bee99c060add2649206d362e)
 #[derive(Clone)]
 pub struct SceneCoverageEntryBase {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub facet: RequirementFacet,
     pub kind: Kind,
-    pub registry: RenderRegistry,
+    pub registry: RenderRegistryTable,
 }
 impl PartialEq for SceneCoverageEntryBase {
     fn eq(&self, other: &Self) -> bool {
@@ -74,7 +74,7 @@ pub struct SatisfiedSceneCoverageEntry {
     pub __flight_identity: std::sync::Arc<()>,
     pub facet: RequirementFacet,
     pub kind: Kind,
-    pub registry: RenderRegistry,
+    pub registry: RenderRegistryTable,
     pub coverage: String,
 }
 impl PartialEq for SatisfiedSceneCoverageEntry {
@@ -90,7 +90,7 @@ pub struct UnregisteredSceneCoverageEntry {
     pub __flight_identity: std::sync::Arc<()>,
     pub facet: RequirementFacet,
     pub kind: Kind,
-    pub registry: RenderRegistry,
+    pub registry: RenderRegistryTable,
     pub module: String,
     pub registrar: String,
     pub coverage: String,
@@ -108,7 +108,7 @@ pub struct UnavailableSceneCoverageEntry {
     pub __flight_identity: std::sync::Arc<()>,
     pub facet: RequirementFacet,
     pub kind: Kind,
-    pub registry: RenderRegistry,
+    pub registry: RenderRegistryTable,
     pub coverage: String,
 }
 impl PartialEq for UnavailableSceneCoverageEntry {
@@ -124,7 +124,7 @@ pub struct FallbackRemediableSceneCoverageEntry {
     pub __flight_identity: std::sync::Arc<()>,
     pub facet: RequirementFacet,
     pub kind: Kind,
-    pub registry: RenderRegistry,
+    pub registry: RenderRegistryTable,
     pub module: String,
     pub registrar: String,
     pub coverage: String,
@@ -142,7 +142,7 @@ pub struct FallbackUnavailableSceneCoverageEntry {
     pub __flight_identity: std::sync::Arc<()>,
     pub facet: RequirementFacet,
     pub kind: Kind,
-    pub registry: RenderRegistry,
+    pub registry: RenderRegistryTable,
     pub coverage: String,
 }
 impl PartialEq for FallbackUnavailableSceneCoverageEntry {

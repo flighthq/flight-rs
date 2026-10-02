@@ -7,10 +7,13 @@
 #![allow(unused_parens)]
 
 use crate::create_vector3;
-use flighthq_entity::create_entity;
-use flighthq_types::{AabbLike, BoundingSphereLike, PlaneLike, Ray3D, Ray3DLike, Vector3Like};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{
+    AabbLike, BoundingSphereLike, EntityConstruction, Matrix4Like, PlaneLike, Ray3D, Ray3DLike,
+    Vector3, Vector3Like,
+};
 
-// Source: upstream/packages/geometry/src/ray3d.ts:8 (sha256:641551e2486de3359bf502a1d45955989bfb14eb3da05e80062ce482f10e198a)
+// Source: upstream/packages/geometry/src/ray3d.ts:18 (sha256:4f6d084b84c3447802af8cb6db973a888e21f5b846cfcc199567d2b81a122b8a)
 pub fn create_ray3_d(
     origin_x: Option<f64>,
     origin_y: Option<f64>,
@@ -19,24 +22,22 @@ pub fn create_ray3_d(
     direction_y: Option<f64>,
     direction_z: Option<f64>,
 ) -> Ray3D {
-    return create_entity(Some(Ray3D {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        direction: create_vector3(
-            Some((direction_x).unwrap_or(0.0_f64)),
-            Some((direction_y).unwrap_or(0.0_f64)),
-            Some((direction_z).unwrap_or(1.0_f64)),
-        ),
-        origin: create_vector3(
-            Some((origin_x).unwrap_or(0.0_f64)),
-            Some((origin_y).unwrap_or(0.0_f64)),
-            Some((origin_z).unwrap_or(0.0_f64)),
-        ),
-    }));
+    let origin = create_vector3(
+        Some((origin_x).unwrap_or(0.0_f64)),
+        Some((origin_y).unwrap_or(0.0_f64)),
+        Some((origin_z).unwrap_or(0.0_f64)),
+    );
+    let direction = create_vector3(
+        Some((direction_x).unwrap_or(0.0_f64)),
+        Some((direction_y).unwrap_or(0.0_f64)),
+        Some((direction_z).unwrap_or(1.0_f64)),
+    );
+    let mut out = allocate_entity();
+    initialize_ray3_d((out).clone(), &origin, &direction);
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/geometry/src/ray3d.ts:31 (sha256:3547f4bfabf6b0e7aaee6a03f658b6b93c1ae0ffc276f70d114d968c06332199)
+// Source: upstream/packages/geometry/src/ray3d.ts:42 (sha256:3547f4bfabf6b0e7aaee6a03f658b6b93c1ae0ffc276f70d114d968c06332199)
 pub fn get_closest_point_between_ray3_ds(
     out_a: &mut Vector3Like,
     out_b: &mut Vector3Like,
@@ -98,7 +99,7 @@ pub fn get_closest_point_between_ray3_ds(
     out_b.z = (boz + (bdz * tb));
 }
 
-// Source: upstream/packages/geometry/src/ray3d.ts:96 (sha256:13ad1ac90b7e347345c5114a3d34b2dca30d97871cdc2177923fd54f09e81cac)
+// Source: upstream/packages/geometry/src/ray3d.ts:107 (sha256:13ad1ac90b7e347345c5114a3d34b2dca30d97871cdc2177923fd54f09e81cac)
 pub fn get_closest_point_on_ray3_d(
     out: &mut Vector3Like,
     ray: &Ray3DLike,
@@ -127,7 +128,7 @@ pub fn get_closest_point_on_ray3_d(
     out.z = (oz + (dz * t));
 }
 
-// Source: upstream/packages/geometry/src/ray3d.ts:122 (sha256:e524f85d205b34210b0699dde72b1d84d42283ad2bcca5b80ee5d4d1c6a13f19)
+// Source: upstream/packages/geometry/src/ray3d.ts:133 (sha256:e524f85d205b34210b0699dde72b1d84d42283ad2bcca5b80ee5d4d1c6a13f19)
 pub fn get_ray3_d_point_at(out: &mut Vector3Like, ray: &Ray3DLike, t: f64) -> () {
     let ox = ray.origin.x;
     let oy = ray.origin.y;
@@ -140,7 +141,17 @@ pub fn get_ray3_d_point_at(out: &mut Vector3Like, ray: &Ray3DLike, t: f64) -> ()
     out.z = (oz + (dz * t));
 }
 
-// Source: upstream/packages/geometry/src/ray3d.ts:143 (sha256:bc1d5a9ac5f1ad58c6c837a58d3ce5c14478f353b498c8bcb9f8bc7bf9731480)
+// Source: upstream/packages/geometry/src/ray3d.ts:145 (sha256:dfbfb1af4b680c673eb4c19cb8575020896fcf396088679cc6d6b12c21c0c03c)
+pub fn initialize_ray3_d(
+    out: EntityConstruction<Ray3D>,
+    origin: &Vector3,
+    direction: &Vector3,
+) -> () {
+    crate::host_set("host.origin", origin);
+    crate::host_set("host.direction", direction);
+}
+
+// Source: upstream/packages/geometry/src/ray3d.ts:159 (sha256:bc1d5a9ac5f1ad58c6c837a58d3ce5c14478f353b498c8bcb9f8bc7bf9731480)
 pub fn intersect_ray3_d_aabb(ray: &Ray3DLike, aabb: &AabbLike) -> f64 {
     if ((aabb.min.x > aabb.max.x) || (aabb.min.y > aabb.max.y)) || (aabb.min.z > aabb.max.z) {
         return (-1.0_f64);
@@ -216,7 +227,7 @@ pub fn intersect_ray3_d_aabb(ray: &Ray3DLike, aabb: &AabbLike) -> f64 {
     return t_min;
 }
 
-// Source: upstream/packages/geometry/src/ray3d.ts:221 (sha256:f75882171aad35040e36caf5d191053af7c69174fe15136a6df53f392f22ae0e)
+// Source: upstream/packages/geometry/src/ray3d.ts:237 (sha256:f75882171aad35040e36caf5d191053af7c69174fe15136a6df53f392f22ae0e)
 pub fn intersect_ray3_d_plane(ray: &Ray3DLike, plane: &PlaneLike) -> f64 {
     let dx = ray.direction.x;
     let dy = ray.direction.y;
@@ -237,7 +248,7 @@ pub fn intersect_ray3_d_plane(ray: &Ray3DLike, plane: &PlaneLike) -> f64 {
     return if (t >= 0.0_f64) { t } else { (-1.0_f64) };
 }
 
-// Source: upstream/packages/geometry/src/ray3d.ts:244 (sha256:8e554db0f73a4d7b0a53189709d9ea65a11533872e9cf8db511600529eee268c)
+// Source: upstream/packages/geometry/src/ray3d.ts:260 (sha256:8e554db0f73a4d7b0a53189709d9ea65a11533872e9cf8db511600529eee268c)
 pub fn intersect_ray3_d_sphere(ray: &Ray3DLike, sphere: &BoundingSphereLike) -> f64 {
     if (sphere.radius < 0.0_f64) {
         return (-1.0_f64);
@@ -267,7 +278,7 @@ pub fn intersect_ray3_d_sphere(ray: &Ray3DLike, sphere: &BoundingSphereLike) -> 
     return if (t2 >= 0.0_f64) { 0.0_f64 } else { (-1.0_f64) };
 }
 
-// Source: upstream/packages/geometry/src/ray3d.ts:277 (sha256:ebc851e41aa0826273db06ac401f79d0334cea1d6a98a3dff1179956de8c7662)
+// Source: upstream/packages/geometry/src/ray3d.ts:293 (sha256:ebc851e41aa0826273db06ac401f79d0334cea1d6a98a3dff1179956de8c7662)
 pub fn intersect_ray3_d_triangle(
     ray: &Ray3DLike,
     a: &Vector3Like,
@@ -317,7 +328,7 @@ pub fn intersect_ray3_d_triangle(
     return if (t >= 0.0_f64) { t } else { (-1.0_f64) };
 }
 
-// Source: upstream/packages/geometry/src/ray3d.ts:338 (sha256:726bdf41eec8ab7f900b72f0d5fca38ef597d7a9695f55c6b4654c7f8d2a3c07)
+// Source: upstream/packages/geometry/src/ray3d.ts:354 (sha256:726bdf41eec8ab7f900b72f0d5fca38ef597d7a9695f55c6b4654c7f8d2a3c07)
 pub fn set_ray3_d(out: &mut Ray3DLike, origin: &Vector3Like, direction: &Vector3Like) -> () {
     let ox = origin.x;
     let oy = origin.y;
@@ -331,4 +342,43 @@ pub fn set_ray3_d(out: &mut Ray3DLike, origin: &Vector3Like, direction: &Vector3
     out.direction.x = dx;
     out.direction.y = dy;
     out.direction.z = dz;
+}
+
+// Source: upstream/packages/geometry/src/ray3d.ts:373 (sha256:a42189d116b10301d74f17df0ee14b46080b0a3131cfb87cb5a6ac689a8a7520)
+pub fn transform_ray3_d_by_matrix4(out: &mut Ray3DLike, ray: &Ray3DLike, m: &Matrix4Like) -> () {
+    let ox = ray.origin.x;
+    let oy = ray.origin.y;
+    let oz = ray.origin.z;
+    let dx = ray.direction.x;
+    let dy = ray.direction.y;
+    let dz = ray.direction.z;
+    out.origin.x = (((((m.m[0.0_f64 as usize] as f64) * ox)
+        + ((m.m[4.0_f64 as usize] as f64) * oy))
+        + ((m.m[8.0_f64 as usize] as f64) * oz))
+        + (m.m[12.0_f64 as usize] as f64));
+    out.origin.y = (((((m.m[1.0_f64 as usize] as f64) * ox)
+        + ((m.m[5.0_f64 as usize] as f64) * oy))
+        + ((m.m[9.0_f64 as usize] as f64) * oz))
+        + (m.m[13.0_f64 as usize] as f64));
+    out.origin.z = (((((m.m[2.0_f64 as usize] as f64) * ox)
+        + ((m.m[6.0_f64 as usize] as f64) * oy))
+        + ((m.m[10.0_f64 as usize] as f64) * oz))
+        + (m.m[14.0_f64 as usize] as f64));
+    let ndx = ((((m.m[0.0_f64 as usize] as f64) * dx) + ((m.m[4.0_f64 as usize] as f64) * dy))
+        + ((m.m[8.0_f64 as usize] as f64) * dz));
+    let ndy = ((((m.m[1.0_f64 as usize] as f64) * dx) + ((m.m[5.0_f64 as usize] as f64) * dy))
+        + ((m.m[9.0_f64 as usize] as f64) * dz));
+    let ndz = ((((m.m[2.0_f64 as usize] as f64) * dx) + ((m.m[6.0_f64 as usize] as f64) * dy))
+        + ((m.m[10.0_f64 as usize] as f64) * dz));
+    let len = (((ndx * ndx) + (ndy * ndy)) + (ndz * ndz)).sqrt();
+    if (len > 0.0_f64) {
+        let inv = (1.0_f64 / len);
+        out.direction.x = (ndx * inv);
+        out.direction.y = (ndy * inv);
+        out.direction.z = (ndz * inv);
+    } else {
+        out.direction.x = 0.0_f64;
+        out.direction.y = 0.0_f64;
+        out.direction.z = 0.0_f64;
+    }
 }

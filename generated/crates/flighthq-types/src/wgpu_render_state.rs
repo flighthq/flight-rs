@@ -7,29 +7,18 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, CanvasShapeCommand, ColorAdjustmentUnsupportedGuard, ColorScaleBias, EntityRuntime,
-    Image, KeyedTable, Matrix, Path, PathMesh, RenderEffectPaddingResolver, RenderProxy,
-    RenderProxy2D, RenderRootGuard, RenderState, Renderer, Scene2DClipHooks,
-    Scene3DGraphSyncPolicy, ShapeRasterizer, SlotTable, StrokeStyle, TextureSource,
-    TintMaterialData, WgpuCompressedTextureDecoder, WgpuCompressedTextureUploader,
-    WgpuCustomMaterialShaderSource, WgpuMaterialRenderer, WgpuMeshMaterialRenderer,
-    WgpuModifierSnippet, WgpuRenderEffectRunner, WgpuRenderTarget, WgpuShapeMesh,
-    WgpuTextureResolver, WgpuVelocityWriter,
+    BlendMode, CanvasShapeCommand, ColorAdjustmentUnsupportedGuard, ColorScaleBias,
+    EffectPaddingResolver, EntityRuntime, HostCanvasCapability, HostImageCapability, ImageResource,
+    Kind, NodeRenderer, RenderProxy, RenderProxy2D, RenderRegistrySignals, RenderRootGuard,
+    RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy, ShapeRasterizer, StrokeTessellator,
+    TextureSource, TintMaterialData, WgpuCompressedTextureDecoder, WgpuCompressedTextureUploader,
+    WgpuCustomMaterialShaderSource, WgpuDeviceRuntime, WgpuDeviceState, WgpuEffectRegistration,
+    WgpuMeshMaterialRenderer, WgpuModifierSnippet, WgpuParticleResources, WgpuQuadBatchResources,
+    WgpuQuadMaterialRenderer, WgpuRenderPass, WgpuRenderPassViewport, WgpuRenderTarget,
+    WgpuScene3DPass, WgpuShapeMesh, WgpuSkinningAdapter, WgpuTextureResolver, WgpuVelocityWriter,
 };
 
-#[derive(Clone, Default)]
-pub struct SharedStructuralRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub width: f64,
-    pub height: f64,
-}
-impl PartialEq for SharedStructuralRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/types/src/WgpuRenderState.ts:28 (sha256:b04573db8382026a9e16cb4953f1dda844ec6cd863bf52f4cb3b0689edf3bda4)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:34 (sha256:4a4eda3e55c94215c62f6013a1f6fc6dc4e51d4d298b35eb6325857677512fa5)
 #[derive(Clone, Default)]
 pub struct WgpuRenderState {
     #[doc(hidden)]
@@ -39,15 +28,13 @@ pub struct WgpuRenderState {
     #[doc(hidden)]
     pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub allow_smoothing: bool,
-    pub background_color: f64,
-    pub background_color_rgba: Vec<f64>,
-    pub background_color_string: String,
     pub current_clip_depth: f64,
     pub display_object_clip_hooks: Option<Scene2DClipHooks>,
     pub pixel_ratio: f64,
+    pub canvas_host: Option<HostCanvasCapability>,
+    pub image_host: Option<HostImageCapability>,
     pub render_alpha: f64,
     pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
     pub scene_graph_sync_policy: Scene3DGraphSyncPolicy,
     pub round_pixels: bool,
     pub apply_blend_mode: Option<
@@ -57,10 +44,10 @@ pub struct WgpuRenderState {
             >,
         >,
     >,
-    pub canvas: crate::OpaqueHostValue,
-    pub context: crate::OpaqueHostValue,
+    pub device_state: WgpuDeviceState,
     pub device: crate::OpaqueHostValue,
     pub format: crate::OpaqueHostValue,
+    pub registries: WgpuRenderRegistries,
 }
 impl PartialEq for WgpuRenderState {
     fn eq(&self, other: &Self) -> bool {
@@ -86,49 +73,100 @@ impl crate::FlightEntity for WgpuRenderState {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:38 (sha256:9fc24ca0be8f86d689020a89a978acdd3d9e5b24efa7cb8473fe58deb4f117df)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:50 (sha256:d697a237e1b90f97d65d5b19091e77601e8011e7e537e5591acffaa9604243e3)
+#[derive(Clone, Default)]
+pub struct WgpuOffscreenRenderStateResultRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub reason: String,
+    pub state: WgpuRenderState,
+}
+impl PartialEq for WgpuOffscreenRenderStateResultRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct WgpuOffscreenRenderStateResultRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub reason: String,
+    pub info: crate::OpaqueHostValue,
+}
+impl PartialEq for WgpuOffscreenRenderStateResultRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+pub struct WgpuOffscreenRenderStateResult {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
+}
+impl PartialEq for WgpuOffscreenRenderStateResult {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for WgpuOffscreenRenderStateResult {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
+
+// Source: upstream/packages/types/src/WgpuRenderState.ts:58 (sha256:5b16c5eddca6e7f3f23a5a9459d1e349145f36cfacf1a1ead88d6d6ea4f5f911)
 #[derive(Clone, Default)]
 pub struct WgpuRenderRegistries {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub canvas_shape_commands: Option<KeyedTable<CanvasShapeCommand<crate::OpaqueHostValue>>>,
+    pub canvas_shape_commands: Option<Vec<(Kind, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
     pub color_adjustments: Option<
-        SlotTable<
-            std::sync::Arc<
-                std::sync::Mutex<
-                    Box<
-                        dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> ()
-                            + Send
-                            + 'static,
-                    >,
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
                 >,
             >,
         >,
     >,
-    pub color_adjustment_unsupported_guard: Option<SlotTable<ColorAdjustmentUnsupportedGuard>>,
-    pub effect_padding_resolvers: Option<KeyedTable<RenderEffectPaddingResolver>>,
-    pub renderers: KeyedTable<Renderer>,
-    pub render_root_guard: Option<SlotTable<RenderRootGuard>>,
-    pub stroke_tessellator: SlotTable<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
-            >,
-        >,
-    >,
-    pub color_adjustment_feature: Option<SlotTable<WgpuColorAdjustmentMaterialFeature>>,
-    pub color_adjustment_feature_guard: Option<SlotTable<WgpuColorAdjustmentMaterialFeatureGuard>>,
-    pub compressed_texture_decoder: SlotTable<WgpuCompressedTextureDecoder>,
-    pub compressed_texture_upload: SlotTable<WgpuCompressedTextureUploader>,
-    pub custom_material_shaders: KeyedTable<WgpuCustomMaterialShaderSource>,
-    pub material_renderers: KeyedTable<WgpuMaterialRenderer>,
-    pub mesh_material_renderers: KeyedTable<WgpuMeshMaterialRenderer>,
-    pub modifier_snippets: KeyedTable<WgpuModifierSnippet>,
-    pub modifier_snippet_revision: f64,
-    pub render_effects: KeyedTable<WgpuRenderEffectRunner>,
-    pub shape_rasterizer: SlotTable<ShapeRasterizer>,
-    pub texture_resolvers: KeyedTable<WgpuTextureResolver>,
-    pub velocity_writers: KeyedTable<WgpuVelocityWriter>,
+    pub color_adjustment_unsupported_guard: Option<ColorAdjustmentUnsupportedGuard>,
+    pub effect_padding_resolvers: Option<Vec<(Kind, EffectPaddingResolver)>>,
+    pub node_renderers: Vec<(Kind, NodeRenderer)>,
+    pub render_root_guard: Option<RenderRootGuard>,
+    pub stroke_tessellator: Option<StrokeTessellator>,
+    pub color_adjustment_feature: Option<WgpuColorAdjustmentMaterialFeature>,
+    pub color_adjustment_feature_guard: Option<WgpuColorAdjustmentMaterialFeatureGuard>,
+    pub compressed_texture_decoder: Option<WgpuCompressedTextureDecoder>,
+    pub compressed_texture_upload: Option<WgpuCompressedTextureUploader>,
+    pub custom_material_shaders: Vec<(Kind, WgpuCustomMaterialShaderSource)>,
+    pub gpu_skinning: Option<WgpuSkinningAdapter>,
+    pub material_renderers: Vec<(
+        Kind,
+        crate::FlightUnion2<WgpuMeshMaterialRenderer, WgpuQuadMaterialRenderer>,
+    )>,
+    pub modifier_snippets: Vec<(Kind, WgpuModifierSnippet)>,
+    pub effects: Vec<(Kind, WgpuEffectRegistration)>,
+    pub passes: Option<Vec<WgpuScene3DPass>>,
+    pub shape_rasterizer: Option<ShapeRasterizer>,
+    pub texture_resolvers: Vec<(Kind, WgpuTextureResolver)>,
+    pub velocity_writers: Vec<(Kind, WgpuVelocityWriter)>,
 }
 impl PartialEq for WgpuRenderRegistries {
     fn eq(&self, other: &Self) -> bool {
@@ -136,7 +174,7 @@ impl PartialEq for WgpuRenderRegistries {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:67 (sha256:7db70fc400926f7c23e83eca154e3294581b61b582548d2dd1df3969f5bf7edb)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:85 (sha256:7db70fc400926f7c23e83eca154e3294581b61b582548d2dd1df3969f5bf7edb)
 #[derive(Clone)]
 pub struct WgpuColorAdjustmentMaterialFeature {
     #[doc(hidden)]
@@ -193,7 +231,7 @@ impl PartialEq for WgpuColorAdjustmentMaterialFeature {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:89 (sha256:8f369dce49c12d3b007a0eed13140c4bed3f1ba43b05a4a336f8c657c5f8a2ee)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:107 (sha256:8f369dce49c12d3b007a0eed13140c4bed3f1ba43b05a4a336f8c657c5f8a2ee)
 pub type WgpuColorAdjustmentMaterialFeatureGuard = std::sync::Arc<
     std::sync::Mutex<
         Box<
@@ -210,7 +248,7 @@ pub type WgpuColorAdjustmentMaterialFeatureGuard = std::sync::Arc<
     >,
 >;
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:97 (sha256:ba949754af13c5bc5e13f170befd56868a323fecc070c8482dbde40c37eb6942)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:115 (sha256:ba949754af13c5bc5e13f170befd56868a323fecc070c8482dbde40c37eb6942)
 #[derive(Clone)]
 pub struct WgpuColorAdjustmentFlush {
     #[doc(hidden)]
@@ -225,7 +263,43 @@ impl PartialEq for WgpuColorAdjustmentFlush {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:107 (sha256:9cc616216457e3fabf5cc18316b36ac4a679a51a51daa3184ff23ab653ca7b92)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:125 (sha256:c4b20c045bea80317f0e6b7459cb2d354f4a6a18a5912aaf2ac35ef517fc42de)
+#[derive(Clone, Default)]
+pub struct WgpuBindGroupLayouts {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
+    pub texture_bind_group_layout: crate::OpaqueHostValue,
+    pub uniform_bind_group_layout: crate::OpaqueHostValue,
+}
+impl PartialEq for WgpuBindGroupLayouts {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for WgpuBindGroupLayouts {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
+
+// Source: upstream/packages/types/src/WgpuRenderState.ts:130 (sha256:31af0fe536b3c8f515b646cdbfa905363830b8dc115575511a7923929d166fe4)
 #[derive(Clone, Default)]
 pub struct WgpuRenderStateRuntimeRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -238,9 +312,38 @@ impl PartialEq for WgpuRenderStateRuntimeRecord1 {
     }
 }
 
+#[derive(Clone, Default)]
+pub struct WgpuRenderStateRuntimeRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub height: f64,
+    pub width: f64,
+}
+impl PartialEq for WgpuRenderStateRuntimeRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct WgpuRenderStateRuntimeRecord3 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+    pub signals: RenderRegistrySignals,
+}
+impl PartialEq for WgpuRenderStateRuntimeRecord3 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 #[doc(hidden)]
 pub struct WgpuRenderStateRuntimeStorage {
+    pub context: WgpuDeviceRuntime,
     pub registries: WgpuRenderRegistries,
+    pub teardowns: Vec<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(WgpuRenderState) -> () + Send + 'static>>>,
+    >,
+    pub borrowed_surface_extent: Option<WgpuRenderStateRuntimeRecord2>,
     pub mipmap_pipeline_cache: Vec<(crate::OpaqueHostValue, WgpuRenderStateRuntimeRecord1)>,
     pub texture_cache: Vec<(crate::OpaqueHostValue, WgpuTextureEntry)>,
     pub texture_source_premultiplied_texture_cache:
@@ -250,22 +353,27 @@ pub struct WgpuRenderStateRuntimeStorage {
     pub texture_source_straight_texture_cache: Vec<(TextureSource, WgpuTextureSourceTextureEntry)>,
     pub texture_source_straight_srgb_texture_cache:
         Vec<(TextureSource, WgpuTextureSourceTextureEntry)>,
-    pub video_texture_cache: Option<Vec<(Image, WgpuVideoTextureEntry)>>,
-    pub video_srgb_texture_cache: Option<Vec<(Image, WgpuVideoTextureEntry)>>,
+    pub video_texture_cache: Option<Vec<(ImageResource, WgpuVideoTextureEntry)>>,
+    pub video_srgb_texture_cache: Option<Vec<(ImageResource, WgpuVideoTextureEntry)>>,
     pub default_bitmap_shader: Option<WgpuBitmapShader>,
-    pub particle_instance_buffer: Option<crate::OpaqueHostValue>,
     pub particle_instance_data: Option<Vec<f32>>,
-    pub quad_batch_writer_material_renderer: Option<WgpuMaterialRenderer>,
+    pub quad_batch_writer_material_renderer: Option<WgpuQuadMaterialRenderer>,
     pub quad_batch_writer_texture: Option<WgpuTextureEntry>,
+    pub particle_resources: Option<WgpuParticleResources>,
+    pub quad_batch_resources: Option<WgpuQuadBatchResources>,
     pub scissor_stack: Vec<WgpuScissorRect>,
     pub current_scissor_rect: Option<WgpuScissorRect>,
-    pub render_target_viewport: Option<SharedStructuralRecord1>,
+    pub render_target_viewport: Option<WgpuRenderPassViewport>,
     pub current_render_target: Option<WgpuRenderTarget>,
+    pub pass_stack: Vec<WgpuRenderPass>,
 }
 impl Default for WgpuRenderStateRuntimeStorage {
     fn default() -> Self {
         Self {
+            context: Default::default(),
             registries: Default::default(),
+            teardowns: Default::default(),
+            borrowed_surface_extent: Default::default(),
             mipmap_pipeline_cache: Default::default(),
             texture_cache: Default::default(),
             texture_source_premultiplied_texture_cache: Default::default(),
@@ -275,20 +383,22 @@ impl Default for WgpuRenderStateRuntimeStorage {
             video_texture_cache: Default::default(),
             video_srgb_texture_cache: Default::default(),
             default_bitmap_shader: Default::default(),
-            particle_instance_buffer: Default::default(),
             particle_instance_data: Default::default(),
             quad_batch_writer_material_renderer: Default::default(),
             quad_batch_writer_texture: Default::default(),
+            particle_resources: Default::default(),
+            quad_batch_resources: Default::default(),
             scissor_stack: Default::default(),
             current_scissor_rect: Default::default(),
             render_target_viewport: Default::default(),
             current_render_target: Default::default(),
+            pass_stack: Default::default(),
         }
     }
 }
 pub type WgpuRenderStateRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:331 (sha256:e003cc095073ba6707274c00e75dcf6b990c0b298fb4057aa462e70bf224260d)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:352 (sha256:e003cc095073ba6707274c00e75dcf6b990c0b298fb4057aa462e70bf224260d)
 #[derive(Clone, Default)]
 pub struct WgpuBitmapShaderRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -317,7 +427,7 @@ impl PartialEq for WgpuBitmapShader {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:343 (sha256:5fe417094a9800132bc849b19f0360a096f37d1fda60600f603a8eeba76f6676)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:364 (sha256:5fe417094a9800132bc849b19f0360a096f37d1fda60600f603a8eeba76f6676)
 #[derive(Clone, Default)]
 pub struct WgpuClipContourEntry {
     #[doc(hidden)]
@@ -334,7 +444,7 @@ impl PartialEq for WgpuClipContourEntry {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:354 (sha256:da157d7dd2aef06c3ff53a1e2cafb130aaa6d7f8d3ae707eac7859094af30f73)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:375 (sha256:da157d7dd2aef06c3ff53a1e2cafb130aaa6d7f8d3ae707eac7859094af30f73)
 #[derive(Clone, Default)]
 pub struct WgpuClipContourPipelines {
     #[doc(hidden)]
@@ -349,26 +459,7 @@ impl PartialEq for WgpuClipContourPipelines {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:362 (sha256:22df7e6d3385e1e076ae9715044784097c49ec0109050e4f7f8424f0fb7c93a1)
-#[derive(Clone, Default)]
-pub struct WgpuSavedPassState {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub canvas_texture_view: Option<crate::OpaqueHostValue>,
-    pub canvas_view_cleared: bool,
-    pub depth_stencil_view: Option<crate::OpaqueHostValue>,
-    pub render_target_viewport: Option<SharedStructuralRecord1>,
-    pub render_transform2_d: Option<Matrix>,
-    pub color_format: Option<crate::OpaqueHostValue>,
-    pub render_target: Option<WgpuRenderTarget>,
-}
-impl PartialEq for WgpuSavedPassState {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/types/src/WgpuRenderState.ts:374 (sha256:34dfe22efbf1d2f4e16ac9a93fc703b8a54032d9ea689c75c5e61549dc76a3c9)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:383 (sha256:34dfe22efbf1d2f4e16ac9a93fc703b8a54032d9ea689c75c5e61549dc76a3c9)
 #[derive(Clone, Default)]
 pub struct WgpuScissorRect {
     #[doc(hidden)]
@@ -384,7 +475,7 @@ impl PartialEq for WgpuScissorRect {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:385 (sha256:f9514088a8f644f0471aa1aa5a043041544b3296d2aa7a9994fa8dfa8ae9e7b8)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:394 (sha256:f9514088a8f644f0471aa1aa5a043041544b3296d2aa7a9994fa8dfa8ae9e7b8)
 #[derive(Clone, Default)]
 pub struct WgpuShapeMeshBuffers {
     #[doc(hidden)]
@@ -404,7 +495,7 @@ impl PartialEq for WgpuShapeMeshBuffers {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:402 (sha256:0e94554b02fe046b289bb369e7bc2bf9804ca1d647be647f82be40f65cb53680)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:411 (sha256:0e94554b02fe046b289bb369e7bc2bf9804ca1d647be647f82be40f65cb53680)
 #[derive(Clone, Default)]
 pub struct WgpuShapeMeshPipeline {
     #[doc(hidden)]
@@ -418,7 +509,7 @@ impl PartialEq for WgpuShapeMeshPipeline {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:410 (sha256:0362fdf0b62095db70100964f8f2d188eae552a2513337d7a145648619fd9486)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:419 (sha256:0362fdf0b62095db70100964f8f2d188eae552a2513337d7a145648619fd9486)
 #[derive(Clone, Default)]
 pub struct WgpuQuadBatchWriterBufferSlot {
     #[doc(hidden)]
@@ -434,35 +525,94 @@ impl PartialEq for WgpuQuadBatchWriterBufferSlot {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:419 (sha256:0b40042b9e4b6832f9579ad30017ae29f1fd11d0339c3000b65e8ff33a50bb29)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:429 (sha256:de75dddc8a4430a300122c6cd1a46ad6f035d28980c6a7f325573f6b42cf3735)
+#[derive(Clone, Default)]
+pub struct WgpuMeshInstanceBufferSlot {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub buffer: Option<crate::OpaqueHostValue>,
+    pub capacity: f64,
+}
+impl PartialEq for WgpuMeshInstanceBufferSlot {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/WgpuRenderState.ts:440 (sha256:e106c7c0c814c31f6b624e8052b44416f90bcef516bfe9fa575a5d95e731ab82)
+#[derive(Clone, Default)]
+pub struct WgpuTextureResource {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub mip_level_count: f64,
+    pub straight_alpha: Option<bool>,
+    pub texture: crate::OpaqueHostValue,
+    pub view: crate::OpaqueHostValue,
+}
+impl PartialEq for WgpuTextureResource {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/WgpuRenderState.ts:459 (sha256:595b8ee17219343815c9ecc36e96d789f4a49aa3027eca7db075c56a3aa19e56)
+pub type WgpuTextureBindings = Vec<(crate::OpaqueHostValue, crate::OpaqueHostValue)>;
+
+// Source: upstream/packages/types/src/WgpuRenderState.ts:463 (sha256:be5e97897eb02dcf05630647c7b870234dcc09f81a50e9317339b252e9aa2f25)
 #[derive(Clone, Default)]
 pub struct WgpuTextureEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub bind_group: crate::OpaqueHostValue,
-    pub bind_group_linear: Option<crate::OpaqueHostValue>,
-    pub bind_group_nearest: Option<crate::OpaqueHostValue>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
+    pub mip_level_count: f64,
     pub straight_alpha: Option<bool>,
     pub texture: crate::OpaqueHostValue,
     pub view: crate::OpaqueHostValue,
+    pub bindings: WgpuTextureBindings,
+    pub sampler: Option<crate::OpaqueHostValue>,
 }
 impl PartialEq for WgpuTextureEntry {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for WgpuTextureEntry {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:435 (sha256:89b8cf222fe23605091e257b356350a8d4bf1de8cd89062a08a65cc99128f75a)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:472 (sha256:89b8cf222fe23605091e257b356350a8d4bf1de8cd89062a08a65cc99128f75a)
 #[derive(Clone, Default)]
 pub struct WgpuTextureSourceTextureEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub bind_group: crate::OpaqueHostValue,
-    pub bind_group_linear: Option<crate::OpaqueHostValue>,
-    pub bind_group_nearest: Option<crate::OpaqueHostValue>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
+    pub mip_level_count: f64,
     pub straight_alpha: Option<bool>,
     pub texture: crate::OpaqueHostValue,
     pub view: crate::OpaqueHostValue,
+    pub bindings: WgpuTextureBindings,
+    pub sampler: Option<crate::OpaqueHostValue>,
     pub version: f64,
 }
 impl PartialEq for WgpuTextureSourceTextureEntry {
@@ -470,25 +620,64 @@ impl PartialEq for WgpuTextureSourceTextureEntry {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for WgpuTextureSourceTextureEntry {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/WgpuRenderState.ts:439 (sha256:da0f630196cf440da445e080b9729ba42c3fb30d7645cfdfac1fd789e78c86cd)
+// Source: upstream/packages/types/src/WgpuRenderState.ts:476 (sha256:da0f630196cf440da445e080b9729ba42c3fb30d7645cfdfac1fd789e78c86cd)
 #[derive(Clone, Default)]
 pub struct WgpuVideoTextureEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub bind_group: crate::OpaqueHostValue,
-    pub bind_group_linear: Option<crate::OpaqueHostValue>,
-    pub bind_group_nearest: Option<crate::OpaqueHostValue>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
+    pub mip_level_count: f64,
     pub straight_alpha: Option<bool>,
     pub texture: crate::OpaqueHostValue,
     pub view: crate::OpaqueHostValue,
-    pub height: f64,
+    pub bindings: WgpuTextureBindings,
     pub sampler: crate::OpaqueHostValue,
+    pub height: f64,
     pub uploaded_version: f64,
     pub width: f64,
 }
 impl PartialEq for WgpuVideoTextureEntry {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for WgpuVideoTextureEntry {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

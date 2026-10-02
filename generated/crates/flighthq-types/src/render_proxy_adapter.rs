@@ -6,16 +6,16 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{RenderProxy2D, RenderState, Renderable};
+use crate::{NodeAny, RenderProxy2D, RenderState};
 
-// Source: upstream/packages/types/src/RenderProxyAdapter.ts:5 (sha256:4026ea09e96b83cb35d71bc652ac9b7cf776ea01c3e354ff4656db3b4efbd9fd)
+// Source: upstream/packages/types/src/RenderProxyAdapter.ts:5 (sha256:ff90cbfce0c573808c7e56d5d91a1f774d015ceb1b7e3a73461a6bac2127cadf)
 #[derive(Clone)]
 pub struct RenderProxyAdapter {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub adapt: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(RenderState, Renderable, RenderProxy2D) -> Option<bool> + Send + 'static>,
+            Box<dyn FnMut(RenderState, NodeAny, RenderProxy2D) -> Option<bool> + Send + 'static>,
         >,
     >,
 }

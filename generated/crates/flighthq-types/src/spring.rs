@@ -6,17 +6,41 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/Spring.ts:12 (sha256:e6c4ef7d0f6f1c23cddd5dfc4e9723cb4146faf0b2b5371c776ac77a074c9a45)
+use crate::EntityRuntime;
+
+// Source: upstream/packages/types/src/Spring.ts:12 (sha256:8e3da3282ddb045011cb85ba80981231d2b30d14bc91f628305bcf96145ed860)
 #[derive(Clone, Default)]
 pub struct Spring {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub value: f64,
     pub velocity: f64,
 }
 impl PartialEq for Spring {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for Spring {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }
 
@@ -34,11 +58,15 @@ impl PartialEq for SpringConfig {
     }
 }
 
-// Source: upstream/packages/types/src/Spring.ts:33 (sha256:ae030432d98239780f8d39ed48a9cf0df4fca1c299a3cb4f52c35a05cac894a3)
+// Source: upstream/packages/types/src/Spring.ts:33 (sha256:74c5ace4d817722857985deea4dac3ff9b68f6dd80bf9e62c3449f9f2cd2df60)
 #[derive(Clone, Default)]
 pub struct Spring2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub x: Spring,
     pub y: Spring,
 }
@@ -47,12 +75,34 @@ impl PartialEq for Spring2D {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Spring2D {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Spring.ts:40 (sha256:e70a0349c30d39a3bf2a037216b2b969734f5728aa2d3dd1d09d57cdc84ec771)
+// Source: upstream/packages/types/src/Spring.ts:40 (sha256:d298be4d6bdbbc9e51c9c11ae6e851c98d14a72bbdb6554317dfb64d3e9171af)
 #[derive(Clone, Default)]
 pub struct Spring3D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub x: Spring,
     pub y: Spring,
     pub z: Spring,
@@ -60,5 +110,23 @@ pub struct Spring3D {
 impl PartialEq for Spring3D {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for Spring3D {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

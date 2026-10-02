@@ -6,16 +6,18 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{Matrix4, Mesh, Scene3DLightBlock};
+use crate::{InstancedMesh, Matrix4, Mesh, Scene3DLightBlock};
 
-// Source: upstream/packages/types/src/Scene3DRenderList.ts:19 (sha256:7e7d78288f957c8b5498a6e851712cd492da91353a70049a43a65b9d5abf86ed)
+// Source: upstream/packages/types/src/Scene3DRenderList.ts:20 (sha256:7876e650c536ec6dff8ebacf154832629bd706eab3a5ec13b303a59dda2d6ae2)
 #[derive(Clone, Default)]
 pub struct Scene3DRenderList {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub instanced_mesh_count: f64,
     pub lights: Scene3DLightBlock,
     pub mesh_count: f64,
     pub view_projection: Matrix4,
+    pub visible_instanced_meshes: Vec<InstancedMesh>,
     pub visible_meshes: Vec<Mesh>,
 }
 impl PartialEq for Scene3DRenderList {

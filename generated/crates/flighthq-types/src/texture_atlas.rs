@@ -8,7 +8,7 @@
 
 use crate::{EntityRuntime, Texture2D, TextureAtlasRegion};
 
-// Source: upstream/packages/types/src/TextureAtlas.ts:5 (sha256:82accec157e1cba266ddf7c2202f59135764ce2864659921cc32f5aa45ad8ac4)
+// Source: upstream/packages/types/src/TextureAtlas.ts:5 (sha256:8ed8b06313da88dad28fcf41e0d600c4637cf8901949a4e48a389853ed49d227)
 #[derive(Clone, Default)]
 pub struct TextureAtlas {
     #[doc(hidden)]
@@ -17,8 +17,12 @@ pub struct TextureAtlas {
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     #[doc(hidden)]
     pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
-    pub texture: Option<Texture2D>,
+    pub image_height: f64,
+    pub image_name: Option<String>,
+    pub image_width: f64,
     pub regions: Vec<TextureAtlasRegion>,
+    pub scale: f64,
+    pub texture: Option<Texture2D>,
 }
 impl PartialEq for TextureAtlas {
     fn eq(&self, other: &Self) -> bool {

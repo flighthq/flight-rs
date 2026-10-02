@@ -167,7 +167,15 @@ pub type Texture = crate::FlightUnion2<
 >;
 
 // Source: upstream/packages/types/src/Texture.ts:54 (sha256:82fef5fba8ef920384fda4dd0c982cf3554b42d79bd7f3e35df4593e165da3fa)
-pub type TextureLikeFrom = crate::OpaqueHostValue;
+pub struct TextureLikeFrom<Type>(
+    pub crate::OpaqueHostValue,
+    pub core::marker::PhantomData<fn() -> (Type,)>,
+);
+impl<Type> Clone for TextureLikeFrom<Type> {
+    fn clone(&self) -> Self {
+        Self(self.0.clone(), core::marker::PhantomData)
+    }
+}
 
 // Source: upstream/packages/types/src/Texture.ts:56 (sha256:4dceca97a01125d9bb5c81dbdfb122e9c39b3dbc1de22dc38bbf23d42e7e00ac)
-pub type TextureLike = TextureLikeFrom;
+pub type TextureLike = TextureLikeFrom<Texture>;

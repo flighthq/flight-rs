@@ -11,7 +11,7 @@ use crate::{
     CompressedImageData, HostImageSource, PixelFormat, RenderTargetColorSpace, RenderTargetFormat,
 };
 
-// Source: upstream/packages/types/src/TextureSource.ts:26 (sha256:e1aa5f7158dac8804df2b8cb02d88eb0ef695dcb84db0bb0804dc6a2fd8c1b1f)
+// Source: upstream/packages/types/src/TextureSource.ts:27 (sha256:e1aa5f7158dac8804df2b8cb02d88eb0ef695dcb84db0bb0804dc6a2fd8c1b1f)
 #[derive(Clone, Default)]
 pub struct TextureSource {
     #[doc(hidden)]
@@ -31,8 +31,6 @@ pub struct TextureSource {
     pub color_formats: Option<Vec<RenderTargetFormat>>,
     pub sample_count: Option<f64>,
     pub color_space: Option<RenderTargetColorSpace>,
-    pub clear_colors: Option<Vec<f64>>,
-    pub clear_depth: Option<f64>,
     pub source: HostImageSource,
     pub compressed: CompressedImageData,
 }

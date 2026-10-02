@@ -21,6 +21,8 @@ pub struct GlDebugProgram {
     pub loc_object_alpha: Option<crate::OpaqueHostValue>,
     pub loc_alpha_is_coverage: Option<crate::OpaqueHostValue>,
     pub loc_joint_texture: Option<crate::OpaqueHostValue>,
+    pub loc_instance_palette: Option<crate::OpaqueHostValue>,
+    pub loc_instance_color_palette: Option<crate::OpaqueHostValue>,
     pub loc_joint_normal_texture: Option<crate::OpaqueHostValue>,
     pub loc_model: Option<crate::OpaqueHostValue>,
     pub loc_normal_matrix: Option<crate::OpaqueHostValue>,
@@ -39,11 +41,12 @@ impl PartialEq for GlDebugProgram {
     }
 }
 
-// Source: upstream/packages/types/src/GlDebugProgram.ts:20 (sha256:84b574a8e798cf7cf7855c728fe3c4973ebad64c9e3095ebe300af621cdafa7a)
+// Source: upstream/packages/types/src/GlDebugProgram.ts:20 (sha256:df00149bc7e7be6edc7ad0f2e4fa1c0cd35f4e50ce73c3a2e4ecfe993c03383c)
 #[derive(Clone, Default)]
 pub struct GlDebugDefineKey {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub has_instances: Option<bool>,
     pub has_normal_map: bool,
     pub has_skin: Option<bool>,
     pub mode: String,

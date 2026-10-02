@@ -8,12 +8,11 @@ use flighthq_bitmap::{
     build_bitmap_invert_color_matrix, build_bitmap_saturation_color_matrix,
     build_bitmap_sepia_color_matrix, color_matrix_bitmap, compare_bitmap_fingerprints,
     concat_bitmap_color_matrix, convolve_bitmap, copy_bitmap_alpha, copy_bitmap_pixels,
-    create_bitmap_fingerprint, dilate_bitmap, erode_bitmap, fill_bitmap_noise,
-    fill_bitmap_perlin_noise, fill_bitmap_rectangle, fill_bitmap_turbulence,
-    get_bitmap_color_bounds_rectangle, get_bitmap_coverage, get_bitmap_histogram,
-    get_bitmap_mismatch, merge_bitmap_channels, multiply_bitmap_alpha, pixelate_bitmap,
-    premultiply_bitmap_pixels, set_bitmap_alpha, set_bitmap_color_matrix_identity,
-    unpremultiply_bitmap_pixels,
+    dilate_bitmap, erode_bitmap, fill_bitmap_noise, fill_bitmap_perlin_noise,
+    fill_bitmap_rectangle, fill_bitmap_turbulence, get_bitmap_color_bounds_rectangle,
+    get_bitmap_coverage, get_bitmap_histogram, get_bitmap_mismatch, merge_bitmap_channels,
+    multiply_bitmap_alpha, pixelate_bitmap, premultiply_bitmap_pixels, set_bitmap_alpha,
+    set_bitmap_color_matrix_identity, unpremultiply_bitmap_pixels,
 };
 use flighthq_types::{
     Bitmap, BitmapConvolutionOptions, BitmapFingerprint, BitmapRegion, OpaqueHostValue,
@@ -66,6 +65,7 @@ fn fingerprint(cells: &[u8], grid_size: f64) -> BitmapFingerprint {
         __flight_identity: std::sync::Arc::new(()),
         cells: cells.to_vec(),
         grid_size,
+        ..Default::default()
     }
 }
 
@@ -258,21 +258,6 @@ pub fn compare_bitmap_fingerprints_wasm(
 }
 
 #[wasm_bindgen]
-pub fn create_bitmap_fingerprint_wasm(
-    out: &mut [u8],
-    source_data: &[u8],
-    source_width: f64,
-    source_height: f64,
-    grid_size: f64,
-) {
-    let result = create_bitmap_fingerprint(
-        &bitmap(source_data, source_width, source_height),
-        Some(grid_size),
-    );
-    copy_u8_output(out, &result.cells);
-}
-
-#[wasm_bindgen]
 #[allow(clippy::too_many_arguments)]
 pub fn convolve_bitmap_wasm(
     out: &mut [u8],
@@ -286,6 +271,43 @@ pub fn convolve_bitmap_wasm(
     divisor: f64,
     preserve_alpha: bool,
 ) {
+    // Convolution is the one kernel served by a HAND-WRITTEN core rather than the generated one, and the
+    // reason is measured: `npm run bench:barrier` put the generated version at 0.44x of upstream's TypeScript,
+    // and a second measurement showed the wasm boundary accounts for 6% of a call, so the loss is the lowering
+    // itself -- `f64` induction variables, every index computed in floating point, and an owned `String`
+    // compared up to three times per kernel tap. `agents/wasm-barrier.md` records both tables.
+    //
+    // `crates/flighthq-bitmap-core` is a structural port of upstream's own `convolveBitmap`, in upstream's order
+    // of operations, held to upstream's suite through the conformance lane. It is not a second implementation,
+    // and it does not change any floating-point arithmetic.
+    //
+    // The generated path stays as the fallback for a region whose coordinates are not integral. The hand core
+    // indexes in integers, which is only equivalent while the `f64` coordinates ARE integers; rather than assume
+    // that of every caller, the non-integral case keeps the semantics it has always had.
+    if let Some(view) = integral_region_view(source_data, source_descriptor) {
+        let result = flighthq_bitmap_core::convolve_bitmap(
+            out,
+            &view,
+            matrix,
+            matrix_x as i32,
+            matrix_y as i32,
+            if divisor.is_nan() {
+                None
+            } else {
+                Some(divisor)
+            },
+            bias,
+            flighthq_bitmap_core::EdgeMode::from_upstream(&edge),
+            preserve_alpha,
+        );
+        // Upstream throws for both of these, and a panic is what the generated lowering raises across the
+        // boundary for a `throw`, so this surfaces the same way with the same message.
+        if let Err(error) = result {
+            panic!("{}", error.message());
+        }
+        return;
+    }
+
     let mut owned = out.to_vec();
     let source = region(source_data, source_descriptor);
     let options = BitmapConvolutionOptions {
@@ -304,6 +326,37 @@ pub fn convolve_bitmap_wasm(
     };
     convolve_bitmap(&mut owned, &source, &options);
     copy_u8_output(out, &owned);
+}
+
+/// Borrows a region for the hand-written kernels, or `None` when its `f64` coordinates are not integral.
+///
+/// Integer indexing is equivalent to upstream's floating-point indexing exactly while the coordinates are whole
+/// numbers. This is the check that establishes it, so `RegionView`'s contract is satisfied by construction
+/// rather than by assumption; a caller with a fractional region falls back to the generated kernel.
+fn integral_region_view<'a>(
+    data: &'a [u8],
+    descriptor: &[f64],
+) -> Option<flighthq_bitmap_core::RegionView<'a>> {
+    assert_eq!(
+        descriptor.len(),
+        6,
+        "bitmap region descriptor must contain [bitmapWidth, bitmapHeight, x, y, width, height]",
+    );
+    if descriptor
+        .iter()
+        .any(|value| !value.is_finite() || value.fract() != 0.0 || value.abs() > i32::MAX as f64)
+    {
+        return None;
+    }
+    Some(flighthq_bitmap_core::RegionView {
+        data,
+        bitmap_width: descriptor[0] as i32,
+        bitmap_height: descriptor[1] as i32,
+        x: descriptor[2] as i32,
+        y: descriptor[3] as i32,
+        width: descriptor[4] as i32,
+        height: descriptor[5] as i32,
+    })
 }
 
 #[wasm_bindgen]

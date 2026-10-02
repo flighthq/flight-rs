@@ -9,9 +9,6 @@
 pub use crate::NodeSignals;
 use crate::{EntityRuntime, Kind};
 
-// Source: upstream/packages/types/src/Node.ts:6 (sha256:0651d5b16f8e351f86dd94441ad185cc688c533fec52863c0ee8c4ded6229cb9)
-// TypeScript value namespace NodeTraitsKey is represented by its generated Rust type.
-
 // Source: upstream/packages/types/src/Node.ts:7 (sha256:39191231a60dcc3e755c8e4031f1f112ede2e3524412f41f03330316061c9c1d)
 #[derive(Clone, Default)]
 pub struct NodeTraitsKey {
@@ -24,8 +21,39 @@ impl PartialEq for NodeTraitsKey {
     }
 }
 
-// Source: upstream/packages/types/src/Node.ts:10 (sha256:fd19f6940c105f6178fe6e2c765287b08a166e07192d5c7651f67df9b9d4612e)
-pub type NodeData = crate::OpaqueHostValue;
+// Source: upstream/packages/types/src/Node.ts:10 (sha256:37d805aa4bbd012e3afc729e00d7f22c287f0ddc31030f9cb97634ab5394fdcb)
+#[derive(Clone, Default)]
+pub struct NodeData {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
+}
+impl PartialEq for NodeData {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for NodeData {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
 // Source: upstream/packages/types/src/Node.ts:11 (sha256:a0ca5c6eda1567093009cdd9b82a3d010054165b96eb6cc50e665fc0cde6b922)
 pub type NodeDataFactory<D> =
@@ -35,7 +63,7 @@ pub type NodeDataFactory<D> =
 pub type NodeRuntimeFactory<R> =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Option<R>) -> R + Send + 'static>>>;
 
-// Source: upstream/packages/types/src/Node.ts:13 (sha256:38f920314f6e0716d2c3896881e9117164a3e94a87f00fff6e36f9f5d69e1d0c)
+// Source: upstream/packages/types/src/Node.ts:13 (sha256:e925cc9b949ca27d86cf67ebe15a604403a2f21570dfb9694fbc3a42273d5f11)
 #[derive(Clone, Default)]
 pub struct NodeTraits {
     #[doc(hidden)]
@@ -89,15 +117,53 @@ impl crate::FlightEntity for Node {
     }
 }
 
-// Source: upstream/packages/types/src/Node.ts:22 (sha256:67ed4d560c545470b8b71012083fb82e169a3a89c21d01422aa62a02e5ad64b2)
+// Source: upstream/packages/types/src/Node.ts:22 (sha256:09e817bed14a7cfb5cf4dc4fd94d8545d19ddda9e1d59db7b337488b870e2bde)
+#[derive(Clone, Default)]
+pub struct NodeOf {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
+    pub data: Option<NodeData>,
+    pub enabled: bool,
+    pub kind: Kind,
+    pub name: Option<String>,
+}
+impl PartialEq for NodeOf {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for NodeOf {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
+
+// Source: upstream/packages/types/src/Node.ts:23 (sha256:51686612804680c5d7daa61966c5c58c612d7dac03ee6d74d6503eaa3ffaa5d5)
 #[doc(hidden)]
 pub struct NodeRuntimeStorage<Traits> {
     pub can_add_child: Option<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Node, Node) -> bool + Send + 'static>>>,
     >,
-    pub children: Option<Vec<Node>>,
+    pub children: Option<Vec<NodeOf>>,
     pub traits: Option<NodeTraitsKey>,
-    pub parent: Option<Node>,
+    pub parent: Option<NodeOf>,
     #[doc(hidden)]
     pub __flight_marker: std::marker::PhantomData<Traits>,
 }
@@ -115,11 +181,8 @@ impl<Traits> Default for NodeRuntimeStorage<Traits> {
 pub type NodeRuntime<Traits> =
     <std::marker::PhantomData<Traits> as crate::FlightEntityRuntimeMarker>::Runtime;
 
-// Source: upstream/packages/types/src/Node.ts:54 (sha256:f3e33f9e2043ae1b7d82638dcbec7989c280f19fffb05a6c0ddc9d85892a3665)
+// Source: upstream/packages/types/src/Node.ts:55 (sha256:f3e33f9e2043ae1b7d82638dcbec7989c280f19fffb05a6c0ddc9d85892a3665)
 pub const NODE_KIND: &'static str = "Node";
-
-// Source: upstream/packages/types/src/Node.ts:55 (sha256:5d1ab7ee845efa54f0ac99eff03034223dba1f7df72bdf0d6aba7c8e6ad5e93c)
-pub type NodeOf = Node;
 
 // Source: upstream/packages/types/src/Node.ts:56 (sha256:63f212a86d3c9c8bcb3785d6de7bdbaa9d3d6306de16f1a0d346b10202b27900)
 pub static NULL_SCENE3_D: std::sync::LazyLock<crate::FlightSymbol> =

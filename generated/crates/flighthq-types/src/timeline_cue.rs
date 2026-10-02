@@ -53,11 +53,15 @@ pub static TIMELINE_FRAME_ENTRY_CAUSE: std::sync::LazyLock<TimelineFrameEntryCau
 // Source: upstream/packages/types/src/TimelineCue.ts:47 (sha256:7e00c6c47a064e097d6f7822dabd384647ed33eb65baf422073c1f80f8d6fe50)
 pub type TimelineFrameEntryCause = String;
 
-// Source: upstream/packages/types/src/TimelineCue.ts:51 (sha256:93603a283185c76159b1151c97613f337a955272d0e40daa5fe37548434f6384)
+// Source: upstream/packages/types/src/TimelineCue.ts:51 (sha256:321b9b0f8e31d9b0147d26f5ad8522863104888220165f308ce92e017d42561a)
 #[derive(Clone, Default)]
 pub struct TimelineCue {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub frame: f64,
     pub kind: String,
     pub target_frame: Option<f64>,
@@ -74,6 +78,24 @@ pub struct TimelineCue {
 impl PartialEq for TimelineCue {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for TimelineCue {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }
 
@@ -97,6 +119,10 @@ impl PartialEq for TimelineAudioEnvelopePoint {
 pub struct TimelineAudioCue {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub frame: f64,
     pub kind: String,
     pub target_frame: Option<f64>,
@@ -115,12 +141,34 @@ impl PartialEq for TimelineAudioCue {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for TimelineAudioCue {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
 // Source: upstream/packages/types/src/TimelineCue.ts:100 (sha256:6f27cd47d41311c342a1db9e3bea8632983a996b360adcae7addd918e2233a80)
 #[derive(Clone, Default)]
 pub struct TimelineStreamAudioCue {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub frame: f64,
     pub kind: String,
     pub target_frame: Option<f64>,
@@ -139,12 +187,34 @@ impl PartialEq for TimelineStreamAudioCue {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for TimelineStreamAudioCue {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
 // Source: upstream/packages/types/src/TimelineCue.ts:109 (sha256:8ebf8c31185e649c2058fdd1c46f2f6905167cf85aa73003380f1a5a42aef894)
 #[derive(Clone, Default)]
 pub struct TimelineGotoCue {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub frame: f64,
     pub kind: String,
     pub target_frame: Option<f64>,
@@ -163,12 +233,34 @@ impl PartialEq for TimelineGotoCue {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for TimelineGotoCue {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
 // Source: upstream/packages/types/src/TimelineCue.ts:117 (sha256:1e193ea57a2805e47ba18637afdc02a7d3f4db3b938868d4eede298bde167ee1)
 #[derive(Clone, Default)]
 pub struct TimelinePlaybackCue {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub frame: f64,
     pub kind: String,
     pub target_frame: Option<f64>,
@@ -185,6 +277,24 @@ pub struct TimelinePlaybackCue {
 impl PartialEq for TimelinePlaybackCue {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for TimelinePlaybackCue {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }
 

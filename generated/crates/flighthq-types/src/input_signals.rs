@@ -7,15 +7,19 @@
 #![allow(unused_parens)]
 
 use crate::{
-    InputGamepadAxisData, InputGamepadButtonData, InputGamepadConnectData, InputKeyboardData,
-    InputPointerData, InputTextData, Signal,
+    EntityRuntime, InputGamepadAxisData, InputGamepadButtonData, InputGamepadConnectData,
+    InputKeyboardData, InputPointerData, InputTextData, Signal,
 };
 
-// Source: upstream/packages/types/src/InputSignals.ts:7 (sha256:500a9febbfe8630d56eee60244aa862d7e027e1efb840cbd9d5f420b06fc004e)
+// Source: upstream/packages/types/src/InputSignals.ts:8 (sha256:bb4f15626f6ecd9825bb7ea5cc74c5237571b4174c578e6c67f3f74667623459)
 #[derive(Clone)]
 pub struct InputSignals {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub on_gamepad_axis_move: Signal<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(InputGamepadAxisData) -> () + Send + 'static>>,
@@ -75,5 +79,23 @@ pub struct InputSignals {
 impl PartialEq for InputSignals {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for InputSignals {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

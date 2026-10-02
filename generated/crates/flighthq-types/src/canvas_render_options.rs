@@ -6,19 +6,16 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{Matrix, Scene3DGraphSyncPolicy};
+use crate::Scene3DGraphSyncPolicy;
 
-// Source: upstream/packages/types/src/CanvasRenderOptions.ts:4 (sha256:742d7acb3aa90e8039a21854757bd4536423f1f7d0cf44236befccaad70af785)
+// Source: upstream/packages/types/src/CanvasRenderOptions.ts:3 (sha256:a8e989d6ec1a7c47845cf0d968f588a532f4f116dc748ae38b1507cd4e2e0fe1)
 #[derive(Clone, Default)]
 pub struct CanvasRenderOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub background_color: Option<f64>,
-    pub context_attributes: Option<crate::OpaqueHostValue>,
     pub image_smoothing_enabled: Option<bool>,
     pub image_smoothing_quality: Option<crate::OpaqueHostValue>,
     pub pixel_ratio: Option<f64>,
-    pub render_transform: Option<Matrix>,
     pub round_pixels: Option<bool>,
     pub scene_graph_sync_policy: Option<Scene3DGraphSyncPolicy>,
 }

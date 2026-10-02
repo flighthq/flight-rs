@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 use flighthq_camera::get_camera3_d_screen_to_world_ray;
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_geometry::{
     create_aabb, create_matrix4, create_ray3_d, create_vector3, get_ray3_d_point_at,
     intersect_ray3_d_aabb, intersect_ray3_d_triangle, inverse_matrix4, transform_aabb_by_matrix4,
@@ -19,32 +19,35 @@ use flighthq_mesh::{
 use flighthq_node::{ensure_node_world_matrix4, get_node_runtime, get_node_world_matrix4};
 use flighthq_scene3d::{get_node3_d_world_bounds, is_mesh};
 use flighthq_types::{
-    Aabb, AabbLike, Camera3D, Matrix4, Mesh, MeshTriangleVertexIndices, Node, Node3D, Ray3D,
-    Ray3DLike, Scene3DHit, Scene3DPickOptions, Transform3DNode, Vector3, Vector3Like,
+    Aabb, AabbLike, Camera3D, EntityConstruction, Matrix4, Mesh, MeshTriangleVertexIndices, Node,
+    Node3D, Ray3D, Ray3DLike, Scene3DHit, Scene3DPickOptions, Transform3DNode, Vector3,
+    Vector3Like,
 };
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:35 (sha256:cbb2d28fb6ee2fc03c2d05ff19ca8f9e11ccf7111e4d95a8daead194c8724c31)
+// Source: upstream/packages/picking/src/pickScene3D.ts:34 (sha256:382307a4dd82b4ba1a970f240c3c2ab98ffdc2029673028c1fc0c15685f24391)
 pub fn create_scene3_d_hit() -> Scene3DHit {
-    return create_entity(Some(Scene3DHit {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        distance: 0.0_f64,
-        node: None,
-        normal_x: 0.0_f64,
-        normal_y: 0.0_f64,
-        normal_z: 0.0_f64,
-        point_x: 0.0_f64,
-        point_y: 0.0_f64,
-        point_z: 0.0_f64,
-        triangle_index: (-1.0_f64),
-        u: 0.0_f64,
-        v: 0.0_f64,
-        w: 0.0_f64,
-    }));
+    let mut out = allocate_entity();
+    initialize_scene3_d_hit((out).clone());
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:58 (sha256:e2020501776df76841e88d458c23ebafaba49d010eedc443aa57fe6a61effea1)
+// Source: upstream/packages/picking/src/pickScene3D.ts:42 (sha256:952243ea3f000aec9ef8b5fef3c31cb3d248cd204a814984607fd12ae9950138)
+pub fn initialize_scene3_d_hit(out: EntityConstruction<Scene3DHit>) -> () {
+    crate::host_set("host.distance", 0.0_f64);
+    crate::host_set("host.node", None);
+    crate::host_set("host.normalX", 0.0_f64);
+    crate::host_set("host.normalY", 0.0_f64);
+    crate::host_set("host.normalZ", 0.0_f64);
+    crate::host_set("host.pointX", 0.0_f64);
+    crate::host_set("host.pointY", 0.0_f64);
+    crate::host_set("host.pointZ", 0.0_f64);
+    crate::host_set("host.triangleIndex", (-1.0_f64));
+    crate::host_set("host.u", 0.0_f64);
+    crate::host_set("host.v", 0.0_f64);
+    crate::host_set("host.w", 0.0_f64);
+}
+
+// Source: upstream/packages/picking/src/pickScene3D.ts:63 (sha256:e2020501776df76841e88d458c23ebafaba49d010eedc443aa57fe6a61effea1)
 pub fn pick_scene3_d(
     scene: &mut Node3D,
     camera: &Camera3D,
@@ -69,7 +72,7 @@ pub fn pick_scene3_d(
     );
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:73 (sha256:479e0c7c882e6b3cf3e4942139243dca1389fc5361779ba56593ca2782b2304f)
+// Source: upstream/packages/picking/src/pickScene3D.ts:78 (sha256:479e0c7c882e6b3cf3e4942139243dca1389fc5361779ba56593ca2782b2304f)
 pub fn pick_scene3_d_all(
     scene: &mut Node3D,
     camera: &Camera3D,
@@ -95,7 +98,7 @@ pub fn pick_scene3_d_all(
     );
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:92 (sha256:ce39a9c0484fdbac99595ec88fae4c42c2db5e4fe7380bf44568bdb185507d0f)
+// Source: upstream/packages/picking/src/pickScene3D.ts:97 (sha256:ce39a9c0484fdbac99595ec88fae4c42c2db5e4fe7380bf44568bdb185507d0f)
 pub fn pick_scene3_d_all_with_ray3_d(
     scene: &mut Node3D,
     ray: &Ray3D,
@@ -136,7 +139,7 @@ pub fn pick_scene3_d_all_with_ray3_d(
     return out_array;
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:125 (sha256:4bd3a72f7178070279d459335b54911d403a341a350c8ff3813f5e47804af422)
+// Source: upstream/packages/picking/src/pickScene3D.ts:130 (sha256:4bd3a72f7178070279d459335b54911d403a341a350c8ff3813f5e47804af422)
 pub fn pick_scene3_d_with_ray3_d(
     scene: &mut Node3D,
     ray: &Ray3D,
@@ -162,11 +165,14 @@ pub fn pick_scene3_d_with_ray3_d(
     };
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:145 (sha256:7ef33900cfac491cc028bbbe32aa7557e676d1c0762d14ec7d3ed26adda86696)
+// Source: upstream/packages/picking/src/pickScene3D.ts:150 (sha256:7ef33900cfac491cc028bbbe32aa7557e676d1c0762d14ec7d3ed26adda86696)
 fn build_camera_pick_ray(out: &mut Ray3D, camera: &Camera3D, screen_x: f64, screen_y: f64) -> bool {
     let aspect = if (match &((camera.projection).clone()) {
         crate::FlightUnion2::A(value) => (value).kind.clone(),
-        crate::FlightUnion2::B(value) => (value).kind.clone(),
+        crate::FlightUnion2::B(value) => match value {
+            crate::FlightUnion2::A(value) => (value).kind.clone(),
+            crate::FlightUnion2::B(value) => (value).kind.clone(),
+        },
     } == "perspective")
     {
         camera.projection.aspect
@@ -176,7 +182,7 @@ fn build_camera_pick_ray(out: &mut Ray3D, camera: &Camera3D, screen_x: f64, scre
     return get_camera3_d_screen_to_world_ray(out, camera, screen_x, screen_y, aspect);
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:152 (sha256:1dd6b4be16cca3b459af2244b3933a4c264dbca27b26f7085fdd4f6a8182762d)
+// Source: upstream/packages/picking/src/pickScene3D.ts:157 (sha256:1dd6b4be16cca3b459af2244b3933a4c264dbca27b26f7085fdd4f6a8182762d)
 fn copy_scene3_d_hit(out: &mut Scene3DHit, src: &Scene3DHit) -> () {
     out.node = (src.node).clone();
     out.distance = src.distance;
@@ -192,12 +198,12 @@ fn copy_scene3_d_hit(out: &mut Scene3DHit, src: &Scene3DHit) -> () {
     out.normal_z = src.normal_z;
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:168 (sha256:4130ac89cc3e7fbea29ebf2fde781e846879149817949cabfda7873581f2a76f)
+// Source: upstream/packages/picking/src/pickScene3D.ts:173 (sha256:4130ac89cc3e7fbea29ebf2fde781e846879149817949cabfda7873581f2a76f)
 fn compare_scene3_d_hit_by_distance(a: &Scene3DHit, b: &Scene3DHit) -> f64 {
     return (a.distance - b.distance);
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:182 (sha256:fa9fb014116f0176d515e7d165142b61d271a47b981517ccd301068422271690)
+// Source: upstream/packages/picking/src/pickScene3D.ts:187 (sha256:fa9fb014116f0176d515e7d165142b61d271a47b981517ccd301068422271690)
 fn for_each_scene3_d_ray_hit(
     scene: &mut Node3D,
     ray: &Ray3D,
@@ -218,7 +224,7 @@ fn for_each_scene3_d_ray_hit(
     );
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:196 (sha256:e9a7dc23665391a0b2fe1c9fc76bbb982964ebbbf207f44698ee8dbb8e6010ff)
+// Source: upstream/packages/picking/src/pickScene3D.ts:201 (sha256:e9a7dc23665391a0b2fe1c9fc76bbb982964ebbbf207f44698ee8dbb8e6010ff)
 fn pick_node(
     node: &mut Node3D,
     ray: &Ray3D,
@@ -237,13 +243,13 @@ fn pick_node(
     {
         ({
             #[derive(Clone, Default)]
-            struct OutContextRecord5 {
+            struct OutContextRecord1 {
                 __flight_identity: std::sync::Arc<()>,
                 x: f64,
                 y: f64,
                 z: f64,
             }
-            impl PartialEq for OutContextRecord5 {
+            impl PartialEq for OutContextRecord1 {
                 fn eq(&self, other: &Self) -> bool {
                     std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
                 }
@@ -641,29 +647,7 @@ fn pick_node(
             let mut i = 0.0_f64;
             while (i < (children.as_mut().unwrap().len() as f64)) {
                 pick_node(
-                    &mut {
-                        let __flight_source = &(children.as_mut().unwrap()[i as usize].clone());
-                        Node3D {
-                            __flight_identity: std::sync::Arc::clone(
-                                &__flight_source.__flight_identity,
-                            ),
-                            __flight_entity_runtime: std::sync::Arc::clone(
-                                &__flight_source.__flight_entity_runtime,
-                            ),
-                            __flight_entity_snapshot: __flight_source
-                                .__flight_entity_snapshot
-                                .clone(),
-                            data: (__flight_source.data).clone(),
-                            enabled: __flight_source.enabled,
-                            kind: (__flight_source.kind).clone(),
-                            name: (__flight_source.name).clone(),
-                            alpha: Default::default(),
-                            visible: Default::default(),
-                            position: Default::default(),
-                            rotation: Default::default(),
-                            scale: Default::default(),
-                        }
-                    },
+                    &mut children.as_mut().unwrap()[i as usize].clone(),
                     ray,
                     predicate,
                     max_distance,
@@ -679,15 +663,15 @@ fn pick_node(
     }
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:229 (sha256:ce558c554f6203b7d00930608650821c3933df01a3443d0a61b2b2ff287afef3)
+// Source: upstream/packages/picking/src/pickScene3D.ts:234 (sha256:ce558c554f6203b7d00930608650821c3933df01a3443d0a61b2b2ff287afef3)
 #[derive(Clone, Default)]
-struct OutContextRecord5 {
+struct OutContextRecord1 {
     __flight_identity: std::sync::Arc<()>,
     x: f64,
     y: f64,
     z: f64,
 }
-impl PartialEq for OutContextRecord5 {
+impl PartialEq for OutContextRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -1032,7 +1016,7 @@ fn intersect_mesh_triangles(
     }
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:297 (sha256:df0a38c5ab1d4d655012be266ba4c63823606570afa6cc6983276ef4beef9d10)
+// Source: upstream/packages/picking/src/pickScene3D.ts:302 (sha256:df0a38c5ab1d4d655012be266ba4c63823606570afa6cc6983276ef4beef9d10)
 fn write_face_normal(out: &mut Vector3, a: &Vector3, b: &Vector3, c: &Vector3) -> bool {
     let e1x = (b.x - a.x);
     let e1y = (b.y - a.y);
@@ -1054,7 +1038,7 @@ fn write_face_normal(out: &mut Vector3, a: &Vector3, b: &Vector3, c: &Vector3) -
     return true;
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:318 (sha256:060e3f9d06d012844c75e9ff77cf9eb56e8020f23d7cdd436fa73a73d096e21c)
+// Source: upstream/packages/picking/src/pickScene3D.ts:323 (sha256:060e3f9d06d012844c75e9ff77cf9eb56e8020f23d7cdd436fa73a73d096e21c)
 fn write_barycentric(
     out: &mut Scene3DHit,
     p: &Vector3,
@@ -1091,7 +1075,7 @@ fn write_barycentric(
     out.w = w;
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:355 (sha256:6d1a58e8862ff2afff75fad235796e008f91a90e09e74d1820966ee6f9823451)
+// Source: upstream/packages/picking/src/pickScene3D.ts:360 (sha256:6d1a58e8862ff2afff75fad235796e008f91a90e09e74d1820966ee6f9823451)
 fn transform_point_by_matrix4(out: &mut Vector3, p: &Vector3, m: &Vec<f32>) -> () {
     let x = p.x;
     let y = p.y;
@@ -1107,7 +1091,7 @@ fn transform_point_by_matrix4(out: &mut Vector3, p: &Vector3, m: &Vec<f32>) -> (
         + (m[14.0_f64 as usize] as f64));
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:367 (sha256:2d6f1c2570d6991d74f6932f3587edc3a46fa26154ca26dd016f2b9ea76b8302)
+// Source: upstream/packages/picking/src/pickScene3D.ts:372 (sha256:2d6f1c2570d6991d74f6932f3587edc3a46fa26154ca26dd016f2b9ea76b8302)
 fn transform_direction_by_matrix4(out: &mut Vector3, d: &Vector3, m: &Vec<f32>) -> () {
     let x = d.x;
     let y = d.y;
@@ -1120,17 +1104,17 @@ fn transform_direction_by_matrix4(out: &mut Vector3, d: &Vector3, m: &Vec<f32>) 
         + ((m[10.0_f64 as usize] as f64) * z));
 }
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:378 (sha256:7979dd41824c3beb60483579565e406f9e90058ff72ec6062230ef9a9ad86546)
+// Source: upstream/packages/picking/src/pickScene3D.ts:383 (sha256:7979dd41824c3beb60483579565e406f9e90058ff72ec6062230ef9a9ad86546)
 static _CAMERA_RAY: std::sync::LazyLock<std::sync::Mutex<Ray3D>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(create_ray3_d(None, None, None, None, None, None))
 });
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:379 (sha256:8dddddeded83d26bf03efb12b20fde203d20bffa895061f0d2af33bbd9695d2c)
+// Source: upstream/packages/picking/src/pickScene3D.ts:384 (sha256:8dddddeded83d26bf03efb12b20fde203d20bffa895061f0d2af33bbd9695d2c)
 static _LOCAL_RAY: std::sync::LazyLock<std::sync::Mutex<Ray3D>> = std::sync::LazyLock::new(|| {
     std::sync::Mutex::new(create_ray3_d(None, None, None, None, None, None))
 });
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:380 (sha256:2e923ce8abf535735f38c48690cb07b6b2a9019d4ad7092f0ef4a5b8c3308d0a)
+// Source: upstream/packages/picking/src/pickScene3D.ts:385 (sha256:2e923ce8abf535735f38c48690cb07b6b2a9019d4ad7092f0ef4a5b8c3308d0a)
 static _INVERSE_WORLD: std::sync::LazyLock<std::sync::Mutex<Matrix4>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(create_matrix4(
@@ -1139,53 +1123,53 @@ static _INVERSE_WORLD: std::sync::LazyLock<std::sync::Mutex<Matrix4>> =
         ))
     });
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:381 (sha256:eb3ad316a98e5e2b2c4608a94c4491b7b33bd4a28fb0ff1d8aca241c6acd2c70)
+// Source: upstream/packages/picking/src/pickScene3D.ts:386 (sha256:eb3ad316a98e5e2b2c4608a94c4491b7b33bd4a28fb0ff1d8aca241c6acd2c70)
 static _WORLD_BOUNDS: std::sync::LazyLock<std::sync::Mutex<Aabb>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(create_aabb(None, None, None, None, None, None))
     });
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:382 (sha256:74120b352e1a6c864b3198669a332c52713c85c093924ce2ef578f5c3807d228)
+// Source: upstream/packages/picking/src/pickScene3D.ts:387 (sha256:74120b352e1a6c864b3198669a332c52713c85c093924ce2ef578f5c3807d228)
 static _A: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:383 (sha256:b436ccb1327ad93d5b769f33ce8fa68bd396078a628042d054602ca2814f4403)
+// Source: upstream/packages/picking/src/pickScene3D.ts:388 (sha256:b436ccb1327ad93d5b769f33ce8fa68bd396078a628042d054602ca2814f4403)
 static _B: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:384 (sha256:662079c6fddc4d7b784be8caa1a98d2f6f713cec57348e64bfcb62e46d0a2e35)
+// Source: upstream/packages/picking/src/pickScene3D.ts:389 (sha256:662079c6fddc4d7b784be8caa1a98d2f6f713cec57348e64bfcb62e46d0a2e35)
 static _C: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:385 (sha256:bfbaf85a1c059344d6fb34a05f7d7713282cc01bb68de012fe17f14a2e657d51)
+// Source: upstream/packages/picking/src/pickScene3D.ts:390 (sha256:bfbaf85a1c059344d6fb34a05f7d7713282cc01bb68de012fe17f14a2e657d51)
 static _WA: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:386 (sha256:f7427028ab1385dde8b9c7c47c49069aeb80fa4543a2b6b00e3c15961646d3e0)
+// Source: upstream/packages/picking/src/pickScene3D.ts:391 (sha256:f7427028ab1385dde8b9c7c47c49069aeb80fa4543a2b6b00e3c15961646d3e0)
 static _WB: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:387 (sha256:197107cb694ff6b870f0ae2eba404a21e17d42424019e4c094122ebbff24eda9)
+// Source: upstream/packages/picking/src/pickScene3D.ts:392 (sha256:197107cb694ff6b870f0ae2eba404a21e17d42424019e4c094122ebbff24eda9)
 static _WC: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:388 (sha256:2838df34807f2d0106e1148a78e37fcbd8cae5b4ee55e291faad177ac9bac9c2)
+// Source: upstream/packages/picking/src/pickScene3D.ts:393 (sha256:2838df34807f2d0106e1148a78e37fcbd8cae5b4ee55e291faad177ac9bac9c2)
 static _WORLD_NORMAL: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:389 (sha256:1f7a7e1d1fc8b3f2d77f0ae830adf96363b5fd5aaa553b37929e7190833e04d6)
+// Source: upstream/packages/picking/src/pickScene3D.ts:394 (sha256:1f7a7e1d1fc8b3f2d77f0ae830adf96363b5fd5aaa553b37929e7190833e04d6)
 static _LOCAL_POINT: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:390 (sha256:2d97130b8aae7c12490473ccacf5f13c42c0b9a3a715a6d92e33fe20f8e7de6f)
+// Source: upstream/packages/picking/src/pickScene3D.ts:395 (sha256:2d97130b8aae7c12490473ccacf5f13c42c0b9a3a715a6d92e33fe20f8e7de6f)
 static _WORLD_POINT: std::sync::LazyLock<std::sync::Mutex<Vector3>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector3(None, None, None)));
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:391 (sha256:e3f9518b8ad23dae383ef9fc0240c4b760924a9be4959ac97bd5a450806b017f)
+// Source: upstream/packages/picking/src/pickScene3D.ts:396 (sha256:e3f9518b8ad23dae383ef9fc0240c4b760924a9be4959ac97bd5a450806b017f)
 static _HIT: std::sync::LazyLock<std::sync::Mutex<Scene3DHit>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(create_scene3_d_hit()));
 
-// Source: upstream/packages/picking/src/pickScene3D.ts:392 (sha256:df5ac1fdfc2c2642879e09f3014359524426eceaccf1b1b97ec616a2184c0b35)
+// Source: upstream/packages/picking/src/pickScene3D.ts:397 (sha256:df5ac1fdfc2c2642879e09f3014359524426eceaccf1b1b97ec616a2184c0b35)
 static _TRIANGLE: std::sync::LazyLock<std::sync::Mutex<MeshTriangleVertexIndices>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(MeshTriangleVertexIndices {

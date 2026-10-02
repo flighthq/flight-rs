@@ -6,10 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_text::{get_rich_text_runtime, set_rich_text_scroll_v};
 use flighthq_textlayout::compute_rich_text_char_index_at_point;
 use flighthq_types::{
-    InputKeyboardData, KeyCode, RichText, RichTextRuntime, SelectableRichTextManager,
+    EntityConstruction, InputKeyboardData, KeyCode, RichText, RichTextRuntime,
+    SelectableRichTextManager,
 };
 
 #[inline]
@@ -31,7 +33,7 @@ fn __flight_string_slice(value: &str, start: f64, end: Option<f64>) -> String {
     String::from_utf16_lossy(&value[start..end.max(start)])
 }
 
-// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:6 (sha256:dc0cfcd96ce6e431b84590d05050cb5b21117b511f5aaa41b5950090906a8ffe)
+// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:13 (sha256:dc0cfcd96ce6e431b84590d05050cb5b21117b511f5aaa41b5950090906a8ffe)
 pub fn blur_selectable_rich_text(manager: &mut SelectableRichTextManager) -> () {
     if ((manager.focused).clone()).is_some() {
         let mut runtime = get_mutable_runtime(manager.focused.as_ref().unwrap());
@@ -51,15 +53,14 @@ pub fn blur_selectable_rich_text(manager: &mut SelectableRichTextManager) -> () 
     manager.focused = None;
 }
 
-// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:15 (sha256:b036116604472a36d40849b18c2d80a3b12fd8884d12553fc3301d15461afa57)
+// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:22 (sha256:cd7367d262e3b5b9f6be6cd4516491b415ea6fdebc34b7994065208d342e1779)
 pub fn create_selectable_rich_text_manager() -> SelectableRichTextManager {
-    return SelectableRichTextManager {
-        __flight_identity: std::sync::Arc::new(()),
-        focused: None,
-    };
+    let mut out = allocate_entity();
+    initialize_selectable_rich_text_manager((out).clone());
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:19 (sha256:2c301c56502f40a2a6cfc48af4ed32e6a294b1fc26f3f4e92059e1fbc27eda4c)
+// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:28 (sha256:2c301c56502f40a2a6cfc48af4ed32e6a294b1fc26f3f4e92059e1fbc27eda4c)
 pub fn dispatch_selectable_rich_text_key_down(
     manager: &SelectableRichTextManager,
     data: &InputKeyboardData,
@@ -115,7 +116,7 @@ pub fn dispatch_selectable_rich_text_key_down(
     return false;
 }
 
-// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:43 (sha256:17858d41ee8a97578a5354aacea20b206f7f6857151967f3a44d82e7eeb600ac)
+// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:52 (sha256:17858d41ee8a97578a5354aacea20b206f7f6857151967f3a44d82e7eeb600ac)
 pub fn dispatch_selectable_rich_text_pointer_down(
     manager: &mut SelectableRichTextManager,
     target: &RichText,
@@ -168,7 +169,7 @@ pub fn dispatch_selectable_rich_text_pointer_down(
     }
 }
 
-// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:69 (sha256:925955e6cded27a704a7ccaa61f1b831647530e6dcb4262c8eccdc86e0a59140)
+// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:78 (sha256:925955e6cded27a704a7ccaa61f1b831647530e6dcb4262c8eccdc86e0a59140)
 pub fn dispatch_selectable_rich_text_pointer_move(
     manager: &SelectableRichTextManager,
     x: f64,
@@ -191,7 +192,7 @@ pub fn dispatch_selectable_rich_text_pointer_move(
     };
 }
 
-// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:78 (sha256:d80e14dfbb500694e6db9f91e6bd26d8389c8660dbf4aac9583e49b096dd3f09)
+// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:87 (sha256:d80e14dfbb500694e6db9f91e6bd26d8389c8660dbf4aac9583e49b096dd3f09)
 pub fn dispatch_selectable_rich_text_wheel(
     manager: &mut SelectableRichTextManager,
     delta_lines: f64,
@@ -208,7 +209,7 @@ pub fn dispatch_selectable_rich_text_wheel(
     };
 }
 
-// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:84 (sha256:3e078a74724577332e280401524f14b2c6933d282bb12963a07776987cd3d6a8)
+// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:93 (sha256:3e078a74724577332e280401524f14b2c6933d282bb12963a07776987cd3d6a8)
 pub fn focus_selectable_rich_text(
     manager: &mut SelectableRichTextManager,
     target: &RichText,
@@ -216,7 +217,7 @@ pub fn focus_selectable_rich_text(
     manager.focused = Some((*target).clone());
 }
 
-// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:88 (sha256:1e8629eb066c102b653229a10c178f41d234f81659d87fd1aa6a98bbefcc1180)
+// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:97 (sha256:1e8629eb066c102b653229a10c178f41d234f81659d87fd1aa6a98bbefcc1180)
 pub fn get_selectable_rich_text_selection_text(manager: &SelectableRichTextManager) -> String {
     let target = (manager.focused).clone();
     if (target).is_none() {
@@ -234,7 +235,14 @@ pub fn get_selectable_rich_text_selection_text(manager: &SelectableRichTextManag
     );
 }
 
-// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:97 (sha256:733e60d658d9c7706305e948bd891d19dd23aaca31961e89d0f62f726b7ddd45)
+// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:106 (sha256:055d3cac156d6beaec2c8368c4d22436514d71353876d9b33c71bed20e1ac65f)
+pub fn initialize_selectable_rich_text_manager(
+    out: EntityConstruction<SelectableRichTextManager>,
+) -> () {
+    crate::host_set("host.focused", None);
+}
+
+// Source: upstream/packages/textinput/src/selectableRichTextManager.ts:110 (sha256:733e60d658d9c7706305e948bd891d19dd23aaca31961e89d0f62f726b7ddd45)
 fn get_mutable_runtime(source: &RichText) -> RichTextRuntime {
     return get_rich_text_runtime(source);
 }

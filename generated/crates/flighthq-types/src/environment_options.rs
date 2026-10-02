@@ -8,11 +8,12 @@
 
 use crate::Texture;
 
-// Source: upstream/packages/types/src/EnvironmentOptions.ts:3 (sha256:940271c9a05acd493328d3b9af9bf9dbd26a76fc3e6e9424d8d9f91767e57a43)
+// Source: upstream/packages/types/src/EnvironmentOptions.ts:3 (sha256:1203ad5fafe22328e21c01a53872a56dbcaafebec8ce534e89b309e4ebfc3b6d)
 #[derive(Clone, Default)]
 pub struct EnvironmentOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub enabled: Option<bool>,
     pub environment: Option<Texture>,
     pub intensity: Option<f64>,
 }

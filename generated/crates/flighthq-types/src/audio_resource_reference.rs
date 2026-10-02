@@ -6,9 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{AudioResource, ResourceResolutionState};
+use crate::{AudioResource, EntityRuntime, ResourceResolutionState};
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:25 (sha256:cc810c889c3bc5069b98a0511366785d14246682e7847ca5a6aadc761ab82d1b)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:26 (sha256:cc810c889c3bc5069b98a0511366785d14246682e7847ca5a6aadc761ab82d1b)
 #[derive(Clone, Default)]
 pub struct AudioResourceReferenceKindValues {
     #[doc(hidden)]
@@ -29,10 +29,10 @@ pub static AUDIO_RESOURCE_REFERENCE_KIND: std::sync::LazyLock<AudioResourceRefer
         external: "External".to_owned(),
     });
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:30 (sha256:6c56e8501073d7f475a25bbca4584d9799304bae65fc188da7b8ccfe4787ad63)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:31 (sha256:6c56e8501073d7f475a25bbca4584d9799304bae65fc188da7b8ccfe4787ad63)
 pub type AudioResourceReferenceKind = String;
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:32 (sha256:42cbb69f81416a95f97163e52582c3d6ff3a430d7fcac9a1555acbdc8c3b753e)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:33 (sha256:42cbb69f81416a95f97163e52582c3d6ff3a430d7fcac9a1555acbdc8c3b753e)
 #[derive(Clone, Default)]
 pub struct AudioResourceFailureKindValues {
     #[doc(hidden)]
@@ -53,14 +53,18 @@ pub static AUDIO_RESOURCE_FAILURE_KIND: std::sync::LazyLock<AudioResourceFailure
         unavailable: "Unavailable".to_owned(),
     });
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:37 (sha256:6020e15889d3fbca8bfe6dbf22d6082500d08a7886ba2629dd3dea4abdd9c5ee)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:38 (sha256:6020e15889d3fbca8bfe6dbf22d6082500d08a7886ba2629dd3dea4abdd9c5ee)
 pub type AudioResourceFailureKind = String;
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:41 (sha256:f56c115f23cbca0888a011b52611f386b26e7d3107bda8aac7b9ed073138ffe4)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:42 (sha256:bd54f4e31b119a132e5ce90e885db208506b3bf1393d8956f1ac73ca3c27a5c0)
 #[derive(Clone, Default)]
 pub struct AudioResourceFailure {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: AudioResourceFailureKind,
     pub message: String,
     pub name: Option<String>,
@@ -70,12 +74,34 @@ impl PartialEq for AudioResourceFailure {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for AudioResourceFailure {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:47 (sha256:7d5c0bf0e17b2508a4b0f6b32c0d762b37e045b839c912a9b103e8254ae186bd)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:48 (sha256:eca2430fb81e8cb56c303ba604f6e79fd545bd6f24eb627b70d575e4cdfd56a7)
 #[derive(Clone, Default)]
 pub struct AudioResourceReferenceBase {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub failure: Option<AudioResourceFailure>,
     pub mime_type: Option<String>,
     pub name: Option<String>,
@@ -87,12 +113,34 @@ impl PartialEq for AudioResourceReferenceBase {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for AudioResourceReferenceBase {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:69 (sha256:f53d303e14071b87725ebb2c99ea470ca01a53a413735dde4c715ae89d3e5bf3)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:70 (sha256:f53d303e14071b87725ebb2c99ea470ca01a53a413735dde4c715ae89d3e5bf3)
 #[derive(Clone, Default)]
 pub struct EmbeddedAudioResourceReference {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub failure: Option<AudioResourceFailure>,
     pub mime_type: Option<String>,
     pub name: Option<String>,
@@ -106,12 +154,34 @@ impl PartialEq for EmbeddedAudioResourceReference {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for EmbeddedAudioResourceReference {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:77 (sha256:d1c93c85b66768070e33c96c080babc3af694bb0428e34adeb2aa7c27e44137b)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:78 (sha256:d1c93c85b66768070e33c96c080babc3af694bb0428e34adeb2aa7c27e44137b)
 #[derive(Clone, Default)]
 pub struct ExternalAudioResourceReference {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub failure: Option<AudioResourceFailure>,
     pub mime_type: Option<String>,
     pub name: Option<String>,
@@ -126,12 +196,30 @@ impl PartialEq for ExternalAudioResourceReference {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for ExternalAudioResourceReference {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:83 (sha256:e829179f2d0ae5ba3989f9ede6a35dcc5f69137edfe533f4b6d56dad734e0ae9)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:84 (sha256:e829179f2d0ae5ba3989f9ede6a35dcc5f69137edfe533f4b6d56dad734e0ae9)
 pub type AudioResourceReference =
     crate::FlightUnion2<EmbeddedAudioResourceReference, ExternalAudioResourceReference>;
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:87 (sha256:8715bee4af872c1ea7849d1a7641e1f73b7bbf544f3ea1cca59a6c05e1b526e4)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:88 (sha256:8715bee4af872c1ea7849d1a7641e1f73b7bbf544f3ea1cca59a6c05e1b526e4)
 pub type AudioResourceFetch = std::sync::Arc<
     std::sync::Mutex<
         Box<
@@ -145,7 +233,7 @@ pub type AudioResourceFetch = std::sync::Arc<
     >,
 >;
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:97 (sha256:47d2f9f203444fef53b694422142ba10b3d579213aa80733a93a072d786f847a)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:98 (sha256:47d2f9f203444fef53b694422142ba10b3d579213aa80733a93a072d786f847a)
 pub type AudioDecoder = std::sync::Arc<
     std::sync::Mutex<
         Box<
@@ -160,7 +248,10 @@ pub type AudioDecoder = std::sync::Arc<
     >,
 >;
 
-// Source: upstream/packages/types/src/AudioResourceReference.ts:99 (sha256:2eb993a413e1bfece1f3f7ff265508471b86e183624ffcbc6754bdafac3ca700)
+// Source: upstream/packages/types/src/AudioResourceReference.ts:111 (sha256:d3871f5bffe0c890a2787e0c2244984cb3495c0ee2d977c27628bb22283acf06)
+pub type AudioDecoderRegistry = Vec<(String, AudioDecoder)>;
+
+// Source: upstream/packages/types/src/AudioResourceReference.ts:113 (sha256:2eb993a413e1bfece1f3f7ff265508471b86e183624ffcbc6754bdafac3ca700)
 #[derive(Clone, Default)]
 pub struct AudioResourceReferenceResolutionExplanation {
     #[doc(hidden)]

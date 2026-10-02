@@ -6,9 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Signal;
+use crate::{EntityRuntime, Signal};
 
-// Source: upstream/packages/types/src/TextFieldSignals.ts:4 (sha256:0bb251d437abeca372e55ededd638d514ae52b590f9733a5547ced24b2f4f562)
+// Source: upstream/packages/types/src/TextFieldSignals.ts:5 (sha256:0bb251d437abeca372e55ededd638d514ae52b590f9733a5547ced24b2f4f562)
 #[derive(Clone, Default)]
 pub struct TextFieldChangeEvent {
     #[doc(hidden)]
@@ -22,7 +22,7 @@ impl PartialEq for TextFieldChangeEvent {
     }
 }
 
-// Source: upstream/packages/types/src/TextFieldSignals.ts:10 (sha256:d95669ea7d7acf941d87103a00653ddf36137335866b5ef1ca81504d696b9522)
+// Source: upstream/packages/types/src/TextFieldSignals.ts:11 (sha256:d95669ea7d7acf941d87103a00653ddf36137335866b5ef1ca81504d696b9522)
 #[derive(Clone, Default)]
 pub struct TextFieldLinkEvent {
     #[doc(hidden)]
@@ -37,7 +37,7 @@ impl PartialEq for TextFieldLinkEvent {
     }
 }
 
-// Source: upstream/packages/types/src/TextFieldSignals.ts:17 (sha256:287c64c789388d20f99a69a6a87c0b2e6a9df7b301f039fe09b25118491921e2)
+// Source: upstream/packages/types/src/TextFieldSignals.ts:18 (sha256:287c64c789388d20f99a69a6a87c0b2e6a9df7b301f039fe09b25118491921e2)
 #[derive(Clone, Default)]
 pub struct TextFieldScrollEvent {
     #[doc(hidden)]
@@ -53,11 +53,15 @@ impl PartialEq for TextFieldScrollEvent {
     }
 }
 
-// Source: upstream/packages/types/src/TextFieldSignals.ts:26 (sha256:d56b6dc910194cc6c1a94a7bf2097bfcecfbb2351905dc92250f532e3473f647)
+// Source: upstream/packages/types/src/TextFieldSignals.ts:27 (sha256:78d7478c38d35ae9da789835415018943bb244e9c6381843e5f1abef6b60f047)
 #[derive(Clone)]
 pub struct TextFieldSignals {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub on_text_field_change: Signal<
         std::sync::Arc<
             std::sync::Mutex<Box<dyn FnMut(TextFieldChangeEvent) -> () + Send + 'static>>,
@@ -75,5 +79,23 @@ pub struct TextFieldSignals {
 impl PartialEq for TextFieldSignals {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for TextFieldSignals {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

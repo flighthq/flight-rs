@@ -47,7 +47,7 @@ impl crate::FlightEntity for HasAppearance {
 // Source: upstream/packages/types/src/HasAppearance.ts:18 (sha256:72db87ddbd47a6b7ed756512bc9062f1abb6f56c55f900740bfacdd32390a1f2)
 pub type HasAppearanceRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/HasAppearance.ts:25 (sha256:1206541436dbd2f98867827f4b01fecb86820ede63bc9237c0b21d9bcedb36fc)
+// Source: upstream/packages/types/src/HasAppearance.ts:25 (sha256:bfbd67e0c125de07f01f60fb382cc1bb55f4f041320e03646823af7fc253a024)
 #[derive(Clone, Default)]
 pub struct AppearanceNode {
     #[doc(hidden)]

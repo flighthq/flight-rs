@@ -9,7 +9,8 @@
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub value: bool,
+    pub path: String,
+    pub recursive: Option<bool>,
 }
 impl PartialEq for SharedStructuralRecord1 {
     fn eq(&self, other: &Self) -> bool {
@@ -20,8 +21,7 @@ impl PartialEq for SharedStructuralRecord1 {
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub path: String,
-    pub recursive: Option<bool>,
+    pub style: String,
 }
 impl PartialEq for SharedStructuralRecord2 {
     fn eq(&self, other: &Self) -> bool {
@@ -32,7 +32,7 @@ impl PartialEq for SharedStructuralRecord2 {
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord3 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub style: String,
+    pub notifications: Vec<SharedStructuralRecord4>,
 }
 impl PartialEq for SharedStructuralRecord3 {
     fn eq(&self, other: &Self) -> bool {
@@ -43,7 +43,7 @@ impl PartialEq for SharedStructuralRecord3 {
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord4 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub notifications: Vec<SharedStructuralRecord5>,
+    pub id: f64,
 }
 impl PartialEq for SharedStructuralRecord4 {
     fn eq(&self, other: &Self) -> bool {
@@ -54,7 +54,7 @@ impl PartialEq for SharedStructuralRecord4 {
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord5 {
     pub __flight_identity: std::sync::Arc<()>,
-    pub id: f64,
+    pub notifications: Vec<CapacitorLocalNotificationSchema>,
 }
 impl PartialEq for SharedStructuralRecord5 {
     fn eq(&self, other: &Self) -> bool {
@@ -62,18 +62,7 @@ impl PartialEq for SharedStructuralRecord5 {
     }
 }
 
-#[derive(Clone, Default)]
-pub struct SharedStructuralRecord6 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub notifications: Vec<CapacitorLocalNotificationSchema>,
-}
-impl PartialEq for SharedStructuralRecord6 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/types/src/CapacitorApi.ts:31 (sha256:b0dc0c96ded1a17737bca7c5890baa1686ceb20716717440a7c6d69ac0b5e6fc)
+// Source: upstream/packages/types/src/CapacitorApi.ts:35 (sha256:b0dc0c96ded1a17737bca7c5890baa1686ceb20716717440a7c6d69ac0b5e6fc)
 #[derive(Clone)]
 pub struct CapacitorApi {
     #[doc(hidden)]
@@ -97,7 +86,7 @@ impl PartialEq for CapacitorApi {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:48 (sha256:d0a354a3cfc5c14b447b091bf3317dbbcc1a29b5393d7e7cfb1abde4a4435624)
+// Source: upstream/packages/types/src/CapacitorApi.ts:52 (sha256:d0a354a3cfc5c14b447b091bf3317dbbcc1a29b5393d7e7cfb1abde4a4435624)
 #[derive(Clone)]
 pub struct CapacitorPluginListenerHandle {
     #[doc(hidden)]
@@ -112,7 +101,7 @@ impl PartialEq for CapacitorPluginListenerHandle {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:54 (sha256:e11411a1666fe330b1f7854ca3b29243a6f5b45d0f66da14bc14415e4b23c0ea)
+// Source: upstream/packages/types/src/CapacitorApi.ts:58 (sha256:e11411a1666fe330b1f7854ca3b29243a6f5b45d0f66da14bc14415e4b23c0ea)
 #[derive(Clone, Default)]
 pub struct CapacitorAppPluginRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -160,7 +149,7 @@ impl PartialEq for CapacitorAppPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:68 (sha256:2371806e5bb53aeb4c9a888a7f152ff0d64cfd81c40a93fcb1f2de6d290995e5)
+// Source: upstream/packages/types/src/CapacitorApi.ts:72 (sha256:2371806e5bb53aeb4c9a888a7f152ff0d64cfd81c40a93fcb1f2de6d290995e5)
 #[derive(Clone, Default)]
 pub struct CapacitorAppInfo {
     #[doc(hidden)]
@@ -176,7 +165,7 @@ impl PartialEq for CapacitorAppInfo {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:78 (sha256:7f2cff0829ca04e5d65d9c6b2fa0337ba6bbfe58aacf4990f2509e8b12d40601)
+// Source: upstream/packages/types/src/CapacitorApi.ts:82 (sha256:7f2cff0829ca04e5d65d9c6b2fa0337ba6bbfe58aacf4990f2509e8b12d40601)
 #[derive(Clone)]
 pub struct CapacitorClipboardPlugin {
     #[doc(hidden)]
@@ -200,7 +189,7 @@ impl PartialEq for CapacitorClipboardPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:83 (sha256:56fe9130a39f0b883b6a6d24ff731d4bd863e93c3d2465be06698b47adaedee4)
+// Source: upstream/packages/types/src/CapacitorApi.ts:87 (sha256:56fe9130a39f0b883b6a6d24ff731d4bd863e93c3d2465be06698b47adaedee4)
 #[derive(Clone, Default)]
 pub struct CapacitorClipboardReadResult {
     #[doc(hidden)]
@@ -214,7 +203,7 @@ impl PartialEq for CapacitorClipboardReadResult {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:88 (sha256:c44824706a71dcca1a8f473d2d8af850974271343939f25c728e2d9c62b6508c)
+// Source: upstream/packages/types/src/CapacitorApi.ts:92 (sha256:c44824706a71dcca1a8f473d2d8af850974271343939f25c728e2d9c62b6508c)
 #[derive(Clone, Default)]
 pub struct CapacitorClipboardWriteOptions {
     #[doc(hidden)]
@@ -230,7 +219,7 @@ impl PartialEq for CapacitorClipboardWriteOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:97 (sha256:a10be4006aadc24421f58af094fd3f7263962b1dea7ac94f803bf23860d43e31)
+// Source: upstream/packages/types/src/CapacitorApi.ts:101 (sha256:a10be4006aadc24421f58af094fd3f7263962b1dea7ac94f803bf23860d43e31)
 #[derive(Clone)]
 pub struct CapacitorDevicePlugin {
     #[doc(hidden)]
@@ -250,7 +239,7 @@ impl PartialEq for CapacitorDevicePlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:102 (sha256:2b7439da4b0735328d0e5ea84c105627068466449eb0fd97a89c9f867a0e9c3a)
+// Source: upstream/packages/types/src/CapacitorApi.ts:106 (sha256:2b7439da4b0735328d0e5ea84c105627068466449eb0fd97a89c9f867a0e9c3a)
 #[derive(Clone, Default)]
 pub struct CapacitorDeviceId {
     #[doc(hidden)]
@@ -263,7 +252,7 @@ impl PartialEq for CapacitorDeviceId {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:106 (sha256:0d43596323d2b6bae32b2a18e48f1b8b9d4e1b111f4befd669e75060b5a088be)
+// Source: upstream/packages/types/src/CapacitorApi.ts:110 (sha256:0d43596323d2b6bae32b2a18e48f1b8b9d4e1b111f4befd669e75060b5a088be)
 #[derive(Clone, Default)]
 pub struct CapacitorDeviceInfo {
     #[doc(hidden)]
@@ -283,7 +272,7 @@ impl PartialEq for CapacitorDeviceInfo {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:120 (sha256:24ee2e4c6db3c1bf4ebd605d75ee05c511096a14c3c87af2167c0afde35e2eb7)
+// Source: upstream/packages/types/src/CapacitorApi.ts:124 (sha256:24ee2e4c6db3c1bf4ebd605d75ee05c511096a14c3c87af2167c0afde35e2eb7)
 #[derive(Clone)]
 pub struct CapacitorDialogPlugin {
     #[doc(hidden)]
@@ -322,7 +311,7 @@ impl PartialEq for CapacitorDialogPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:126 (sha256:17596525e344609727b4ba29d55e430cd0b10413b5cc4d397a5e02474b2666bb)
+// Source: upstream/packages/types/src/CapacitorApi.ts:130 (sha256:17596525e344609727b4ba29d55e430cd0b10413b5cc4d397a5e02474b2666bb)
 #[derive(Clone, Default)]
 pub struct CapacitorDialogAlertOptions {
     #[doc(hidden)]
@@ -337,7 +326,7 @@ impl PartialEq for CapacitorDialogAlertOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:132 (sha256:88c2ea5d7bcca5d4dc28f07980d227fbff477b95e579577de8c035b20763b0d9)
+// Source: upstream/packages/types/src/CapacitorApi.ts:136 (sha256:88c2ea5d7bcca5d4dc28f07980d227fbff477b95e579577de8c035b20763b0d9)
 #[derive(Clone, Default)]
 pub struct CapacitorDialogConfirmOptions {
     #[doc(hidden)]
@@ -353,7 +342,7 @@ impl PartialEq for CapacitorDialogConfirmOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:139 (sha256:70c469bab6cc1443f2e7170e84a1360bd80bdc70dd26f249d7439fdc168ed430)
+// Source: upstream/packages/types/src/CapacitorApi.ts:143 (sha256:70c469bab6cc1443f2e7170e84a1360bd80bdc70dd26f249d7439fdc168ed430)
 #[derive(Clone, Default)]
 pub struct CapacitorDialogConfirmResult {
     #[doc(hidden)]
@@ -366,7 +355,7 @@ impl PartialEq for CapacitorDialogConfirmResult {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:143 (sha256:f3f3ca6e74d99e8f3625e5d4414a1b8149f33099f48be51831ed9ccf2ff7c292)
+// Source: upstream/packages/types/src/CapacitorApi.ts:147 (sha256:f3f3ca6e74d99e8f3625e5d4414a1b8149f33099f48be51831ed9ccf2ff7c292)
 #[derive(Clone, Default)]
 pub struct CapacitorDialogPromptOptions {
     #[doc(hidden)]
@@ -384,7 +373,7 @@ impl PartialEq for CapacitorDialogPromptOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:152 (sha256:3a395a5216c1eaf0d58127dfb68a739952977076597077a33a7a2f0662a3a299)
+// Source: upstream/packages/types/src/CapacitorApi.ts:156 (sha256:3a395a5216c1eaf0d58127dfb68a739952977076597077a33a7a2f0662a3a299)
 #[derive(Clone, Default)]
 pub struct CapacitorDialogPromptResult {
     #[doc(hidden)]
@@ -398,7 +387,7 @@ impl PartialEq for CapacitorDialogPromptResult {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:161 (sha256:49a5d2bf812324c8d82d9981a784f21dfa5f69e141bfaf7e3d5003693ec4d761)
+// Source: upstream/packages/types/src/CapacitorApi.ts:165 (sha256:8fc710f63842243f2544f64016d8443c83eed2c37ce525cf466a174a332ad3c6)
 #[derive(Clone)]
 pub struct CapacitorFilesystemPlugin {
     #[doc(hidden)]
@@ -415,7 +404,9 @@ pub struct CapacitorFilesystemPlugin {
     pub copy: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(CapacitorFilesystemCopyOptions) -> crate::FlightTask<()> + Send + 'static,
+                dyn FnMut(CapacitorFilesystemCopyOptions) -> crate::FlightTask<crate::FlightValue>
+                    + Send
+                    + 'static,
             >,
         >,
     >,
@@ -503,7 +494,7 @@ impl PartialEq for CapacitorFilesystemPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:174 (sha256:05494c13aaab0a8479bb429141b5c655d3d13d20cf4a79adb88ac7609a0dac4d)
+// Source: upstream/packages/types/src/CapacitorApi.ts:178 (sha256:05494c13aaab0a8479bb429141b5c655d3d13d20cf4a79adb88ac7609a0dac4d)
 #[derive(Clone, Default)]
 pub struct CapacitorFilesystemPathOptions {
     #[doc(hidden)]
@@ -516,7 +507,7 @@ impl PartialEq for CapacitorFilesystemPathOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:178 (sha256:f6edba838fa3717143fac0aa2ef7e41effd7318b5c8940316b7227513fbc4891)
+// Source: upstream/packages/types/src/CapacitorApi.ts:182 (sha256:f6edba838fa3717143fac0aa2ef7e41effd7318b5c8940316b7227513fbc4891)
 #[derive(Clone, Default)]
 pub struct CapacitorFilesystemReadOptions {
     #[doc(hidden)]
@@ -530,12 +521,12 @@ impl PartialEq for CapacitorFilesystemReadOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:183 (sha256:c414137c00e1efb5ef822ff535a9c8587d0463a8363f0f976ccd6832d9b6425e)
-#[derive(Clone, Default)]
+// Source: upstream/packages/types/src/CapacitorApi.ts:187 (sha256:a0a5ffdeba924920d9a34361a3d71bc0943d9e042636275518537b457d87b0a8)
+#[derive(Clone)]
 pub struct CapacitorFilesystemReadResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub data: String,
+    pub data: crate::FlightUnion2<crate::OpaqueHostValue, String>,
 }
 impl PartialEq for CapacitorFilesystemReadResult {
     fn eq(&self, other: &Self) -> bool {
@@ -543,7 +534,7 @@ impl PartialEq for CapacitorFilesystemReadResult {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:187 (sha256:5ba595437222a72793d640b353c0e85b0748f8d38f74ba7ff0a5f77846135eb3)
+// Source: upstream/packages/types/src/CapacitorApi.ts:191 (sha256:5ba595437222a72793d640b353c0e85b0748f8d38f74ba7ff0a5f77846135eb3)
 #[derive(Clone, Default)]
 pub struct CapacitorFilesystemWriteOptions {
     #[doc(hidden)]
@@ -559,7 +550,7 @@ impl PartialEq for CapacitorFilesystemWriteOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:194 (sha256:102664075ce042f52a44ccea8b10392a6ed335b25f99774eaf3a1926b81c3d22)
+// Source: upstream/packages/types/src/CapacitorApi.ts:198 (sha256:102664075ce042f52a44ccea8b10392a6ed335b25f99774eaf3a1926b81c3d22)
 #[derive(Clone, Default)]
 pub struct CapacitorFilesystemWriteResult {
     #[doc(hidden)]
@@ -572,7 +563,7 @@ impl PartialEq for CapacitorFilesystemWriteResult {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:198 (sha256:3498d4c7d48ba6506394df45c17947d26e7a60789554c8c1d380266685cb0969)
+// Source: upstream/packages/types/src/CapacitorApi.ts:202 (sha256:3498d4c7d48ba6506394df45c17947d26e7a60789554c8c1d380266685cb0969)
 #[derive(Clone, Default)]
 pub struct CapacitorFilesystemCopyOptions {
     #[doc(hidden)]
@@ -586,7 +577,7 @@ impl PartialEq for CapacitorFilesystemCopyOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:203 (sha256:5abc3e7357ddc3e85db61386d043edf803c4f169ea7a259f7caf5e6b00e751f9)
+// Source: upstream/packages/types/src/CapacitorApi.ts:207 (sha256:5abc3e7357ddc3e85db61386d043edf803c4f169ea7a259f7caf5e6b00e751f9)
 #[derive(Clone, Default)]
 pub struct CapacitorFilesystemMkdirOptions {
     #[doc(hidden)]
@@ -600,7 +591,7 @@ impl PartialEq for CapacitorFilesystemMkdirOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:208 (sha256:4003ce362fdf5dd3b78503787ba5e9702746db82f580f450f37cdf19bc605e63)
+// Source: upstream/packages/types/src/CapacitorApi.ts:212 (sha256:4003ce362fdf5dd3b78503787ba5e9702746db82f580f450f37cdf19bc605e63)
 #[derive(Clone, Default)]
 pub struct CapacitorFilesystemRmdirOptions {
     #[doc(hidden)]
@@ -614,7 +605,7 @@ impl PartialEq for CapacitorFilesystemRmdirOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:213 (sha256:d3e211bb4d93164be18c5a4da40c8cc6e55c259eccfbfda6873ab2379b69929b)
+// Source: upstream/packages/types/src/CapacitorApi.ts:217 (sha256:d3e211bb4d93164be18c5a4da40c8cc6e55c259eccfbfda6873ab2379b69929b)
 #[derive(Clone, Default)]
 pub struct CapacitorFilesystemReaddirResult {
     #[doc(hidden)]
@@ -627,7 +618,7 @@ impl PartialEq for CapacitorFilesystemReaddirResult {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:219 (sha256:0eaed0c6692f7f367d9d06cafea605237aaf868b8cbe073f47f8058b3a06bad5)
+// Source: upstream/packages/types/src/CapacitorApi.ts:223 (sha256:0eaed0c6692f7f367d9d06cafea605237aaf868b8cbe073f47f8058b3a06bad5)
 #[derive(Clone, Default)]
 pub struct CapacitorFileInfo {
     #[doc(hidden)]
@@ -645,7 +636,7 @@ impl PartialEq for CapacitorFileInfo {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:228 (sha256:252f92b2f5e80aa961d9cd529cf8d4e5bfa2e1d1774d95df867dd4f27cff506a)
+// Source: upstream/packages/types/src/CapacitorApi.ts:232 (sha256:252f92b2f5e80aa961d9cd529cf8d4e5bfa2e1d1774d95df867dd4f27cff506a)
 #[derive(Clone, Default)]
 pub struct CapacitorFilesystemStatResult {
     #[doc(hidden)]
@@ -662,7 +653,7 @@ impl PartialEq for CapacitorFilesystemStatResult {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:240 (sha256:a86bf654693b542e7ec591600f87d0662786357ba272899149f296e6e277b4a5)
+// Source: upstream/packages/types/src/CapacitorApi.ts:244 (sha256:a86bf654693b542e7ec591600f87d0662786357ba272899149f296e6e277b4a5)
 #[derive(Clone, Default)]
 pub struct CapacitorGeolocationPluginRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -749,7 +740,7 @@ impl PartialEq for CapacitorGeolocationPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:253 (sha256:f4c9e37f0dbf80514e8c95a9122a0da27e567ac24e96a5dd9685f4c7d6c4d419)
+// Source: upstream/packages/types/src/CapacitorApi.ts:257 (sha256:f4c9e37f0dbf80514e8c95a9122a0da27e567ac24e96a5dd9685f4c7d6c4d419)
 #[derive(Clone, Default)]
 pub struct CapacitorGeolocationOptions {
     #[doc(hidden)]
@@ -764,7 +755,7 @@ impl PartialEq for CapacitorGeolocationOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:259 (sha256:7f0b1fcda9df9b3b4937c320ed110aee8cfac7623c3ce8caf67cf194cb1d0438)
+// Source: upstream/packages/types/src/CapacitorApi.ts:263 (sha256:7f0b1fcda9df9b3b4937c320ed110aee8cfac7623c3ce8caf67cf194cb1d0438)
 #[derive(Clone, Default)]
 pub struct CapacitorGeolocationPermissionOptions {
     #[doc(hidden)]
@@ -777,7 +768,7 @@ impl PartialEq for CapacitorGeolocationPermissionOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:264 (sha256:380f8258259983687d3c982bc8936499d0e2fceee317b74e38f9493ecb652056)
+// Source: upstream/packages/types/src/CapacitorApi.ts:268 (sha256:380f8258259983687d3c982bc8936499d0e2fceee317b74e38f9493ecb652056)
 #[derive(Clone, Default)]
 pub struct CapacitorGeolocationPermissionStatus {
     #[doc(hidden)]
@@ -791,7 +782,7 @@ impl PartialEq for CapacitorGeolocationPermissionStatus {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:269 (sha256:6216f911f8185b30c4fba096cd02d91c987f35f840aaae9669316ce22c9cbf08)
+// Source: upstream/packages/types/src/CapacitorApi.ts:273 (sha256:6216f911f8185b30c4fba096cd02d91c987f35f840aaae9669316ce22c9cbf08)
 #[derive(Clone, Default)]
 pub struct CapacitorPosition {
     #[doc(hidden)]
@@ -805,7 +796,7 @@ impl PartialEq for CapacitorPosition {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:274 (sha256:11198f596ff3955757f04ec897660f68dd0b9247759cae0cd23b8e0f230dd36b)
+// Source: upstream/packages/types/src/CapacitorApi.ts:278 (sha256:d2b00667fc1805afe87c0d37ca77454e37befe63d18a5f9e9e17779189c42b0f)
 #[derive(Clone, Default)]
 pub struct CapacitorPositionCoords {
     #[doc(hidden)]
@@ -824,7 +815,7 @@ impl PartialEq for CapacitorPositionCoords {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:287 (sha256:ea348912addde09fac9a5e0f72a4001f050b515030ef74d30393168e7cc84bf6)
+// Source: upstream/packages/types/src/CapacitorApi.ts:291 (sha256:ea348912addde09fac9a5e0f72a4001f050b515030ef74d30393168e7cc84bf6)
 #[derive(Clone, Default)]
 pub struct CapacitorHapticsPluginRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -853,7 +844,7 @@ pub struct CapacitorHapticsPlugin {
     pub __flight_identity: std::sync::Arc<()>,
     pub impact: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(SharedStructuralRecord3) -> crate::FlightTask<()> + Send + 'static>,
+            Box<dyn FnMut(SharedStructuralRecord2) -> crate::FlightTask<()> + Send + 'static>,
         >,
     >,
     pub notification: std::sync::Arc<
@@ -882,7 +873,7 @@ impl PartialEq for CapacitorHapticsPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:300 (sha256:fff044a83d168a6809a484c061e0684813c82c806faa97a32f7ebace4acf609c)
+// Source: upstream/packages/types/src/CapacitorApi.ts:304 (sha256:fff044a83d168a6809a484c061e0684813c82c806faa97a32f7ebace4acf609c)
 #[derive(Clone, Default)]
 pub struct CapacitorKeyboardPluginRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -958,7 +949,7 @@ pub struct CapacitorKeyboardPlugin {
     >,
     pub set_style: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(SharedStructuralRecord3) -> crate::FlightTask<()> + Send + 'static>,
+            Box<dyn FnMut(SharedStructuralRecord2) -> crate::FlightTask<()> + Send + 'static>,
         >,
     >,
     pub show: std::sync::Arc<
@@ -971,7 +962,7 @@ impl PartialEq for CapacitorKeyboardPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:320 (sha256:72042e1a14a46ed0fb3e8c561cc083f8073b871c8c8d2160c789516f8bfeee9c)
+// Source: upstream/packages/types/src/CapacitorApi.ts:324 (sha256:72042e1a14a46ed0fb3e8c561cc083f8073b871c8c8d2160c789516f8bfeee9c)
 #[derive(Clone)]
 pub struct CapacitorLocalNotificationsPlugin {
     #[doc(hidden)]
@@ -998,7 +989,7 @@ pub struct CapacitorLocalNotificationsPlugin {
     >,
     pub cancel: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(SharedStructuralRecord4) -> crate::FlightTask<()> + Send + 'static>,
+            Box<dyn FnMut(SharedStructuralRecord3) -> crate::FlightTask<()> + Send + 'static>,
         >,
     >,
     pub check_permissions: std::sync::Arc<
@@ -1032,7 +1023,7 @@ pub struct CapacitorLocalNotificationsPlugin {
         std::sync::Mutex<
             Box<
                 dyn FnMut(
-                        SharedStructuralRecord6,
+                        SharedStructuralRecord5,
                     )
                         -> crate::FlightTask<CapacitorLocalNotificationsScheduleResult>
                     + Send
@@ -1047,11 +1038,13 @@ impl PartialEq for CapacitorLocalNotificationsPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:334 (sha256:baa47ad08e9c56c783c2d9b377c8922be7df7c180343834b02b08078127136a7)
+// Source: upstream/packages/types/src/CapacitorApi.ts:338 (sha256:db51e5e332fb61687e4556c817fd81db1a225dfd270acee4e6dcc6e9cfefed27)
 #[derive(Clone, Default)]
 pub struct CapacitorLocalNotificationSchemaRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
     pub at: Option<crate::OpaqueHostValue>,
+    pub every: Option<String>,
+    pub repeats: Option<bool>,
 }
 impl PartialEq for CapacitorLocalNotificationSchemaRecord1 {
     fn eq(&self, other: &Self) -> bool {
@@ -1074,12 +1067,12 @@ impl PartialEq for CapacitorLocalNotificationSchema {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:341 (sha256:185d7ae530081b28197a75a34ed813876c14e69955604081a06ad2c0d13c6875)
+// Source: upstream/packages/types/src/CapacitorApi.ts:349 (sha256:185d7ae530081b28197a75a34ed813876c14e69955604081a06ad2c0d13c6875)
 #[derive(Clone, Default)]
 pub struct CapacitorLocalNotificationsScheduleResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub notifications: Vec<SharedStructuralRecord5>,
+    pub notifications: Vec<SharedStructuralRecord4>,
 }
 impl PartialEq for CapacitorLocalNotificationsScheduleResult {
     fn eq(&self, other: &Self) -> bool {
@@ -1087,7 +1080,7 @@ impl PartialEq for CapacitorLocalNotificationsScheduleResult {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:345 (sha256:e8ece6213f06348b287ec0639763800db8df23fe06b916246cbcea165d7c23c2)
+// Source: upstream/packages/types/src/CapacitorApi.ts:353 (sha256:e8ece6213f06348b287ec0639763800db8df23fe06b916246cbcea165d7c23c2)
 #[derive(Clone, Default)]
 pub struct CapacitorLocalNotificationsPending {
     #[doc(hidden)]
@@ -1100,7 +1093,7 @@ impl PartialEq for CapacitorLocalNotificationsPending {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:349 (sha256:90165052b6afc119968fec24965526b2c7f1ddd13e1fe95c1ba2752612d3c254)
+// Source: upstream/packages/types/src/CapacitorApi.ts:357 (sha256:90165052b6afc119968fec24965526b2c7f1ddd13e1fe95c1ba2752612d3c254)
 #[derive(Clone, Default)]
 pub struct CapacitorLocalNotificationsPermission {
     #[doc(hidden)]
@@ -1113,13 +1106,13 @@ impl PartialEq for CapacitorLocalNotificationsPermission {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:353 (sha256:a4e5748e798d53191d87b0db4f18e8bfbe98ad641cf4b6aeb2a8a5f901d66a2b)
+// Source: upstream/packages/types/src/CapacitorApi.ts:361 (sha256:a4e5748e798d53191d87b0db4f18e8bfbe98ad641cf4b6aeb2a8a5f901d66a2b)
 #[derive(Clone, Default)]
 pub struct CapacitorLocalNotificationAction {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub action_id: String,
-    pub notification: SharedStructuralRecord5,
+    pub notification: SharedStructuralRecord4,
 }
 impl PartialEq for CapacitorLocalNotificationAction {
     fn eq(&self, other: &Self) -> bool {
@@ -1127,7 +1120,7 @@ impl PartialEq for CapacitorLocalNotificationAction {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:361 (sha256:b3e501196c8c0d37c465e1878c78294312a5016551c48178076adeebe5056a7e)
+// Source: upstream/packages/types/src/CapacitorApi.ts:369 (sha256:b3e501196c8c0d37c465e1878c78294312a5016551c48178076adeebe5056a7e)
 #[derive(Clone)]
 pub struct CapacitorNetworkPlugin {
     #[doc(hidden)]
@@ -1160,7 +1153,7 @@ impl PartialEq for CapacitorNetworkPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:370 (sha256:bb97f345c6f1dfbf691db41dd1fed96d2d93880f74297edb1ca2ea96f8b83058)
+// Source: upstream/packages/types/src/CapacitorApi.ts:378 (sha256:bb97f345c6f1dfbf691db41dd1fed96d2d93880f74297edb1ca2ea96f8b83058)
 #[derive(Clone, Default)]
 pub struct CapacitorConnectionStatus {
     #[doc(hidden)]
@@ -1174,16 +1167,11 @@ impl PartialEq for CapacitorConnectionStatus {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:378 (sha256:f2ce61a1db6f1281889f1e359c55a7cb28de0910e0522fa5bd44de6c2336cafa)
+// Source: upstream/packages/types/src/CapacitorApi.ts:385 (sha256:cfe35629be63994fd8a51f366ec113b6cd185f495f6dc5ad38b8ae6685585f76)
 #[derive(Clone)]
 pub struct CapacitorSharePlugin {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub can_share: std::sync::Arc<
-        std::sync::Mutex<
-            Box<dyn FnMut() -> crate::FlightTask<CapacitorShareCanResult> + Send + 'static>,
-        >,
-    >,
     pub share: std::sync::Arc<
         std::sync::Mutex<
             Box<
@@ -1200,7 +1188,7 @@ impl PartialEq for CapacitorSharePlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:383 (sha256:27a6a721ce960730010432e09f2cb76b6cce032ae682e7c1c306a0480a41c6ac)
+// Source: upstream/packages/types/src/CapacitorApi.ts:389 (sha256:27a6a721ce960730010432e09f2cb76b6cce032ae682e7c1c306a0480a41c6ac)
 #[derive(Clone, Default)]
 pub struct CapacitorShareOptions {
     #[doc(hidden)]
@@ -1217,20 +1205,7 @@ impl PartialEq for CapacitorShareOptions {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:391 (sha256:ded884798ec3debea4e76d5cec1b8593522e70ec25c562a88420a9b4bd97d9da)
-#[derive(Clone, Default)]
-pub struct CapacitorShareCanResult {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub value: bool,
-}
-impl PartialEq for CapacitorShareCanResult {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/types/src/CapacitorApi.ts:395 (sha256:02eaee12bbad5fde4df0ddcfb2c51a7593c26573c4df2eb7c356f15721ed2b92)
+// Source: upstream/packages/types/src/CapacitorApi.ts:397 (sha256:02eaee12bbad5fde4df0ddcfb2c51a7593c26573c4df2eb7c356f15721ed2b92)
 #[derive(Clone, Default)]
 pub struct CapacitorShareResult {
     #[doc(hidden)]
@@ -1243,7 +1218,7 @@ impl PartialEq for CapacitorShareResult {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:402 (sha256:4821d82621c498f3712e2272f121760de426296038da6fda9032644c9d9e8578)
+// Source: upstream/packages/types/src/CapacitorApi.ts:404 (sha256:4821d82621c498f3712e2272f121760de426296038da6fda9032644c9d9e8578)
 #[derive(Clone, Default)]
 pub struct CapacitorStatusBarPluginRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -1298,7 +1273,7 @@ pub struct CapacitorStatusBarPlugin {
     >,
     pub set_style: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(SharedStructuralRecord3) -> crate::FlightTask<()> + Send + 'static>,
+            Box<dyn FnMut(SharedStructuralRecord2) -> crate::FlightTask<()> + Send + 'static>,
         >,
     >,
     pub show: std::sync::Arc<
@@ -1311,7 +1286,7 @@ impl PartialEq for CapacitorStatusBarPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/CapacitorApi.ts:411 (sha256:6706f6673cc636115f9dede392c9695a41ec647edeaa87ed4612c9f613401819)
+// Source: upstream/packages/types/src/CapacitorApi.ts:413 (sha256:6706f6673cc636115f9dede392c9695a41ec647edeaa87ed4612c9f613401819)
 #[derive(Clone, Default)]
 pub struct CapacitorStatusBarInfoResult {
     #[doc(hidden)]

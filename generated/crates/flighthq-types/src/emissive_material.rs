@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
-use crate::{PbrExtension, StandardPbrMaterialProperties};
+use crate::{Modifier, PbrExtension, StandardPbrMaterialProperties};
 
-// Source: upstream/packages/types/src/EmissiveMaterial.ts:7 (sha256:69801d3535461cd2a982b945b3099efbf3129d5d5152ed829a5e5ab849141c58)
+// Source: upstream/packages/types/src/EmissiveMaterial.ts:7 (sha256:238a12967c3fccaa91ec7bfa8a4e72f92e8a5983b6aa44c028db45374a47cb6d)
 #[derive(Clone, Default)]
 pub struct EmissiveMaterial {
     #[doc(hidden)]
@@ -24,14 +24,40 @@ pub struct EmissiveMaterial {
     pub alpha_mode: MaterialAlphaMode,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
-    pub extensions: Vec<PbrExtension>,
-    pub standard: StandardPbrMaterialProperties,
-    pub shader_key: String,
-    pub textures: Option<Vec<(String, Texture)>>,
-    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
+    pub color: f64,
+    pub thickness: f64,
+    pub tint: f64,
+    pub base_color: f64,
+    pub base_color_map: Option<Texture>,
+    pub ramp: Option<Texture>,
+    pub steps: f64,
+    pub alpha_map: Option<Texture>,
     pub emissive: f64,
     pub emissive_map: Option<Texture>,
     pub emissive_strength: f64,
+    pub metallic: f64,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: f64,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: f64,
+    pub roughness: f64,
+    pub diffuse: f64,
+    pub diffuse_map: Option<Texture>,
+    pub glossiness: f64,
+    pub specular: f64,
+    pub specular_glossiness_map: Option<Texture>,
+    pub modifiers: Vec<Modifier>,
+    pub shininess: f64,
+    pub specular_map: Option<Texture>,
+    pub matcap: Option<Texture>,
+    pub extensions: Vec<PbrExtension>,
+    pub standard: StandardPbrMaterialProperties,
+    pub far: f64,
+    pub near: f64,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
 }
 impl PartialEq for EmissiveMaterial {
     fn eq(&self, other: &Self) -> bool {
@@ -57,5 +83,5 @@ impl crate::FlightEntity for EmissiveMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/EmissiveMaterial.ts:13 (sha256:0ea80f244d12092673fd5f187113c720c534bde41773158f4178e57fa1f4f09f)
+// Source: upstream/packages/types/src/EmissiveMaterial.ts:14 (sha256:0ea80f244d12092673fd5f187113c720c534bde41773158f4178e57fa1f4f09f)
 pub const EMISSIVE_MATERIAL_KIND: &'static str = "EmissiveMaterial";

@@ -64,12 +64,12 @@ pub fn get_scene3_d_hit_subset_index(hit: &Scene3DHit) -> f64 {
 
 // Source: upstream/packages/picking/src/sceneHitAttributes.ts:29 (sha256:7475248321b679720ebdf6a99cbd01184c8431742c19c438905651aa850b3203)
 #[derive(Clone, Default)]
-struct OutContextRecord6 {
+struct OutContextRecord2 {
     __flight_identity: std::sync::Arc<()>,
     x: f64,
     y: f64,
 }
-impl PartialEq for OutContextRecord6 {
+impl PartialEq for OutContextRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -117,13 +117,13 @@ pub fn get_scene3_d_hit_uv0(out: &mut Vector2Like, hit: &Scene3DHit) -> bool {
 
 // Source: upstream/packages/picking/src/sceneHitAttributes.ts:45 (sha256:ff0c52908eeea87aa83308b2d1c33f0de37e2e007116a0daf8915c3d053178db)
 #[derive(Clone, Default)]
-struct OutContextRecord6 {
+struct OutContextRecord2 {
     __flight_identity: std::sync::Arc<()>,
     x: f64,
     y: f64,
     z: f64,
 }
-impl PartialEq for OutContextRecord6 {
+impl PartialEq for OutContextRecord2 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -266,13 +266,13 @@ pub fn get_scene3_d_hit_vertex_tangent(
     }
     if (!({
         #[derive(Clone, Default)]
-        struct OutContextRecord6 {
+        struct OutContextRecord2 {
             __flight_identity: std::sync::Arc<()>,
             x: f64,
             y: f64,
             z: f64,
         }
-        impl PartialEq for OutContextRecord6 {
+        impl PartialEq for OutContextRecord2 {
             fn eq(&self, other: &Self) -> bool {
                 std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
             }

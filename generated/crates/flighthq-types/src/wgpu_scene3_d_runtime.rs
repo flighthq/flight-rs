@@ -7,11 +7,11 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, CustomShaderMaterial, Matrix4, Scene3DLightsLike, WgpuCustomMaterialShaderSource,
-    WgpuMeshPipeline, WgpuRenderState,
+    BlendMode, Camera3D, CustomShaderMaterial, Matrix4, Node3D, Scene3DLightsLike,
+    WgpuCustomMaterialShaderSource, WgpuMeshPipeline, WgpuRenderState,
 };
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:16 (sha256:51198c8940045753f24c81e72c79afa768610dc0b4ad580609876711fd13e77f)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:18 (sha256:51198c8940045753f24c81e72c79afa768610dc0b4ad580609876711fd13e77f)
 #[derive(Clone, Default)]
 pub struct WgpuScene3DShadow {
     #[doc(hidden)]
@@ -32,7 +32,7 @@ impl PartialEq for WgpuScene3DShadow {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:37 (sha256:2c9de49060c0caec1db063676aaff00b42a147d1453a572eebc9698cad804d96)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:39 (sha256:2c9de49060c0caec1db063676aaff00b42a147d1453a572eebc9698cad804d96)
 #[derive(Clone, Default)]
 pub struct WgpuScene3DIbl {
     #[doc(hidden)]
@@ -52,7 +52,7 @@ impl PartialEq for WgpuScene3DIbl {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:48 (sha256:7ae1f3611cb970dc9a5bba4681dabc3f580fff5642b9b52a0f5f557b6f864e01)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:50 (sha256:7ae1f3611cb970dc9a5bba4681dabc3f580fff5642b9b52a0f5f557b6f864e01)
 #[derive(Clone, Default)]
 pub struct WgpuScene3DFrameBinding {
     #[doc(hidden)]
@@ -66,7 +66,7 @@ impl PartialEq for WgpuScene3DFrameBinding {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:55 (sha256:b4d8b046bbaf156d910380ce47f8e5eb9bdcdfac78735a793394fc189153168d)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:57 (sha256:fc319bd277c70f57ac702aa364f56b3f047e28e81cb18674ec1b5717c3331cf4)
 #[derive(Clone, Default)]
 pub struct WgpuScene3DDrawEntry {
     #[doc(hidden)]
@@ -79,6 +79,7 @@ pub struct WgpuScene3DDrawEntry {
     pub material: crate::OpaqueHostValue,
     pub mesh: crate::OpaqueHostValue,
     pub renderer: crate::OpaqueHostValue,
+    pub sort_key: f64,
     pub subset: crate::OpaqueHostValue,
     pub world_matrix: crate::OpaqueHostValue,
 }
@@ -88,7 +89,14 @@ impl PartialEq for WgpuScene3DDrawEntry {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:79 (sha256:d73b5ce1b57506125a02a6af3df57a93e786f126e2f9cc4a43a4ca12cc6647fe)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:77 (sha256:aceaa8be14f52a34e50921d7a34b5377c2ad04737aac48528823d2e5028a6c33)
+pub type WgpuScene3DPass = std::sync::Arc<
+    std::sync::Mutex<
+        Box<dyn FnMut(WgpuRenderState, Node3D, Camera3D, Scene3DLightsLike) -> () + Send + 'static>,
+    >,
+>;
+
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:89 (sha256:15bfd6fca9ef58e5c22f7b19b8cb30ed5dec965b5439cd0598611ffb8e3f9583)
 #[derive(Clone, Default)]
 pub struct WgpuScene3DRuntime {
     #[doc(hidden)]
@@ -97,6 +105,7 @@ pub struct WgpuScene3DRuntime {
     pub active_blended_run: bool,
     pub active_color_adjustment_run: bool,
     pub active_color_matrix_run: bool,
+    pub active_mirrored_run: bool,
     pub active_skinned_run: bool,
     pub active_mesh_pipeline: Option<WgpuMeshPipeline>,
     pub blended_draw_list: Vec<WgpuScene3DDrawEntry>,
@@ -153,6 +162,7 @@ pub struct WgpuScene3DRuntime {
     pub shadow_comparison_sampler: Option<crate::OpaqueHostValue>,
     pub shadow_depth_pipeline: Option<crate::OpaqueHostValue>,
     pub shadow_depth_skinned_pipeline: Option<crate::OpaqueHostValue>,
+    pub shadow_depth_instanced_pipeline: Option<crate::OpaqueHostValue>,
     pub shadow_dummy_texture: Option<crate::OpaqueHostValue>,
     pub shadow_dummy_view: Option<crate::OpaqueHostValue>,
     pub shadow_sample_bind_group: Option<crate::OpaqueHostValue>,
@@ -187,7 +197,7 @@ impl PartialEq for WgpuScene3DRuntime {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:220 (sha256:31d73dbaa19b2ef6cf67f3fadd4a1b5319ee6881fb53b0fa1213c11a3b34115d)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:239 (sha256:31d73dbaa19b2ef6cf67f3fadd4a1b5319ee6881fb53b0fa1213c11a3b34115d)
 #[derive(Clone, Default)]
 pub struct WgpuMeshUpload {
     #[doc(hidden)]
@@ -205,7 +215,7 @@ impl PartialEq for WgpuMeshUpload {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:240 (sha256:71124ab66d3db75c82780773391a5291b531082454785c3c0049492c1e9d793a)
+// Source: upstream/packages/types/src/WgpuScene3DRuntime.ts:259 (sha256:71124ab66d3db75c82780773391a5291b531082454785c3c0049492c1e9d793a)
 #[derive(Clone, Default)]
 pub struct WgpuMaterialBinding {
     #[doc(hidden)]

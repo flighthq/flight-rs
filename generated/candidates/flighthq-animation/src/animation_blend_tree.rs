@@ -11,21 +11,44 @@ use crate::{
     create_animation_sample_accumulator, finish_animation_sample,
     reset_animation_sample_accumulator, sample_animation_track,
 };
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_types::{
     AnimationBlendTree, AnimationBlendTreeChannel, AnimationBlendTreeChannelSource,
-    AnimationBlendTreeInput, AnimationChannel, AnimationPlayer,
+    AnimationBlendTreeInput, AnimationChannel, AnimationPlayer, EntityConstruction,
 };
 
-// Source: upstream/packages/animation/src/animationBlendTree.ts:23 (sha256:36b06a982b16caec7d393011dbccec6678b144688b2bb4d911b197e8bec9f143)
+// Source: upstream/packages/animation/src/animationBlendTree.ts:24 (sha256:36b06a982b16caec7d393011dbccec6678b144688b2bb4d911b197e8bec9f143)
 pub fn advance_animation_blend_tree(tree: &AnimationBlendTree, dt: f64) -> () {
     for mut player in ((tree.players).clone()).iter().cloned() {
         advance_animation_player(&mut player, dt);
     }
 }
 
-// Source: upstream/packages/animation/src/animationBlendTree.ts:29 (sha256:c31fae485ace9736391f49d8c03bdd7f047dfc0c9a4c3158c64da5f8f2a0835b)
+// Source: upstream/packages/animation/src/animationBlendTree.ts:28 (sha256:b1ba877e9e5aef14710cba90af783991397a735fc16e0b8844013b0c0b8020a1)
 pub fn create_animation_blend_tree(inputs: &Vec<AnimationBlendTreeInput>) -> AnimationBlendTree {
+    let mut out = allocate_entity();
+    initialize_animation_blend_tree((out).clone(), inputs);
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/animation/src/animationBlendTree.ts:34 (sha256:a57d223baeb053f98348d7b7f73dc1c0c1a9c489287c2768849fa33f2169614b)
+pub fn create_animation_blend_tree_input(
+    player: &AnimationPlayer,
+    weight: Option<f64>,
+    additive: Option<bool>,
+) -> AnimationBlendTreeInput {
+    let weight = weight.unwrap_or(1.0_f64);
+    let additive = additive.unwrap_or(false);
+    let mut out = allocate_entity();
+    initialize_animation_blend_tree_input((out).clone(), player, Some(weight), Some(additive));
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/animation/src/animationBlendTree.ts:46 (sha256:2195091c5d622122e2c7738bb71a8fa01b444ffe2745762cfc5e2c5b431749fa)
+pub fn initialize_animation_blend_tree(
+    out: EntityConstruction<AnimationBlendTree>,
+    inputs: &Vec<AnimationBlendTreeInput>,
+) -> () {
     let copied_inputs = (inputs).clone();
     let mut channels: Vec<AnimationBlendTreeChannel> = vec![];
     let mut channel_by_target: Vec<(crate::FlightValue, f64)> = Vec::new();
@@ -114,36 +137,27 @@ pub fn create_animation_blend_tree(inputs: &Vec<AnimationBlendTreeInput>) -> Ani
             };
         }
     }
-    return create_entity(Some(AnimationBlendTree {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        channels: (channels).clone(),
-        inputs: (copied_inputs).clone(),
-        players: (players).clone(),
-        sample_scratch: vec![0.0_f32; (sample_width) as usize],
-    }));
+    crate::host_set("host.channels", channels);
+    crate::host_set("host.inputs", copied_inputs);
+    crate::host_set("host.players", players);
+    crate::host_set("host.sampleScratch", vec![0.0_f32; (sample_width) as usize]);
 }
 
-// Source: upstream/packages/animation/src/animationBlendTree.ts:65 (sha256:07c65d503f288d22f81fdb74894f5b73f7175ee1e43004908882ed0cf7366840)
-pub fn create_animation_blend_tree_input(
+// Source: upstream/packages/animation/src/animationBlendTree.ts:86 (sha256:38a80f42566c1b787ffd72b79193cfb3daeadb35fc6c9ca8cd455a3d2b039c73)
+pub fn initialize_animation_blend_tree_input(
+    out: EntityConstruction<AnimationBlendTreeInput>,
     player: &AnimationPlayer,
     weight: Option<f64>,
     additive: Option<bool>,
-) -> AnimationBlendTreeInput {
+) -> () {
     let weight = weight.unwrap_or(1.0_f64);
     let additive = additive.unwrap_or(false);
-    return create_entity(Some(AnimationBlendTreeInput {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        additive: additive,
-        player: (*player).clone(),
-        weight: weight,
-    }));
+    crate::host_set("host.additive", additive);
+    crate::host_set("host.player", player);
+    crate::host_set("host.weight", weight);
 }
 
-// Source: upstream/packages/animation/src/animationBlendTree.ts:75 (sha256:5c3b5e356b14ec60f047d65a0a62009b2789e124fce5a8f65d04ad9a84890aaa)
+// Source: upstream/packages/animation/src/animationBlendTree.ts:99 (sha256:5c3b5e356b14ec60f047d65a0a62009b2789e124fce5a8f65d04ad9a84890aaa)
 pub fn sample_animation_blend_tree(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     tree: &mut AnimationBlendTree,
@@ -167,7 +181,7 @@ pub fn sample_animation_blend_tree(
     }
 }
 
-// Source: upstream/packages/animation/src/animationBlendTree.ts:87 (sha256:f59e75b3b8605f6d90e5ed76ca4e7ec7f25a1231237c493ec936439820e5f5a1)
+// Source: upstream/packages/animation/src/animationBlendTree.ts:111 (sha256:f59e75b3b8605f6d90e5ed76ca4e7ec7f25a1231237c493ec936439820e5f5a1)
 pub fn sample_animation_blend_tree_channel(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     tree: &mut AnimationBlendTree,
@@ -266,7 +280,7 @@ pub fn sample_animation_blend_tree_channel(
     return true;
 }
 
-// Source: upstream/packages/animation/src/animationBlendTree.ts:125 (sha256:3e5fa2dc9ce58f623bb981d0f5c74086e2f61dd866e9e84582ef36fe9ff0a303)
+// Source: upstream/packages/animation/src/animationBlendTree.ts:149 (sha256:3e5fa2dc9ce58f623bb981d0f5c74086e2f61dd866e9e84582ef36fe9ff0a303)
 pub fn set_animation_blend_tree_input_weight(
     tree: &mut AnimationBlendTree,
     input_index: f64,
@@ -280,7 +294,7 @@ pub fn set_animation_blend_tree_input_weight(
     return true;
 }
 
-// Source: upstream/packages/animation/src/animationBlendTree.ts:136 (sha256:15d61c31cb877f7d82e1ad02bfa0d9a4696330123cc52b11fb547e2b4091720c)
+// Source: upstream/packages/animation/src/animationBlendTree.ts:160 (sha256:15d61c31cb877f7d82e1ad02bfa0d9a4696330123cc52b11fb547e2b4091720c)
 fn assert_compatible_animation_blend_tree_channels(
     existing: &AnimationChannel,
     channel: &AnimationChannel,
@@ -293,7 +307,7 @@ fn assert_compatible_animation_blend_tree_channels(
     }
 }
 
-// Source: upstream/packages/animation/src/animationBlendTree.ts:150 (sha256:8227372c9115a7212bc42036b9f17127538dcbc0725b00447572fbbb646f71e2)
+// Source: upstream/packages/animation/src/animationBlendTree.ts:174 (sha256:8227372c9115a7212bc42036b9f17127538dcbc0725b00447572fbbb646f71e2)
 fn assert_unique_animation_blend_tree_targets(
     channels: &Vec<AnimationChannel>,
     input_index: f64,
@@ -315,7 +329,7 @@ fn assert_unique_animation_blend_tree_targets(
     }
 }
 
-// Source: upstream/packages/animation/src/animationBlendTree.ts:163 (sha256:c97fd559d113a157fc0670b64cf2af43fc3a6ecb0beac8ebb5850e3318ca905e)
+// Source: upstream/packages/animation/src/animationBlendTree.ts:187 (sha256:c97fd559d113a157fc0670b64cf2af43fc3a6ecb0beac8ebb5850e3318ca905e)
 fn write_animation_blend_tree_identity(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     components: f64,

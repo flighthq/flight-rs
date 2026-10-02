@@ -60,12 +60,14 @@ impl PartialEq for StarlingParsed {
     }
 }
 
-// Source: upstream/packages/types/src/StarlingSchema.ts:47 (sha256:878671683654d4e4592e4659c258df47e41b82d8726517fd74edc8316540449f)
+// Source: upstream/packages/types/src/StarlingSchema.ts:47 (sha256:0b52115cea472b7ed4e4bd2ea40b4b6b45d772bfc1011c5d18d0117bf227fd5d)
 #[derive(Clone, Default)]
 pub struct StarlingParseOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub frame_duration: Option<f64>,
+    pub image_height: Option<f64>,
+    pub image_width: Option<f64>,
 }
 impl PartialEq for StarlingParseOptions {
     fn eq(&self, other: &Self) -> bool {

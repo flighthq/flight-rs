@@ -6,8 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::get_bidi_class_backend;
-use flighthq_types::{BidiClass, BidiDirection};
+use flighthq_types::{BidiClass, BidiClassKernel, BidiDirection};
 
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
@@ -22,8 +21,12 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:22 (sha256:ff3bb02a6da9b247009d289bc8ab14be1f5a42e0893d6ed6131852f8c934690a)
-pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u8> {
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:3 (sha256:ffcb307ee7581cdf1d5d5c4f0163bb77e0a839445437c90f432cad264dafa099)
+pub fn resolve_bidi_levels(
+    bidi_class_kernel: &BidiClassKernel,
+    text: String,
+    base_direction: BidiDirection,
+) -> Vec<u8> {
     let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
         std::sync::Arc::new(text.encode_utf16().collect());
     let length = (__flight_utf16_text.len() as f64);
@@ -31,7 +34,7 @@ pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u
     if (length == 0.0_f64) {
         return levels;
     }
-    let backend = get_bidi_class_backend();
+    let mut codepoints: Vec<f64> = vec![Default::default(); (length) as usize];
     let mut original: Vec<BidiClass> = vec![Default::default(); (length) as usize];
     {
         let mut i = 0.0_f64;
@@ -73,9 +76,18 @@ pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u
                 }
             };
             let cls = {
-                let __flight_callback = (backend.get_bidi_class).clone();
+                let __flight_callback = (bidi_class_kernel.get_bidi_class).clone();
                 let __flight_result = __flight_callback.lock().unwrap()(codepoint);
                 __flight_result
+            };
+            {
+                let __flight_index = (i) as usize;
+                let __flight_value = codepoint;
+                if __flight_index == codepoints.len() {
+                    codepoints.push(__flight_value);
+                } else {
+                    codepoints[__flight_index] = __flight_value;
+                }
             };
             {
                 let __flight_index = (i) as usize;
@@ -87,6 +99,15 @@ pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u
                 }
             };
             if (codepoint > 65535.0_f64) {
+                {
+                    let __flight_index = (i + 1.0_f64) as usize;
+                    let __flight_value = codepoint;
+                    if __flight_index == codepoints.len() {
+                        codepoints.push(__flight_value);
+                    } else {
+                        codepoints[__flight_index] = __flight_value;
+                    }
+                };
                 {
                     let __flight_index = (i + 1.0_f64) as usize;
                     let __flight_value = (cls).clone();
@@ -139,6 +160,7 @@ pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u
         paragraph_level,
     );
     resolve_isolating_run_sequences(
+        &codepoints,
         &original,
         &working,
         &mut level_array,
@@ -160,7 +182,7 @@ pub fn resolve_bidi_levels(text: String, base_direction: BidiDirection) -> Vec<u
     return levels;
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:61 (sha256:e6a3a4bc0f59585b0e6abd39737d1b527d2c916a8506271e203487a0e3bf44ed)
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:57 (sha256:e6a3a4bc0f59585b0e6abd39737d1b527d2c916a8506271e203487a0e3bf44ed)
 fn compute_paragraph_level(types: &Vec<BidiClass>, start: f64, end: f64) -> f64 {
     let mut isolate_depth = 0.0_f64;
     {
@@ -200,7 +222,7 @@ fn compute_paragraph_level(types: &Vec<BidiClass>, start: f64, end: f64) -> f64 
     return 0.0_f64;
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:79 (sha256:7421e1e797c1380a5dadf77e0610ad23622be0a0427117385da4210ce94af78c)
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:75 (sha256:7421e1e797c1380a5dadf77e0610ad23622be0a0427117385da4210ce94af78c)
 fn pair_isolates(
     types: &Vec<BidiClass>,
     matching_pdi: &mut Vec<i32>,
@@ -228,7 +250,7 @@ fn pair_isolates(
     }
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:96 (sha256:c59ffc287557f53ca369a350b10cb2766bf751e52901fda5862c4cd81b54a07f)
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:92 (sha256:c59ffc287557f53ca369a350b10cb2766bf751e52901fda5862c4cd81b54a07f)
 fn apply_explicit_levels(
     original: &Vec<BidiClass>,
     working: &mut Vec<BidiClass>,
@@ -586,7 +608,7 @@ fn apply_explicit_levels(
     }
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:211 (sha256:5e5bebfd7380a306e78bda85f7c5a6bbbbb8085d5f8373e3f86a3a1a683be45d)
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:207 (sha256:98a5f75cb6ea740d08badae49fe7e017b8c58f05e3f9a8d596002a2f007cb465)
 #[derive(Clone, Default)]
 struct ResolveIsolatingRunSequencesRecord1 {
     __flight_identity: std::sync::Arc<()>,
@@ -601,6 +623,7 @@ impl PartialEq for ResolveIsolatingRunSequencesRecord1 {
 }
 
 fn resolve_isolating_run_sequences(
+    codepoints: &Vec<f64>,
     original: &Vec<BidiClass>,
     working: &Vec<BidiClass>,
     level_array: &mut Vec<f64>,
@@ -734,6 +757,7 @@ fn resolve_isolating_run_sequences(
                 }
             }
             resolve_sequence(
+                codepoints,
                 original,
                 working,
                 level_array,
@@ -752,8 +776,9 @@ fn resolve_isolating_run_sequences(
     }
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:274 (sha256:76ffa06470ec4557cec6c89b24cb8370c8ce0336515ccbf7b5b38677ed0735d6)
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:282 (sha256:bd3326d288754a5fc0c9621c5f798b0541a32eb0c8b9684f5775e18d814e25f4)
 fn resolve_sequence(
+    codepoints: &Vec<f64>,
     original: &Vec<BidiClass>,
     working: &Vec<BidiClass>,
     level_array: &mut Vec<f64>,
@@ -1046,6 +1071,13 @@ fn resolve_sequence(
     } else {
         "L".to_owned()
     };
+    resolve_paired_brackets(
+        codepoints,
+        sequence,
+        &mut ty,
+        (embedding_dir).clone(),
+        (sos).clone(),
+    );
     {
         let mut k = 0.0_f64;
         while (k < len) {
@@ -1135,7 +1167,218 @@ fn resolve_sequence(
     }
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:396 (sha256:976691bcce6a7b809f105f3cb98a2814fcb05320dc2fb236053254279b3049a8)
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:407 (sha256:bace70db7ef8ce1622cd72a2227e7b186ac397be76a53f978b47f38df35915a2)
+#[derive(Clone, Default)]
+struct ResolvePairedBracketsRecord1 {
+    __flight_identity: std::sync::Arc<()>,
+    close: f64,
+    position: f64,
+}
+impl PartialEq for ResolvePairedBracketsRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone, Default)]
+struct ResolvePairedBracketsRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+    close: f64,
+    open: f64,
+}
+impl PartialEq for ResolvePairedBracketsRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+fn resolve_paired_brackets(
+    codepoints: &Vec<f64>,
+    sequence: &Vec<f64>,
+    types: &mut Vec<BidiClass>,
+    embedding_direction: BidiClass,
+    sos: BidiClass,
+) -> () {
+    let mut stack: Vec<ResolvePairedBracketsRecord1> = vec![];
+    let mut pairs: Vec<ResolvePairedBracketsRecord2> = vec![];
+    {
+        let mut i = 0.0_f64;
+        while (i < (sequence.len() as f64)) {
+            if (types[i as usize].clone() != "ON") {
+                {
+                    i += 1.0;
+                    i
+                };
+                continue;
+            }
+            let codepoint = codepoints[sequence[i as usize].clone() as usize].clone();
+            let closing = get_bidi_bracket_closing(codepoint);
+            if (closing != (-1.0_f64)) {
+                if ((stack.len() as f64) == 63.0_f64) {
+                    break;
+                }
+                stack.push(ResolvePairedBracketsRecord1 {
+                    __flight_identity: std::sync::Arc::new(()),
+                    close: closing,
+                    position: i,
+                });
+                {
+                    i += 1.0;
+                    i
+                };
+                continue;
+            }
+            {
+                let mut s = ((stack.len() as f64) - 1.0_f64);
+                while (s >= 0.0_f64) {
+                    if (stack[s as usize].close != codepoint) {
+                        {
+                            s -= 1.0;
+                            s
+                        };
+                        continue;
+                    }
+                    pairs.push(ResolvePairedBracketsRecord2 {
+                        __flight_identity: std::sync::Arc::new(()),
+                        open: stack[s as usize].position,
+                        close: i,
+                    });
+                    stack.truncate((s) as usize);
+                    break;
+                    {
+                        s -= 1.0;
+                        s
+                    };
+                }
+            }
+            {
+                i += 1.0;
+                i
+            };
+        }
+    }
+    {
+        let mut __flight_values = pairs;
+        __flight_values.sort_by(|left, right| {
+            let __flight_order =
+                (|a: ResolvePairedBracketsRecord2, b: ResolvePairedBracketsRecord2| -> f64 {
+                    (a.open - b.open)
+                })(left.clone(), right.clone());
+            __flight_order
+                .partial_cmp(&0.0_f64)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
+        __flight_values
+    };
+    let opposite_direction: BidiClass = if (embedding_direction == "L") {
+        "R".to_owned()
+    } else {
+        "L".to_owned()
+    };
+    for pair in (pairs).iter().cloned() {
+        let mut contains_embedding_direction = false;
+        let mut contains_opposite_direction = false;
+        {
+            let mut i = (pair.open + 1.0_f64);
+            while (i < pair.close) {
+                let direction = strong_bidi_direction(types[i as usize].clone());
+                if ((direction).clone()) == Some((embedding_direction).clone()) {
+                    contains_embedding_direction = true;
+                    break;
+                }
+                if ((direction).clone()) == Some((opposite_direction).clone()) {
+                    contains_opposite_direction = true;
+                }
+                {
+                    i += 1.0;
+                    i
+                };
+            }
+        }
+        let mut resolved: Option<BidiClass> = None;
+        if contains_embedding_direction {
+            resolved = Some((embedding_direction).clone());
+        } else {
+            if contains_opposite_direction {
+                let mut preceding_direction = strong_bidi_direction((sos).clone()).unwrap();
+                {
+                    let mut i = (pair.open - 1.0_f64);
+                    while (i >= 0.0_f64) {
+                        let direction = strong_bidi_direction(types[i as usize].clone());
+                        if ((direction).clone()).is_none() {
+                            {
+                                i -= 1.0;
+                                i
+                            };
+                            continue;
+                        }
+                        preceding_direction = ((direction).clone()).clone().unwrap();
+                        break;
+                        {
+                            i -= 1.0;
+                            i
+                        };
+                    }
+                }
+                resolved = Some(if (preceding_direction == (opposite_direction).clone()) {
+                    (opposite_direction).clone()
+                } else {
+                    (embedding_direction).clone()
+                });
+            }
+        }
+        if ((resolved).clone()).is_some() {
+            {
+                let __flight_index = (pair.open) as usize;
+                let __flight_value = (resolved.as_mut().unwrap()).clone();
+                if __flight_index == types.len() {
+                    types.push(__flight_value);
+                } else {
+                    types[__flight_index] = __flight_value;
+                }
+            };
+            {
+                let __flight_index = (pair.close) as usize;
+                let __flight_value = (resolved.as_mut().unwrap()).clone();
+                if __flight_index == types.len() {
+                    types.push(__flight_value);
+                } else {
+                    types[__flight_index] = __flight_value;
+                }
+            };
+        }
+    }
+}
+
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:467 (sha256:378fb53c82ab019d7b04d4cf623b49c3cc65d916c9577353352f1eae87255b98)
+fn get_bidi_bracket_closing(codepoint: f64) -> f64 {
+    {
+        let mut i = 0.0_f64;
+        while (i < (BIDI_BRACKET_PAIRS.len() as f64)) {
+            if (BIDI_BRACKET_PAIRS[i as usize].clone() == codepoint) {
+                return BIDI_BRACKET_PAIRS[(i + 1.0_f64) as usize].clone();
+            }
+            {
+                i += 2.0_f64;
+                i.clone()
+            };
+        }
+    }
+    return (-1.0_f64);
+}
+
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:474 (sha256:970fa7ac018aaf4e1b4a7aa8f6a4bb0aff07b8e1097cf291486a1cd25000fc67)
+fn strong_bidi_direction(type_: BidiClass) -> Option<BidiClass> {
+    if (type_ == "L") {
+        return Some("L".to_owned());
+    }
+    if ((type_ == "R") || (type_ == "EN")) || (type_ == "AN") {
+        return Some("R".to_owned());
+    }
+    return None;
+}
+
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:483 (sha256:976691bcce6a7b809f105f3cb98a2814fcb05320dc2fb236053254279b3049a8)
 fn apply_line_reset(
     original: &Vec<BidiClass>,
     level_array: &mut Vec<f64>,
@@ -1201,7 +1444,7 @@ fn apply_line_reset(
     }
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:409 (sha256:9a2953e86e5d7423b133ec2dd4604a5c4882107ada938fa33f767f6f09a62c2e)
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:496 (sha256:9a2953e86e5d7423b133ec2dd4604a5c4882107ada938fa33f767f6f09a62c2e)
 fn is_neutral_or_isolate(t: BidiClass) -> bool {
     return (((((((t == "B") || (t == "S")) || (t == "WS")) || (t == "ON")) || (t == "FSI"))
         || (t == "LRI"))
@@ -1209,7 +1452,7 @@ fn is_neutral_or_isolate(t: BidiClass) -> bool {
         || (t == "PDI");
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:415 (sha256:f6998b0c290e2f3f3652d1e92f530f560c3659d404a860c5865389303a874a84)
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:502 (sha256:f6998b0c290e2f3f3652d1e92f530f560c3659d404a860c5865389303a874a84)
 fn is_reset_type(t: BidiClass) -> bool {
     return ((((((((((t == "WS") || (t == "LRI")) || (t == "RLI")) || (t == "FSI"))
         || (t == "PDI"))
@@ -1221,7 +1464,7 @@ fn is_reset_type(t: BidiClass) -> bool {
         || (t == "BN");
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:433 (sha256:f6671c440a296df5e2d401cc2d1db9a6972ecd2468ec874a290f75ec19db0b78)
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:520 (sha256:f6671c440a296df5e2d401cc2d1db9a6972ecd2468ec874a290f75ec19db0b78)
 fn neutral_direction(t: BidiClass) -> String {
     return if (t == "L") {
         "L".to_owned()
@@ -1230,13 +1473,139 @@ fn neutral_direction(t: BidiClass) -> String {
     };
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:438 (sha256:156a19df64b8916c5a4606f79d87089f011d31d0bd9ef5ef110b67ad4bf09fc1)
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:525 (sha256:156a19df64b8916c5a4606f79d87089f011d31d0bd9ef5ef110b67ad4bf09fc1)
 fn next_even(level: f64) -> f64 {
     return (__flight_js_to_i32((level + 2.0_f64))
         & __flight_js_to_i32((!__flight_js_to_i32(1.0_f64)) as f64)) as f64;
 }
 
-// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:443 (sha256:fb3af4f5d8c26d90b7d3e3936d855f595067be72016359059516acfc60e69eb3)
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:530 (sha256:fb3af4f5d8c26d90b7d3e3936d855f595067be72016359059516acfc60e69eb3)
 fn next_odd(level: f64) -> f64 {
     return (__flight_js_to_i32((level + 1.0_f64)) | __flight_js_to_i32(1.0_f64)) as f64;
 }
+
+// Source: upstream/packages/textbidi/src/resolveBidiLevels.ts:537 (sha256:c4bc810c992741f5f616540f32b58e1b87579f9bedadaff3390893a8c8f62ab7)
+static BIDI_BRACKET_PAIRS: std::sync::LazyLock<Vec<f64>> = std::sync::LazyLock::new(|| {
+    vec![
+        40.0_f64,
+        41.0_f64,
+        91.0_f64,
+        93.0_f64,
+        123.0_f64,
+        125.0_f64,
+        3898.0_f64,
+        3899.0_f64,
+        3900.0_f64,
+        3901.0_f64,
+        5787.0_f64,
+        5788.0_f64,
+        8261.0_f64,
+        8262.0_f64,
+        8317.0_f64,
+        8318.0_f64,
+        8333.0_f64,
+        8334.0_f64,
+        8968.0_f64,
+        8969.0_f64,
+        8970.0_f64,
+        8971.0_f64,
+        9001.0_f64,
+        9002.0_f64,
+        10088.0_f64,
+        10089.0_f64,
+        10090.0_f64,
+        10091.0_f64,
+        10092.0_f64,
+        10093.0_f64,
+        10094.0_f64,
+        10095.0_f64,
+        10096.0_f64,
+        10097.0_f64,
+        10098.0_f64,
+        10099.0_f64,
+        10100.0_f64,
+        10101.0_f64,
+        10181.0_f64,
+        10182.0_f64,
+        10214.0_f64,
+        10215.0_f64,
+        10216.0_f64,
+        10217.0_f64,
+        10218.0_f64,
+        10219.0_f64,
+        10220.0_f64,
+        10221.0_f64,
+        10222.0_f64,
+        10223.0_f64,
+        10627.0_f64,
+        10628.0_f64,
+        10629.0_f64,
+        10630.0_f64,
+        10631.0_f64,
+        10632.0_f64,
+        10633.0_f64,
+        10634.0_f64,
+        10635.0_f64,
+        10636.0_f64,
+        10637.0_f64,
+        10640.0_f64,
+        10638.0_f64,
+        10639.0_f64,
+        10641.0_f64,
+        10642.0_f64,
+        10643.0_f64,
+        10644.0_f64,
+        10645.0_f64,
+        10646.0_f64,
+        10647.0_f64,
+        10648.0_f64,
+        10712.0_f64,
+        10713.0_f64,
+        10714.0_f64,
+        10715.0_f64,
+        10748.0_f64,
+        10749.0_f64,
+        11810.0_f64,
+        11811.0_f64,
+        11812.0_f64,
+        11813.0_f64,
+        11814.0_f64,
+        11815.0_f64,
+        11816.0_f64,
+        11817.0_f64,
+        12296.0_f64,
+        12297.0_f64,
+        12298.0_f64,
+        12299.0_f64,
+        12300.0_f64,
+        12301.0_f64,
+        12302.0_f64,
+        12303.0_f64,
+        12304.0_f64,
+        12305.0_f64,
+        12308.0_f64,
+        12309.0_f64,
+        12310.0_f64,
+        12311.0_f64,
+        12312.0_f64,
+        12313.0_f64,
+        12314.0_f64,
+        12315.0_f64,
+        65113.0_f64,
+        65114.0_f64,
+        65115.0_f64,
+        65116.0_f64,
+        65117.0_f64,
+        65118.0_f64,
+        65288.0_f64,
+        65289.0_f64,
+        65339.0_f64,
+        65341.0_f64,
+        65371.0_f64,
+        65373.0_f64,
+        65375.0_f64,
+        65376.0_f64,
+        65378.0_f64,
+        65379.0_f64,
+    ]
+});

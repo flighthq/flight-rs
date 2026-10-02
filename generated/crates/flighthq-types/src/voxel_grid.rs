@@ -29,8 +29,6 @@ pub struct VoxelGrid {
     pub color_formats: Option<Vec<RenderTargetFormat>>,
     pub sample_count: Option<f64>,
     pub color_space: Option<RenderTargetColorSpace>,
-    pub clear_colors: Option<Vec<f64>>,
-    pub clear_depth: Option<f64>,
     pub source: HostImageSource,
     pub compressed: CompressedImageData,
     pub data: Vec<u8>,

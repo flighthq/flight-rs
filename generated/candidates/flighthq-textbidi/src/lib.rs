@@ -19,13 +19,17 @@ pub use flighthq_types::{
 
 pub mod _internal_index;
 pub use _internal_index::*;
-pub mod bidi_class_backend;
-pub use bidi_class_backend::*;
+pub mod bidi_class_kernel;
+pub use bidi_class_kernel::*;
 pub mod contract;
 pub use contract::*;
+pub mod enable_text_bidi_guards;
+pub use enable_text_bidi_guards::*;
 pub mod get_bidi_runs;
 pub use get_bidi_runs::*;
 pub mod reorder_bidi_line;
 pub use reorder_bidi_line::*;
 pub mod resolve_bidi_levels;
 pub use resolve_bidi_levels::*;
+pub mod text_bidi_guards;
+pub use text_bidi_guards::*;

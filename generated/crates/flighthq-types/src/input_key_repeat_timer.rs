@@ -6,11 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/InputKeyRepeatTimer.ts:7 (sha256:12a602a0900998e64d810088c79f26b8246bedf16aa92f99691104e87081a884)
+use crate::EntityRuntime;
+
+// Source: upstream/packages/types/src/InputKeyRepeatTimer.ts:7 (sha256:8d0f5ccb1b5f29360c81cce3d4d201332d8490a73506b13ed3f53ea7ff684e8a)
 #[derive(Clone)]
 pub struct InputKeyRepeatTimer {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub start: std::sync::Arc<
         std::sync::Mutex<
             Box<
@@ -27,5 +33,23 @@ pub struct InputKeyRepeatTimer {
 impl PartialEq for InputKeyRepeatTimer {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for InputKeyRepeatTimer {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

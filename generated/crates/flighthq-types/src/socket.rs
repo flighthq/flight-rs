@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Signal;
+use crate::{EntityRuntime, Signal};
 
 #[derive(Clone, Default)]
 pub struct SocketSendFailureExplanationRecord1 {
@@ -120,11 +120,15 @@ impl PartialEq for SocketCloseInfo {
     }
 }
 
-// Source: upstream/packages/types/src/Socket.ts:41 (sha256:6ec00e505a6b205f7e6ef6cb85ced4c1ec483fbf906c081b17f8190ef348224e)
+// Source: upstream/packages/types/src/Socket.ts:41 (sha256:46cf1f2365c7022e6e33eb77a17a9791a8c891ec3cd47159b1fb00decd866868)
 #[derive(Clone)]
 pub struct SocketSignals {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub on_socket_open:
         Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
     pub on_socket_message: Signal<
@@ -139,6 +143,24 @@ pub struct SocketSignals {
 impl PartialEq for SocketSignals {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for SocketSignals {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }
 
@@ -182,9 +204,39 @@ impl PartialEq for SocketConnection {
     }
 }
 
-// Source: upstream/packages/types/src/Socket.ts:74 (sha256:a1cee6800d778bc3a71904c8977bf5bdc46ed535e9c3ae20ae7266aa2e9c04a2)
+// Source: upstream/packages/types/src/Socket.ts:72 (sha256:53abb7198316dca16351d5a74462b80be30d4e9dddf9cddc50d9d92e5d96d68d)
+#[derive(Clone, Default)]
+pub struct TcpSocketOptions {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub host: String,
+    pub port: f64,
+}
+impl PartialEq for TcpSocketOptions {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Socket.ts:81 (sha256:66c3baef09353fee2bb9d3a86eb2c78b842c18ac57e092c1c7ffd9bdf16bff09)
 #[derive(Clone)]
-pub struct SocketBackend {
+pub struct TcpSocketConnection {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub readable: crate::OpaqueHostValue,
+    pub writable: crate::OpaqueHostValue,
+    pub close_tcp_socket_connection:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+}
+impl PartialEq for TcpSocketConnection {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Socket.ts:91 (sha256:f46297d300ad080c5abbd29c3f468545f5f9ef5d7b39e95418a0c1ebb410e67c)
+#[derive(Clone)]
+pub struct HostSocketCapability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub open_socket: std::sync::Arc<
@@ -196,14 +248,21 @@ pub struct SocketBackend {
             >,
         >,
     >,
+    pub open_tcp_socket: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(TcpSocketOptions) -> Option<TcpSocketConnection> + Send + 'static>,
+            >,
+        >,
+    >,
 }
-impl PartialEq for SocketBackend {
+impl PartialEq for HostSocketCapability {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/Socket.ts:81 (sha256:84a5032e10a50972215d64097cb31bfcac6f4cb43baf03f7b651b7d72bc25864)
+// Source: upstream/packages/types/src/Socket.ts:99 (sha256:84a5032e10a50972215d64097cb31bfcac6f4cb43baf03f7b651b7d72bc25864)
 #[derive(Clone, Default)]
 pub struct SocketRuntime {
     #[doc(hidden)]
@@ -220,11 +279,15 @@ impl PartialEq for SocketRuntime {
     }
 }
 
-// Source: upstream/packages/types/src/Socket.ts:95 (sha256:b86755aef7f21cdbdf6fe0f9b1b5da2c48bbf6395e26a4466d9c7d69a153cfe6)
+// Source: upstream/packages/types/src/Socket.ts:113 (sha256:b43a5f2c4f7428074ac562490a35971b7813aa6a07efddd3737c18408863589f)
 #[derive(Clone, Default)]
 pub struct Socket {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub url: String,
     pub runtime: SocketRuntime,
 }
@@ -233,17 +296,35 @@ impl PartialEq for Socket {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Socket {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Socket.ts:102 (sha256:11e33cada7d583fc63ef297f7db07195cb25b862cb7fe9efbda30809d56b0a81)
+// Source: upstream/packages/types/src/Socket.ts:120 (sha256:11e33cada7d583fc63ef297f7db07195cb25b862cb7fe9efbda30809d56b0a81)
 pub type SocketSendFailureExplanation = crate::FlightUnion2<
     SocketSendFailureExplanationRecord3,
     crate::FlightUnion2<SocketSendFailureExplanationRecord2, SocketSendFailureExplanationRecord1>,
 >;
 
-// Source: upstream/packages/types/src/Socket.ts:113 (sha256:7d108c6da679b8725737f2dab8b4818ecaef2f4732a0c6db679e705a4837af25)
+// Source: upstream/packages/types/src/Socket.ts:131 (sha256:7d108c6da679b8725737f2dab8b4818ecaef2f4732a0c6db679e705a4837af25)
 pub type SocketGuardNotice =
     crate::FlightUnion2<SocketGuardNoticeRecord2, SocketGuardNoticeRecord1>;
 
-// Source: upstream/packages/types/src/Socket.ts:125 (sha256:1131d4997c3a34632582600f4dc965166d26c04891b31cabdb6a4acea2c6b2d4)
+// Source: upstream/packages/types/src/Socket.ts:143 (sha256:1131d4997c3a34632582600f4dc965166d26c04891b31cabdb6a4acea2c6b2d4)
 pub type SocketGuard =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(SocketGuardNotice) -> () + Send + 'static>>>;

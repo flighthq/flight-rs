@@ -10,7 +10,7 @@ use crate::{
     FontMetrics, GlyphExtents, ShapeRunOptions, ShapedRun, TextFormat, TextMeasureFunction,
 };
 
-// Source: upstream/packages/types/src/CanvasTextShaperBackend.ts:6 (sha256:ec2a8d741282e07b096884af35aee292291e75a93866bb04de5340201244a43b)
+// Source: upstream/packages/types/src/CanvasTextShaperBackend.ts:10 (sha256:55e7bdd049de1dd446683b3d609a45e20979af963235f936f5c2a994128223d9)
 #[derive(Clone)]
 pub struct CanvasTextShaperBackend {
     #[doc(hidden)]

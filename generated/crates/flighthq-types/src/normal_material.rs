@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
-use crate::{PbrExtension, StandardPbrMaterialProperties};
+use crate::{Modifier, PbrExtension, StandardPbrMaterialProperties};
 
-// Source: upstream/packages/types/src/NormalMaterial.ts:7 (sha256:c70d8469431bf75424c4a4a457ce0d99ad98a217f88c1bfe6c687de4407e4031)
+// Source: upstream/packages/types/src/NormalMaterial.ts:7 (sha256:6732d6e3f46847b8ce93d1d0aae3c23e792e071c105a64c2fe005595c5033778)
 #[derive(Clone, Default)]
 pub struct NormalMaterial {
     #[doc(hidden)]
@@ -24,13 +24,40 @@ pub struct NormalMaterial {
     pub alpha_mode: MaterialAlphaMode,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub color: f64,
+    pub thickness: f64,
+    pub tint: f64,
+    pub base_color: f64,
+    pub base_color_map: Option<Texture>,
+    pub ramp: Option<Texture>,
+    pub steps: f64,
+    pub alpha_map: Option<Texture>,
+    pub emissive: f64,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: f64,
+    pub metallic: f64,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: f64,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: f64,
+    pub roughness: f64,
+    pub diffuse: f64,
+    pub diffuse_map: Option<Texture>,
+    pub glossiness: f64,
+    pub specular: f64,
+    pub specular_glossiness_map: Option<Texture>,
+    pub modifiers: Vec<Modifier>,
+    pub shininess: f64,
+    pub specular_map: Option<Texture>,
+    pub matcap: Option<Texture>,
     pub extensions: Vec<PbrExtension>,
     pub standard: StandardPbrMaterialProperties,
+    pub far: f64,
+    pub near: f64,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
-    pub normal_map: Option<Texture>,
-    pub normal_scale: f64,
 }
 impl PartialEq for NormalMaterial {
     fn eq(&self, other: &Self) -> bool {
@@ -56,5 +83,5 @@ impl crate::FlightEntity for NormalMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/NormalMaterial.ts:12 (sha256:e33ef8cb9d2ca55ee4933ac852acfd8ce48eab2eb3db5fbd0dd97820bc5919e0)
+// Source: upstream/packages/types/src/NormalMaterial.ts:13 (sha256:e33ef8cb9d2ca55ee4933ac852acfd8ce48eab2eb3db5fbd0dd97820bc5919e0)
 pub const NORMAL_MATERIAL_KIND: &'static str = "NormalMaterial";

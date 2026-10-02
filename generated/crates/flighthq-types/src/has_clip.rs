@@ -43,7 +43,7 @@ impl crate::FlightEntity for HasClip {
     }
 }
 
-// Source: upstream/packages/types/src/HasClip.ts:14 (sha256:dc1acf36df8ea13ca9d52998f125def6512ad669abfd31590fa73865c2bbd85a)
+// Source: upstream/packages/types/src/HasClip.ts:14 (sha256:df7eef456eef67adfcf5fff894aca0dde9a2a2c8f7293e8a4c9731e07b003ebb)
 #[derive(Clone, Default)]
 pub struct ClipNode {
     #[doc(hidden)]

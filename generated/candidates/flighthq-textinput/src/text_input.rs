@@ -80,7 +80,7 @@ fn apply_text_input_options(state: &mut TextInputState, options: &TextInputOptio
     }
 }
 
-// Source: upstream/packages/textinput/src/textInput.ts:52 (sha256:b2557c022962c91d047b2efa411f2ae2e2b5e91fb350e3ead4901608ea3103a8)
+// Source: upstream/packages/textinput/src/textInput.ts:52 (sha256:92e29331e5db42d24fcbfb495cefe7da36f1021cdc2f3ebe446ab154487d6c62)
 fn create_text_input_state(options: Option<TextInputOptions>) -> TextInputState {
     return TextInputState {
         __flight_identity: std::sync::Arc::new(()),
@@ -88,7 +88,7 @@ fn create_text_input_state(options: Option<TextInputOptions>) -> TextInputState 
             .as_ref()
             .and_then(|value| value.always_show_selection))
         .unwrap_or(false),
-        caret_color: (options.as_ref().and_then(|value| value.caret_color)).unwrap_or(0.0_f64),
+        caret_color: (options.as_ref().and_then(|value| value.caret_color)).unwrap_or(255.0_f64),
         caret_index: 0.0_f64,
         caret_width: (options.as_ref().and_then(|value| value.caret_width)).unwrap_or(1.0_f64),
         desired_caret_x: (-1.0_f64),
@@ -111,7 +111,7 @@ fn create_text_input_state(options: Option<TextInputOptions>) -> TextInputState 
         selection_alpha: (options.as_ref().and_then(|value| value.selection_alpha))
             .unwrap_or(0.35_f64),
         selection_color: (options.as_ref().and_then(|value| value.selection_color))
-            .unwrap_or(30935.0_f64),
+            .unwrap_or(7919615.0_f64),
         selection_index: 0.0_f64,
     };
 }

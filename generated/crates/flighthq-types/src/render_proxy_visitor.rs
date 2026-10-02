@@ -6,13 +6,13 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{RenderProxy2D, RenderState, Renderable};
+use crate::{NodeAny, RenderProxy2D, RenderState};
 
-// Source: upstream/packages/types/src/RenderProxyVisitor.ts:7 (sha256:2cae7bbf9ab7e85e6310dd599b38f294d288a397f60aef8addf3bfae1db346b0)
+// Source: upstream/packages/types/src/RenderProxyVisitor.ts:7 (sha256:93b470c60d04784c5d2141e7b1080203d043d2187c83f926ec1cf6e35d7a6968)
 pub type RenderProxyVisitor = std::sync::Arc<
     std::sync::Mutex<
         Box<
-            dyn FnMut(RenderState, Renderable, RenderProxy2D, Option<RenderProxy2D>) -> ()
+            dyn FnMut(RenderState, NodeAny, RenderProxy2D, Option<RenderProxy2D>) -> ()
                 + Send
                 + 'static,
         >,

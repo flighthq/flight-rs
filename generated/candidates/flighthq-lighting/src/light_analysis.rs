@@ -9,19 +9,108 @@
 use flighthq_color::get_color_luminance;
 use flighthq_types::{
     AMBIENT_LIGHT_KIND as ambient_light_kind_constant, AREA_LIGHT_KIND as area_light_kind_constant,
-    BoundingSphereLike, DIRECTIONAL_LIGHT_KIND as directional_light_kind_constant,
+    AmbientLight, AreaLight, BoundingSphereLike,
+    DIRECTIONAL_LIGHT_KIND as directional_light_kind_constant, DirectionalLight,
     ENVIRONMENT_KIND as environment_kind_constant,
-    HEMISPHERE_LIGHT_KIND as hemisphere_light_kind_constant, Light,
+    HEMISPHERE_LIGHT_KIND as hemisphere_light_kind_constant, HemisphereLight, Light,
     POINT_LIGHT_KIND as point_light_kind_constant, PointLight,
     SPOT_LIGHT_KIND as spot_light_kind_constant, SpotLight,
 };
 
-// Source: upstream/packages/lighting/src/lightAnalysis.ts:19 (sha256:5310d50fec0c5c61226ec0c5d5ec564bbfb9f902f83da8faf98b07de38b91e52)
+// Source: upstream/packages/lighting/src/lightAnalysis.ts:29 (sha256:1fd3a149b7280ba8b41b3bbed4fee0ba707f7abea596fb1dfd08816c59ce7038)
 pub fn get_light_contribution_at_bounding_sphere(
     light: &crate::FlightUnion2<PointLight, SpotLight>,
     bounds: &BoundingSphereLike,
 ) -> f64 {
-    if (bounds.radius < 0.0_f64) {
+    if (!is_light_enabled(&match ((*light).clone()) {
+        crate::FlightUnion2::A(value) => {
+            let __flight_source = &(value);
+            Light {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
+                kind: (__flight_source.kind).clone(),
+                casts_shadow: __flight_source.casts_shadow,
+                color: __flight_source.color,
+                decay: __flight_source.decay,
+                direction: (__flight_source.direction).clone(),
+                enabled: __flight_source.enabled,
+                inner_cone_cos: __flight_source.inner_cone_cos,
+                intensity: __flight_source.intensity,
+                intensity_unit: (__flight_source.intensity_unit).clone(),
+                layer_mask: __flight_source.layer_mask,
+                priority: __flight_source.priority,
+                normal_bias: __flight_source.normal_bias,
+                outer_cone_cos: __flight_source.outer_cone_cos,
+                pcf_radius: __flight_source.pcf_radius,
+                position: (__flight_source.position).clone(),
+                range: __flight_source.range,
+                shadow_bias: __flight_source.shadow_bias,
+                shadow_far: __flight_source.shadow_far,
+                shadow_map_size: __flight_source.shadow_map_size,
+                shadow_near: __flight_source.shadow_near,
+                shadow_strength: __flight_source.shadow_strength,
+                spot_blend: __flight_source.spot_blend,
+                ground_color: __flight_source.ground_color,
+                sky_color: __flight_source.sky_color,
+                environment: (__flight_source.environment).clone(),
+                cascade_count: __flight_source.cascade_count,
+                cascade_splits: (__flight_source.cascade_splits).clone(),
+                right: (__flight_source.right).clone(),
+                up: (__flight_source.up).clone(),
+                ..Default::default()
+            }
+        }
+        crate::FlightUnion2::B(value) => {
+            let __flight_source = &(value);
+            Light {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source
+                    .__flight_entity_snapshot
+                    .clone()
+                    .or_else(|| Some(std::sync::Arc::new((*__flight_source).clone()))),
+                kind: (__flight_source.kind).clone(),
+                casts_shadow: __flight_source.casts_shadow,
+                color: __flight_source.color,
+                decay: __flight_source.decay,
+                direction: (__flight_source.direction).clone(),
+                enabled: __flight_source.enabled,
+                inner_cone_cos: __flight_source.inner_cone_cos,
+                intensity: __flight_source.intensity,
+                intensity_unit: (__flight_source.intensity_unit).clone(),
+                layer_mask: __flight_source.layer_mask,
+                priority: __flight_source.priority,
+                normal_bias: __flight_source.normal_bias,
+                outer_cone_cos: __flight_source.outer_cone_cos,
+                pcf_radius: __flight_source.pcf_radius,
+                position: (__flight_source.position).clone(),
+                range: __flight_source.range,
+                shadow_bias: __flight_source.shadow_bias,
+                shadow_far: __flight_source.shadow_far,
+                shadow_map_size: __flight_source.shadow_map_size,
+                shadow_near: __flight_source.shadow_near,
+                shadow_strength: __flight_source.shadow_strength,
+                spot_blend: __flight_source.spot_blend,
+                ground_color: __flight_source.ground_color,
+                sky_color: __flight_source.sky_color,
+                environment: (__flight_source.environment).clone(),
+                cascade_count: __flight_source.cascade_count,
+                cascade_splits: (__flight_source.cascade_splits).clone(),
+                right: (__flight_source.right).clone(),
+                up: (__flight_source.up).clone(),
+                ..Default::default()
+            }
+        }
+    })) || (bounds.radius < 0.0_f64)
+    {
         return 0.0_f64;
     }
     let center_dx = (bounds.center.x
@@ -62,6 +151,10 @@ pub fn get_light_contribution_at_bounding_sphere(
         let windowed = (0.0_f64).max((1.0_f64).min((1.0_f64 - (factor * factor))));
         window = (windowed * windowed);
     }
+    let attenuation = ((distance).max(0.01_f64)).powf(match &((*light).clone()) {
+        crate::FlightUnion2::A(value) => (value).decay.clone(),
+        crate::FlightUnion2::B(value) => (value).decay.clone(),
+    });
     let mut contribution = ((get_light_luminance(&match ((*light).clone()) {
         crate::FlightUnion2::A(value) => {
             let __flight_source = &(value);
@@ -77,18 +170,30 @@ pub fn get_light_contribution_at_bounding_sphere(
                 kind: (__flight_source.kind).clone(),
                 casts_shadow: __flight_source.casts_shadow,
                 color: __flight_source.color,
+                decay: __flight_source.decay,
                 direction: (__flight_source.direction).clone(),
+                enabled: __flight_source.enabled,
                 inner_cone_cos: __flight_source.inner_cone_cos,
                 intensity: __flight_source.intensity,
+                intensity_unit: (__flight_source.intensity_unit).clone(),
+                layer_mask: __flight_source.layer_mask,
+                priority: __flight_source.priority,
                 normal_bias: __flight_source.normal_bias,
                 outer_cone_cos: __flight_source.outer_cone_cos,
                 pcf_radius: __flight_source.pcf_radius,
                 position: (__flight_source.position).clone(),
                 range: __flight_source.range,
                 shadow_bias: __flight_source.shadow_bias,
+                shadow_far: __flight_source.shadow_far,
+                shadow_map_size: __flight_source.shadow_map_size,
+                shadow_near: __flight_source.shadow_near,
+                shadow_strength: __flight_source.shadow_strength,
+                spot_blend: __flight_source.spot_blend,
                 ground_color: __flight_source.ground_color,
                 sky_color: __flight_source.sky_color,
                 environment: (__flight_source.environment).clone(),
+                cascade_count: __flight_source.cascade_count,
+                cascade_splits: (__flight_source.cascade_splits).clone(),
                 right: (__flight_source.right).clone(),
                 up: (__flight_source.up).clone(),
                 ..Default::default()
@@ -108,25 +213,37 @@ pub fn get_light_contribution_at_bounding_sphere(
                 kind: (__flight_source.kind).clone(),
                 casts_shadow: __flight_source.casts_shadow,
                 color: __flight_source.color,
+                decay: __flight_source.decay,
                 direction: (__flight_source.direction).clone(),
+                enabled: __flight_source.enabled,
                 inner_cone_cos: __flight_source.inner_cone_cos,
                 intensity: __flight_source.intensity,
+                intensity_unit: (__flight_source.intensity_unit).clone(),
+                layer_mask: __flight_source.layer_mask,
+                priority: __flight_source.priority,
                 normal_bias: __flight_source.normal_bias,
                 outer_cone_cos: __flight_source.outer_cone_cos,
                 pcf_radius: __flight_source.pcf_radius,
                 position: (__flight_source.position).clone(),
                 range: __flight_source.range,
                 shadow_bias: __flight_source.shadow_bias,
+                shadow_far: __flight_source.shadow_far,
+                shadow_map_size: __flight_source.shadow_map_size,
+                shadow_near: __flight_source.shadow_near,
+                shadow_strength: __flight_source.shadow_strength,
+                spot_blend: __flight_source.spot_blend,
                 ground_color: __flight_source.ground_color,
                 sky_color: __flight_source.sky_color,
                 environment: (__flight_source.environment).clone(),
+                cascade_count: __flight_source.cascade_count,
+                cascade_splits: (__flight_source.cascade_splits).clone(),
                 right: (__flight_source.right).clone(),
                 up: (__flight_source.up).clone(),
                 ..Default::default()
             }
         }
     }) * window)
-        / (distance_squared).max(0.0001_f64));
+        / attenuation);
     if (match &((*light).clone()) {
         crate::FlightUnion2::A(value) => (value).kind.clone(),
         crate::FlightUnion2::B(value) => (value).kind.clone(),
@@ -166,8 +283,15 @@ pub fn get_light_contribution_at_bounding_sphere(
     return contribution;
 }
 
-// Source: upstream/packages/lighting/src/lightAnalysis.ts:59 (sha256:582322bbc6c5cd67d249036500c4c0b7d89ac0784346fb0d894b617356bda66a)
+// Source: upstream/packages/lighting/src/lightAnalysis.ts:71 (sha256:f3284ace50e13a077193da5c92bbb65f54b209e05bdad6e028d15552213e2023)
 pub fn get_light_influence_bounds(out: &mut BoundingSphereLike, light: &Light) -> () {
+    if (!is_light_enabled(light)) {
+        out.center.x = 0.0_f64;
+        out.center.y = 0.0_f64;
+        out.center.z = 0.0_f64;
+        out.radius = 0.0_f64;
+        return;
+    }
     let kind = (light.kind).clone();
     if (((kind == ambient_light_kind_constant) || (kind == hemisphere_light_kind_constant))
         || (kind == environment_kind_constant))
@@ -193,18 +317,30 @@ pub fn get_light_influence_bounds(out: &mut BoundingSphereLike, light: &Light) -
                 kind: (__flight_source.kind).clone(),
                 casts_shadow: __flight_source.casts_shadow,
                 color: __flight_source.color,
+                decay: __flight_source.decay,
                 direction: (__flight_source.direction).clone(),
+                enabled: __flight_source.enabled,
                 inner_cone_cos: __flight_source.inner_cone_cos,
                 intensity: __flight_source.intensity,
+                intensity_unit: (__flight_source.intensity_unit).clone(),
+                layer_mask: __flight_source.layer_mask,
+                priority: __flight_source.priority,
                 normal_bias: __flight_source.normal_bias,
                 outer_cone_cos: __flight_source.outer_cone_cos,
                 pcf_radius: __flight_source.pcf_radius,
                 position: (__flight_source.position).clone(),
                 range: __flight_source.range,
                 shadow_bias: __flight_source.shadow_bias,
+                shadow_far: __flight_source.shadow_far,
+                shadow_map_size: __flight_source.shadow_map_size,
+                shadow_near: __flight_source.shadow_near,
+                shadow_strength: __flight_source.shadow_strength,
+                spot_blend: __flight_source.spot_blend,
                 ground_color: __flight_source.ground_color,
                 sky_color: __flight_source.sky_color,
                 environment: (__flight_source.environment).clone(),
+                cascade_count: __flight_source.cascade_count,
+                cascade_splits: (__flight_source.cascade_splits).clone(),
                 right: (__flight_source.right).clone(),
                 up: (__flight_source.up).clone(),
                 ..Default::default()
@@ -230,38 +366,344 @@ pub fn get_light_influence_bounds(out: &mut BoundingSphereLike, light: &Light) -
     out.radius = (-1.0_f64);
 }
 
-// Source: upstream/packages/lighting/src/lightAnalysis.ts:102 (sha256:6d8922f0f8710593981c4b42e773268f20960a03b28145ef4db0872620a61864)
-#[derive(Clone, Default)]
-struct GetLightLuminanceRecord4 {
-    __flight_identity: std::sync::Arc<()>,
-    color: Option<f64>,
-    intensity: Option<f64>,
-}
-impl PartialEq for GetLightLuminanceRecord4 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
+// Source: upstream/packages/lighting/src/lightAnalysis.ts:122 (sha256:e60133687e555498e15313d47d265367850da1199294066261bac6c38ba1f7be)
 pub fn get_light_luminance(light: &Light) -> f64 {
-    let colored = {
-        let __flight_source = &((*light).clone());
-        GetLightLuminanceRecord4 {
-            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
-            color: Some(__flight_source.color),
-            intensity: Some(__flight_source.intensity),
-        }
-    };
-    let color = colored.color;
-    if (color).is_none() {
+    if (!is_light_enabled(light)) {
         return 0.0_f64;
     }
-    let intensity = (colored.intensity).unwrap_or(1.0_f64);
-    return (get_color_luminance(*(color.as_ref().unwrap())) * intensity);
+    {
+        let __switch_value = (light.kind).clone();
+        let __flight_case = if __switch_value == ambient_light_kind_constant {
+            0_usize
+        } else if __switch_value == area_light_kind_constant {
+            1_usize
+        } else if __switch_value == directional_light_kind_constant {
+            2_usize
+        } else if __switch_value == environment_kind_constant {
+            3_usize
+        } else if __switch_value == hemisphere_light_kind_constant {
+            4_usize
+        } else if __switch_value == point_light_kind_constant {
+            5_usize
+        } else if __switch_value == spot_light_kind_constant {
+            6_usize
+        } else {
+            7_usize
+        };
+        '__flight_switch: {
+            if __flight_case <= 0_usize {
+                {
+                    let ambient = {
+                        let __flight_source = &((*light).clone());
+                        AmbientLight {
+                            __flight_identity: std::sync::Arc::clone(
+                                &__flight_source.__flight_identity,
+                            ),
+                            __flight_entity_runtime: std::sync::Arc::clone(
+                                &__flight_source.__flight_entity_runtime,
+                            ),
+                            __flight_entity_snapshot: __flight_source
+                                .__flight_entity_snapshot
+                                .clone(),
+                            kind: (__flight_source.kind).clone(),
+                            casts_shadow: __flight_source.casts_shadow,
+                            color: __flight_source.color,
+                            decay: __flight_source.decay,
+                            direction: (__flight_source.direction).clone(),
+                            enabled: __flight_source.enabled,
+                            inner_cone_cos: __flight_source.inner_cone_cos,
+                            intensity: __flight_source.intensity,
+                            intensity_unit: (__flight_source.intensity_unit).clone(),
+                            layer_mask: __flight_source.layer_mask,
+                            priority: __flight_source.priority,
+                            normal_bias: __flight_source.normal_bias,
+                            outer_cone_cos: __flight_source.outer_cone_cos,
+                            pcf_radius: __flight_source.pcf_radius,
+                            position: (__flight_source.position).clone(),
+                            range: __flight_source.range,
+                            shadow_bias: __flight_source.shadow_bias,
+                            shadow_far: __flight_source.shadow_far,
+                            shadow_map_size: __flight_source.shadow_map_size,
+                            shadow_near: __flight_source.shadow_near,
+                            shadow_strength: __flight_source.shadow_strength,
+                            spot_blend: __flight_source.spot_blend,
+                            ground_color: __flight_source.ground_color,
+                            sky_color: __flight_source.sky_color,
+                            environment: (__flight_source.environment).clone(),
+                            cascade_count: __flight_source.cascade_count,
+                            cascade_splits: (__flight_source.cascade_splits).clone(),
+                            right: (__flight_source.right).clone(),
+                            up: (__flight_source.up).clone(),
+                            ..Default::default()
+                        }
+                    };
+                    return (get_color_luminance(ambient.color) * ambient.intensity);
+                }
+            }
+            if __flight_case <= 1_usize {
+                {
+                    let area = {
+                        let __flight_source = &((*light).clone());
+                        AreaLight {
+                            __flight_identity: std::sync::Arc::clone(
+                                &__flight_source.__flight_identity,
+                            ),
+                            __flight_entity_runtime: std::sync::Arc::clone(
+                                &__flight_source.__flight_entity_runtime,
+                            ),
+                            __flight_entity_snapshot: __flight_source
+                                .__flight_entity_snapshot
+                                .clone(),
+                            kind: (__flight_source.kind).clone(),
+                            casts_shadow: __flight_source.casts_shadow,
+                            color: __flight_source.color,
+                            decay: __flight_source.decay,
+                            direction: (__flight_source.direction).clone(),
+                            enabled: __flight_source.enabled,
+                            inner_cone_cos: __flight_source.inner_cone_cos,
+                            intensity: __flight_source.intensity,
+                            intensity_unit: (__flight_source.intensity_unit).clone(),
+                            layer_mask: __flight_source.layer_mask,
+                            priority: __flight_source.priority,
+                            normal_bias: __flight_source.normal_bias,
+                            outer_cone_cos: __flight_source.outer_cone_cos,
+                            pcf_radius: __flight_source.pcf_radius,
+                            position: (__flight_source.position).clone(),
+                            range: __flight_source.range,
+                            shadow_bias: __flight_source.shadow_bias,
+                            shadow_far: __flight_source.shadow_far,
+                            shadow_map_size: __flight_source.shadow_map_size,
+                            shadow_near: __flight_source.shadow_near,
+                            shadow_strength: __flight_source.shadow_strength,
+                            spot_blend: __flight_source.spot_blend,
+                            ground_color: __flight_source.ground_color,
+                            sky_color: __flight_source.sky_color,
+                            environment: (__flight_source.environment).clone(),
+                            cascade_count: __flight_source.cascade_count,
+                            cascade_splits: (__flight_source.cascade_splits).clone(),
+                            right: (__flight_source.right).clone(),
+                            up: (__flight_source.up).clone(),
+                            ..Default::default()
+                        }
+                    };
+                    return (get_color_luminance(area.color) * area.intensity);
+                }
+            }
+            if __flight_case <= 2_usize {
+                {
+                    let directional = {
+                        let __flight_source = &((*light).clone());
+                        DirectionalLight {
+                            __flight_identity: std::sync::Arc::clone(
+                                &__flight_source.__flight_identity,
+                            ),
+                            __flight_entity_runtime: std::sync::Arc::clone(
+                                &__flight_source.__flight_entity_runtime,
+                            ),
+                            __flight_entity_snapshot: __flight_source
+                                .__flight_entity_snapshot
+                                .clone(),
+                            kind: (__flight_source.kind).clone(),
+                            casts_shadow: __flight_source.casts_shadow,
+                            color: __flight_source.color,
+                            decay: __flight_source.decay,
+                            direction: (__flight_source.direction).clone(),
+                            enabled: __flight_source.enabled,
+                            inner_cone_cos: __flight_source.inner_cone_cos,
+                            intensity: __flight_source.intensity,
+                            intensity_unit: (__flight_source.intensity_unit).clone(),
+                            layer_mask: __flight_source.layer_mask,
+                            priority: __flight_source.priority,
+                            normal_bias: __flight_source.normal_bias,
+                            outer_cone_cos: __flight_source.outer_cone_cos,
+                            pcf_radius: __flight_source.pcf_radius,
+                            position: (__flight_source.position).clone(),
+                            range: __flight_source.range,
+                            shadow_bias: __flight_source.shadow_bias,
+                            shadow_far: __flight_source.shadow_far,
+                            shadow_map_size: __flight_source.shadow_map_size,
+                            shadow_near: __flight_source.shadow_near,
+                            shadow_strength: __flight_source.shadow_strength,
+                            spot_blend: __flight_source.spot_blend,
+                            ground_color: __flight_source.ground_color,
+                            sky_color: __flight_source.sky_color,
+                            environment: (__flight_source.environment).clone(),
+                            cascade_count: __flight_source.cascade_count,
+                            cascade_splits: (__flight_source.cascade_splits).clone(),
+                            right: (__flight_source.right).clone(),
+                            up: (__flight_source.up).clone(),
+                            ..Default::default()
+                        }
+                    };
+                    return (get_color_luminance(directional.color) * directional.intensity);
+                }
+            }
+            if __flight_case <= 3_usize {
+                return 0.0_f64;
+            }
+            if __flight_case <= 4_usize {
+                {
+                    let hemisphere = {
+                        let __flight_source = &((*light).clone());
+                        HemisphereLight {
+                            __flight_identity: std::sync::Arc::clone(
+                                &__flight_source.__flight_identity,
+                            ),
+                            __flight_entity_runtime: std::sync::Arc::clone(
+                                &__flight_source.__flight_entity_runtime,
+                            ),
+                            __flight_entity_snapshot: __flight_source
+                                .__flight_entity_snapshot
+                                .clone(),
+                            kind: (__flight_source.kind).clone(),
+                            casts_shadow: __flight_source.casts_shadow,
+                            color: __flight_source.color,
+                            decay: __flight_source.decay,
+                            direction: (__flight_source.direction).clone(),
+                            enabled: __flight_source.enabled,
+                            inner_cone_cos: __flight_source.inner_cone_cos,
+                            intensity: __flight_source.intensity,
+                            intensity_unit: (__flight_source.intensity_unit).clone(),
+                            layer_mask: __flight_source.layer_mask,
+                            priority: __flight_source.priority,
+                            normal_bias: __flight_source.normal_bias,
+                            outer_cone_cos: __flight_source.outer_cone_cos,
+                            pcf_radius: __flight_source.pcf_radius,
+                            position: (__flight_source.position).clone(),
+                            range: __flight_source.range,
+                            shadow_bias: __flight_source.shadow_bias,
+                            shadow_far: __flight_source.shadow_far,
+                            shadow_map_size: __flight_source.shadow_map_size,
+                            shadow_near: __flight_source.shadow_near,
+                            shadow_strength: __flight_source.shadow_strength,
+                            spot_blend: __flight_source.spot_blend,
+                            ground_color: __flight_source.ground_color,
+                            sky_color: __flight_source.sky_color,
+                            environment: (__flight_source.environment).clone(),
+                            cascade_count: __flight_source.cascade_count,
+                            cascade_splits: (__flight_source.cascade_splits).clone(),
+                            right: (__flight_source.right).clone(),
+                            up: (__flight_source.up).clone(),
+                            ..Default::default()
+                        }
+                    };
+                    let mean_color_luminance = ((get_color_luminance(hemisphere.ground_color)
+                        + get_color_luminance(hemisphere.sky_color))
+                        * 0.5_f64);
+                    return (mean_color_luminance * hemisphere.intensity);
+                }
+            }
+            if __flight_case <= 5_usize {
+                {
+                    let point = {
+                        let __flight_source = &((*light).clone());
+                        PointLight {
+                            __flight_identity: std::sync::Arc::clone(
+                                &__flight_source.__flight_identity,
+                            ),
+                            __flight_entity_runtime: std::sync::Arc::clone(
+                                &__flight_source.__flight_entity_runtime,
+                            ),
+                            __flight_entity_snapshot: __flight_source
+                                .__flight_entity_snapshot
+                                .clone(),
+                            kind: (__flight_source.kind).clone(),
+                            casts_shadow: __flight_source.casts_shadow,
+                            color: __flight_source.color,
+                            decay: __flight_source.decay,
+                            direction: (__flight_source.direction).clone(),
+                            enabled: __flight_source.enabled,
+                            inner_cone_cos: __flight_source.inner_cone_cos,
+                            intensity: __flight_source.intensity,
+                            intensity_unit: (__flight_source.intensity_unit).clone(),
+                            layer_mask: __flight_source.layer_mask,
+                            priority: __flight_source.priority,
+                            normal_bias: __flight_source.normal_bias,
+                            outer_cone_cos: __flight_source.outer_cone_cos,
+                            pcf_radius: __flight_source.pcf_radius,
+                            position: (__flight_source.position).clone(),
+                            range: __flight_source.range,
+                            shadow_bias: __flight_source.shadow_bias,
+                            shadow_far: __flight_source.shadow_far,
+                            shadow_map_size: __flight_source.shadow_map_size,
+                            shadow_near: __flight_source.shadow_near,
+                            shadow_strength: __flight_source.shadow_strength,
+                            spot_blend: __flight_source.spot_blend,
+                            ground_color: __flight_source.ground_color,
+                            sky_color: __flight_source.sky_color,
+                            environment: (__flight_source.environment).clone(),
+                            cascade_count: __flight_source.cascade_count,
+                            cascade_splits: (__flight_source.cascade_splits).clone(),
+                            right: (__flight_source.right).clone(),
+                            up: (__flight_source.up).clone(),
+                            ..Default::default()
+                        }
+                    };
+                    return (get_color_luminance(point.color) * point.intensity);
+                }
+            }
+            if __flight_case <= 6_usize {
+                {
+                    let spot = {
+                        let __flight_source = &((*light).clone());
+                        SpotLight {
+                            __flight_identity: std::sync::Arc::clone(
+                                &__flight_source.__flight_identity,
+                            ),
+                            __flight_entity_runtime: std::sync::Arc::clone(
+                                &__flight_source.__flight_entity_runtime,
+                            ),
+                            __flight_entity_snapshot: __flight_source
+                                .__flight_entity_snapshot
+                                .clone(),
+                            kind: (__flight_source.kind).clone(),
+                            casts_shadow: __flight_source.casts_shadow,
+                            color: __flight_source.color,
+                            decay: __flight_source.decay,
+                            direction: (__flight_source.direction).clone(),
+                            enabled: __flight_source.enabled,
+                            inner_cone_cos: __flight_source.inner_cone_cos,
+                            intensity: __flight_source.intensity,
+                            intensity_unit: (__flight_source.intensity_unit).clone(),
+                            layer_mask: __flight_source.layer_mask,
+                            priority: __flight_source.priority,
+                            normal_bias: __flight_source.normal_bias,
+                            outer_cone_cos: __flight_source.outer_cone_cos,
+                            pcf_radius: __flight_source.pcf_radius,
+                            position: (__flight_source.position).clone(),
+                            range: __flight_source.range,
+                            shadow_bias: __flight_source.shadow_bias,
+                            shadow_far: __flight_source.shadow_far,
+                            shadow_map_size: __flight_source.shadow_map_size,
+                            shadow_near: __flight_source.shadow_near,
+                            shadow_strength: __flight_source.shadow_strength,
+                            spot_blend: __flight_source.spot_blend,
+                            ground_color: __flight_source.ground_color,
+                            sky_color: __flight_source.sky_color,
+                            environment: (__flight_source.environment).clone(),
+                            cascade_count: __flight_source.cascade_count,
+                            cascade_splits: (__flight_source.cascade_splits).clone(),
+                            right: (__flight_source.right).clone(),
+                            up: (__flight_source.up).clone(),
+                            ..Default::default()
+                        }
+                    };
+                    return (get_color_luminance(spot.color) * spot.intensity);
+                }
+            }
+            if __flight_case <= 7_usize {
+                return 0.0_f64;
+            }
+            unreachable!("exhaustive TypeScript switch completed without returning");
+        }
+    }
 }
 
-// Source: upstream/packages/lighting/src/lightAnalysis.ts:114 (sha256:fb2014c1906247332b1e600c567c452cff5a6fc519cf826eb4d08c43419bf326)
+// Source: upstream/packages/lighting/src/lightAnalysis.ts:163 (sha256:e57ab4b0219f16ed73c72185ff32cabba6856d0c2089e5ac5520e47a917f3a86)
 pub fn has_light_influence_on_bounds(light: &Light, bounds: &BoundingSphereLike) -> bool {
+    if (!is_light_enabled(light)) {
+        return false;
+    }
     let kind = (light.kind).clone();
     if (((kind == ambient_light_kind_constant) || (kind == hemisphere_light_kind_constant))
         || (kind == environment_kind_constant))
@@ -285,18 +727,30 @@ pub fn has_light_influence_on_bounds(light: &Light, bounds: &BoundingSphereLike)
             kind: (__flight_source.kind).clone(),
             casts_shadow: __flight_source.casts_shadow,
             color: __flight_source.color,
+            decay: __flight_source.decay,
             direction: (__flight_source.direction).clone(),
+            enabled: __flight_source.enabled,
             inner_cone_cos: __flight_source.inner_cone_cos,
             intensity: __flight_source.intensity,
+            intensity_unit: (__flight_source.intensity_unit).clone(),
+            layer_mask: __flight_source.layer_mask,
+            priority: __flight_source.priority,
             normal_bias: __flight_source.normal_bias,
             outer_cone_cos: __flight_source.outer_cone_cos,
             pcf_radius: __flight_source.pcf_radius,
             position: (__flight_source.position).clone(),
             range: __flight_source.range,
             shadow_bias: __flight_source.shadow_bias,
+            shadow_far: __flight_source.shadow_far,
+            shadow_map_size: __flight_source.shadow_map_size,
+            shadow_near: __flight_source.shadow_near,
+            shadow_strength: __flight_source.shadow_strength,
+            spot_blend: __flight_source.spot_blend,
             ground_color: __flight_source.ground_color,
             sky_color: __flight_source.sky_color,
             environment: (__flight_source.environment).clone(),
+            cascade_count: __flight_source.cascade_count,
+            cascade_splits: (__flight_source.cascade_splits).clone(),
             right: (__flight_source.right).clone(),
             up: (__flight_source.up).clone(),
             ..Default::default()
@@ -316,36 +770,26 @@ pub fn has_light_influence_on_bounds(light: &Light, bounds: &BoundingSphereLike)
     return (dist_sq <= (rad_sum * rad_sum));
 }
 
-// Source: upstream/packages/lighting/src/lightAnalysis.ts:144 (sha256:25cbd62b601a347fb029073aa064a496d8ae54f7db15599017f302ca09989b01)
-#[derive(Clone, Default)]
-struct IsLightCastingShadowRecord4 {
-    __flight_identity: std::sync::Arc<()>,
-    casts_shadow: bool,
-}
-impl PartialEq for IsLightCastingShadowRecord4 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
+// Source: upstream/packages/lighting/src/lightAnalysis.ts:199 (sha256:ef1199462263b7ba0b5136e4c0abd3768212cf71989f9993e33d05ca114b339f)
 pub fn is_light_casting_shadow(light: &Light) -> bool {
+    if (!is_light_enabled(light)) {
+        return false;
+    }
     let kind = (light.kind).clone();
     if ((kind == ambient_light_kind_constant) || (kind == hemisphere_light_kind_constant))
         || (kind == environment_kind_constant)
     {
         return false;
     }
-    return {
-        let __flight_source = &((*light).clone());
-        IsLightCastingShadowRecord4 {
-            __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
-            casts_shadow: __flight_source.casts_shadow,
-        }
-    }
-    .casts_shadow;
+    return (true) && (light.casts_shadow == true);
 }
 
-// Source: upstream/packages/lighting/src/lightAnalysis.ts:152 (sha256:e9f211c4258a59ade165bc86e405004b7cc4e74f1771a74d8f92ca749567acc4)
+// Source: upstream/packages/lighting/src/lightAnalysis.ts:210 (sha256:e9b7403d06429f2ff5aa848a51719301deb78022fae3dc6b39e96c48cc2ab7fc)
+fn is_light_enabled(light: &Light) -> bool {
+    return (!true) || (light.enabled != false);
+}
+
+// Source: upstream/packages/lighting/src/lightAnalysis.ts:214 (sha256:e9f211c4258a59ade165bc86e405004b7cc4e74f1771a74d8f92ca749567acc4)
 fn smoothstep(edge0: f64, edge1: f64, value: f64) -> f64 {
     if (edge0 == edge1) {
         return if (value < edge0) { 0.0_f64 } else { 1.0_f64 };

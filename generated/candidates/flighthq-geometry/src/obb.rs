@@ -6,10 +6,13 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
-use flighthq_types::{AabbLike, Matrix4Like, Obb, ObbLike, Ray3DLike, Vector3Like};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{
+    AabbLike, BoundingSphereLike, EntityConstruction, Matrix4Like, Obb, ObbLike, Ray3DLike,
+    Vector3Like,
+};
 
-// Source: upstream/packages/geometry/src/obb.ts:8 (sha256:de07e25025b84e6305950b540b9416c3ce73c9793dd30fa2455e6dff7c59336f)
+// Source: upstream/packages/geometry/src/obb.ts:17 (sha256:6cbb8037eedfc7e90f0799f0295adace9b6b135f1ca0273c650d7b580fc2c784)
 pub fn create_obb(
     center_x: f64,
     center_y: f64,
@@ -22,24 +25,24 @@ pub fn create_obb(
     orientation_z: f64,
     orientation_w: f64,
 ) -> Obb {
-    return create_entity(Some(Obb {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        center_x: center_x,
-        center_y: center_y,
-        center_z: center_z,
-        half_extent_x: half_extent_x,
-        half_extent_y: half_extent_y,
-        half_extent_z: half_extent_z,
-        orientation_w: orientation_w,
-        orientation_x: orientation_x,
-        orientation_y: orientation_y,
-        orientation_z: orientation_z,
-    }));
+    let mut out = allocate_entity();
+    initialize_obb(
+        (out).clone(),
+        center_x,
+        center_y,
+        center_z,
+        half_extent_x,
+        half_extent_y,
+        half_extent_z,
+        orientation_x,
+        orientation_y,
+        orientation_z,
+        orientation_w,
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/geometry/src/obb.ts:40 (sha256:7d9eab016c0945bbf5577b3a063400c92f6b28d38490e35cbc9798172cb6fe13)
+// Source: upstream/packages/geometry/src/obb.ts:52 (sha256:7d9eab016c0945bbf5577b3a063400c92f6b28d38490e35cbc9798172cb6fe13)
 pub fn get_closest_point_on_obb(out: &mut Vector3Like, obb: &ObbLike, point: &Vector3Like) -> () {
     let cx = obb.center_x;
     let cy = obb.center_y;
@@ -83,7 +86,33 @@ pub fn get_closest_point_on_obb(out: &mut Vector3Like, obb: &ObbLike, point: &Ve
     out.z = (((cz + (d0 * az0)) + (d1 * az1)) + (d2 * az2));
 }
 
-// Source: upstream/packages/geometry/src/obb.ts:95 (sha256:8d6f7406490cfb55aad9334adb87c4fc58770cc0c9d7cdd8d9bb06bc281d435a)
+// Source: upstream/packages/geometry/src/obb.ts:99 (sha256:b3be08d79d5fed9783391c1446d26cc7f46dc96040bc82af9bd97aa2c96a398a)
+pub fn initialize_obb(
+    out: EntityConstruction<Obb>,
+    center_x: f64,
+    center_y: f64,
+    center_z: f64,
+    half_extent_x: f64,
+    half_extent_y: f64,
+    half_extent_z: f64,
+    orientation_x: f64,
+    orientation_y: f64,
+    orientation_z: f64,
+    orientation_w: f64,
+) -> () {
+    crate::host_set("host.centerX", center_x);
+    crate::host_set("host.centerY", center_y);
+    crate::host_set("host.centerZ", center_z);
+    crate::host_set("host.halfExtentX", half_extent_x);
+    crate::host_set("host.halfExtentY", half_extent_y);
+    crate::host_set("host.halfExtentZ", half_extent_z);
+    crate::host_set("host.orientationX", orientation_x);
+    crate::host_set("host.orientationY", orientation_y);
+    crate::host_set("host.orientationZ", orientation_z);
+    crate::host_set("host.orientationW", orientation_w);
+}
+
+// Source: upstream/packages/geometry/src/obb.ts:132 (sha256:8d6f7406490cfb55aad9334adb87c4fc58770cc0c9d7cdd8d9bb06bc281d435a)
 pub fn intersect_ray3_d_obb(ray: &Ray3DLike, obb: &ObbLike) -> f64 {
     let ox = (ray.origin.x - obb.center_x);
     let oy = (ray.origin.y - obb.center_y);
@@ -187,7 +216,7 @@ pub fn intersect_ray3_d_obb(ray: &Ray3DLike, obb: &ObbLike) -> f64 {
     return t_min;
 }
 
-// Source: upstream/packages/geometry/src/obb.ts:198 (sha256:b9e47cccfba5a4372514b275b9211239ffee04d944cadebad7b9ce910cdd6df4)
+// Source: upstream/packages/geometry/src/obb.ts:235 (sha256:b9e47cccfba5a4372514b275b9211239ffee04d944cadebad7b9ce910cdd6df4)
 pub fn is_obb_intersecting_aabb(obb: &ObbLike, aabb: &AabbLike) -> bool {
     if ((aabb.min.x > aabb.max.x) || (aabb.min.y > aabb.max.y)) || (aabb.min.z > aabb.max.z) {
         return false;
@@ -254,7 +283,7 @@ pub fn is_obb_intersecting_aabb(obb: &ObbLike, aabb: &AabbLike) -> bool {
     ));
 }
 
-// Source: upstream/packages/geometry/src/obb.ts:270 (sha256:4fa21c2b84288204df6e762d0ddce8aa10bbdeb6ab71549dc3ab1f3e33818b29)
+// Source: upstream/packages/geometry/src/obb.ts:307 (sha256:4fa21c2b84288204df6e762d0ddce8aa10bbdeb6ab71549dc3ab1f3e33818b29)
 pub fn is_obb_intersecting_obb(a: &ObbLike, b: &ObbLike) -> bool {
     let aqx = a.orientation_x;
     let aqy = a.orientation_y;
@@ -334,7 +363,52 @@ pub fn is_obb_intersecting_obb(a: &ObbLike, b: &ObbLike) -> bool {
     ));
 }
 
-// Source: upstream/packages/geometry/src/obb.ts:355 (sha256:61ea95c991265b89303b10c7363faa9e5c22ca7819eeeb6f1776f6079b2ce841)
+// Source: upstream/packages/geometry/src/obb.ts:394 (sha256:dc8d283fbdc564c81ed7ca8aaf1d007abe81661b4a0ca4433227af597a8eca3a)
+pub fn is_obb_intersecting_sphere(obb: &ObbLike, sphere: &BoundingSphereLike) -> bool {
+    if (sphere.radius < 0.0_f64) {
+        return false;
+    }
+    let qx = obb.orientation_x;
+    let qy = obb.orientation_y;
+    let qz = obb.orientation_z;
+    let qw = obb.orientation_w;
+    let xx = (qx * qx);
+    let yy = (qy * qy);
+    let zz = (qz * qz);
+    let xy = (qx * qy);
+    let xz = (qx * qz);
+    let yz = (qy * qz);
+    let wx = (qw * qx);
+    let wy = (qw * qy);
+    let wz = (qw * qz);
+    let ax0 = (1.0_f64 - (2.0_f64 * (yy + zz)));
+    let ay0 = (2.0_f64 * (xy + wz));
+    let az0 = (2.0_f64 * (xz - wy));
+    let ax1 = (2.0_f64 * (xy - wz));
+    let ay1 = (1.0_f64 - (2.0_f64 * (xx + zz)));
+    let az1 = (2.0_f64 * (yz + wx));
+    let ax2 = (2.0_f64 * (xz + wy));
+    let ay2 = (2.0_f64 * (yz - wx));
+    let az2 = (1.0_f64 - (2.0_f64 * (xx + yy)));
+    let dx = (sphere.center.x - obb.center_x);
+    let dy = (sphere.center.y - obb.center_y);
+    let dz = (sphere.center.z - obb.center_z);
+    let lx =
+        (-obb.half_extent_x).max((obb.half_extent_x).min((((ax0 * dx) + (ay0 * dy)) + (az0 * dz))));
+    let ly =
+        (-obb.half_extent_y).max((obb.half_extent_y).min((((ax1 * dx) + (ay1 * dy)) + (az1 * dz))));
+    let lz =
+        (-obb.half_extent_z).max((obb.half_extent_z).min((((ax2 * dx) + (ay2 * dy)) + (az2 * dz))));
+    let cx = (((ax0 * lx) + (ax1 * ly)) + (ax2 * lz));
+    let cy = (((ay0 * lx) + (ay1 * ly)) + (ay2 * lz));
+    let cz = (((az0 * lx) + (az1 * ly)) + (az2 * lz));
+    let ex = (dx - cx);
+    let ey = (dy - cy);
+    let ez = (dz - cz);
+    return ((((ex * ex) + (ey * ey)) + (ez * ez)) <= (sphere.radius * sphere.radius));
+}
+
+// Source: upstream/packages/geometry/src/obb.ts:440 (sha256:61ea95c991265b89303b10c7363faa9e5c22ca7819eeeb6f1776f6079b2ce841)
 pub fn set_obb(
     out: &mut ObbLike,
     center_x: f64,
@@ -360,7 +434,7 @@ pub fn set_obb(
     out.orientation_w = orientation_w;
 }
 
-// Source: upstream/packages/geometry/src/obb.ts:387 (sha256:d7864a7c8899ff4ab64b082710a669cff4c4e94daaba268959a3b20aadada350)
+// Source: upstream/packages/geometry/src/obb.ts:472 (sha256:d7864a7c8899ff4ab64b082710a669cff4c4e94daaba268959a3b20aadada350)
 pub fn transform_obb_by_matrix4(out: &mut ObbLike, obb: &ObbLike, m: &Matrix4Like) -> () {
     let cx = obb.center_x;
     let cy = obb.center_y;
@@ -487,7 +561,7 @@ pub fn transform_obb_by_matrix4(out: &mut ObbLike, obb: &ObbLike, m: &Matrix4Lik
     out.orientation_w = ((((mqw * oqw) - (mqx * oqx)) - (mqy * oqy)) - (mqz * oqz));
 }
 
-// Source: upstream/packages/geometry/src/obb.ts:465 (sha256:d0e7f55b1d34e4af252b2f3c41bae7ea2a94d029dc2bf6b80f58fa0877c21fcb)
+// Source: upstream/packages/geometry/src/obb.ts:550 (sha256:d0e7f55b1d34e4af252b2f3c41bae7ea2a94d029dc2bf6b80f58fa0877c21fcb)
 fn obb_sat_separated(
     tx: f64,
     ty: f64,

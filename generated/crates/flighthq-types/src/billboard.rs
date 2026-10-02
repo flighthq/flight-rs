@@ -6,12 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{EntityRuntime, Kind, Material, MeshGeometry, NodeData, Quaternion, Vector3};
+use crate::{EntityRuntime, Kind, Material3D, MeshGeometry, NodeData, Quaternion, Vector3};
 
 // Source: upstream/packages/types/src/Billboard.ts:4 (sha256:a15a0412bb657fe1fb7e730884d6d4c20e87a6006c40750c3c691fec885b2055)
 pub type BillboardMode = String;
 
-// Source: upstream/packages/types/src/Billboard.ts:5 (sha256:bc5e3bf5301b415df32f5c62b40ce38a602a55ed45d7a62a80146efa3c2fbe28)
+// Source: upstream/packages/types/src/Billboard.ts:5 (sha256:91bd79e9c2e03137500e419c85828516c0d1702690b3b4203b367b8ef279b2d1)
 #[derive(Clone, Default)]
 pub struct Billboard {
     #[doc(hidden)]
@@ -30,7 +30,7 @@ pub struct Billboard {
     pub rotation: Quaternion,
     pub scale: Vector3,
     pub geometry: MeshGeometry,
-    pub materials: Vec<Option<Material>>,
+    pub materials: Vec<Option<Material3D>>,
     pub mode: BillboardMode,
 }
 impl PartialEq for Billboard {

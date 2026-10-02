@@ -60,10 +60,21 @@ impl FlightEntity for Entity {
     }
 }
 
-// Source: upstream/packages/types/src/Entity.ts:5 (sha256:e8922dec976bcfcb17943d6646ad2d8a649cf0c12bc2a77930283dacd421e57a)
+// Source: upstream/packages/types/src/Entity.ts:5 (sha256:700c375703564eb816432377d51e03a83135d559f9d61ab0187b0a801e1f5bd5)
+pub struct EntityConstruction<Type>(
+    pub crate::OpaqueHostValue,
+    pub core::marker::PhantomData<fn() -> (Type,)>,
+);
+impl<Type> Clone for EntityConstruction<Type> {
+    fn clone(&self) -> Self {
+        Self(self.0.clone(), core::marker::PhantomData)
+    }
+}
+
+// Source: upstream/packages/types/src/Entity.ts:6 (sha256:e8922dec976bcfcb17943d6646ad2d8a649cf0c12bc2a77930283dacd421e57a)
 pub type EntityWithoutRuntime<Type> = Type;
 
-// Source: upstream/packages/types/src/Entity.ts:6 (sha256:2442a2b2f11e739d0ec1d2f573d38c0fe55fef3a64723ef98ff3c0f7b4981bdb)
+// Source: upstream/packages/types/src/Entity.ts:7 (sha256:1cf5391e066be9b56b535bc6b8ef1dcbbd6d8b57ae1fa1f7da43b6575f4d12d9)
 #[derive(Clone, Default)]
 pub struct EntityRuntime {
     #[doc(hidden)]
@@ -73,6 +84,7 @@ pub struct EntityRuntime {
 #[derive(Default)]
 pub struct EntityRuntimeStorage {
     pub binding: Option<crate::OpaqueHostValue>,
+    pub uid: Option<String>,
     pub generic_slots: std::collections::HashMap<std::any::TypeId, Box<dyn std::any::Any + Send>>,
 }
 impl PartialEq for EntityRuntime {
@@ -105,13 +117,28 @@ impl<Marker> FlightEntityRuntimeMarker for std::marker::PhantomData<Marker> {
     type Runtime = EntityRuntime;
 }
 
-// Source: upstream/packages/types/src/Entity.ts:9 (sha256:9f3e8b58b7216dc7038f2b87e275302645d5d4dce805b89b90c83f9094f1f048)
+// Source: upstream/packages/types/src/Entity.ts:11 (sha256:9f3e8b58b7216dc7038f2b87e275302645d5d4dce805b89b90c83f9094f1f048)
 pub static ENTITY_RUNTIME_KEY: std::sync::LazyLock<crate::FlightSymbol> =
     std::sync::LazyLock::new(|| crate::FlightSymbol::for_name(&("EntityRuntime".to_owned())));
 
-// Source: upstream/packages/types/src/Entity.ts:14 (sha256:929a5f15b0c7c6b7b0cb672f025e08849e334bf2197eb2f4efa8eb82b7ffc737)
+// Source: upstream/packages/types/src/Entity.ts:17 (sha256:929a5f15b0c7c6b7b0cb672f025e08849e334bf2197eb2f4efa8eb82b7ffc737)
 pub type EntityRuntimeWriteSlot = String;
 
-// Source: upstream/packages/types/src/Entity.ts:16 (sha256:51c03a672942f55be8338c5ca21b7f4942edabbaa51ba55f61efdcdde74ab4c5)
+// Source: upstream/packages/types/src/Entity.ts:19 (sha256:51c03a672942f55be8338c5ca21b7f4942edabbaa51ba55f61efdcdde74ab4c5)
 pub type EntityRuntimeWriteGuard =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(EntityRuntimeWriteSlot) -> () + Send + 'static>>>;
+
+// Source: upstream/packages/types/src/Entity.ts:25 (sha256:c10b72a68226737c3d5192e5fafdc822566f77d9118aa2959ad24b85fa770f2a)
+#[derive(Clone, Default)]
+pub struct EntityRuntimeWriteExplanation {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub message: String,
+    pub slot: EntityRuntimeWriteSlot,
+    pub use_instead: Vec<String>,
+}
+impl PartialEq for EntityRuntimeWriteExplanation {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}

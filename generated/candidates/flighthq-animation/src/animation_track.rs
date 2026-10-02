@@ -6,10 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_types::{
     ANIMATION_INTERPOLATION_LINEAR as animation_interpolation_linear_constant,
     AnimationInterpolation, AnimationTrack, AnimationTrackValidationDiagnostic, EasingFunction,
+    EntityConstruction,
 };
 
 #[inline]
@@ -42,62 +43,52 @@ impl PartialEq for SharedStructuralRecord1 {
     }
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:12 (sha256:b89676b0200ed02f6e2355a6601fd928b66ffd6efc99c288be4f19b288955d15)
+// Source: upstream/packages/animation/src/animationTrack.ts:13 (sha256:3be2524521bf028ffda977e049bd8e0b9efe661c3140367c911a9bde4e5e47e7)
 pub fn clone_animation_track(track: &AnimationTrack) -> AnimationTrack {
-    return create_entity(Some(AnimationTrack {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        components: track.components,
-        easing: (track.easing).clone(),
-        interpolation: (track.interpolation).clone(),
-        quaternion: track.quaternion,
-        segment_easings: if ((track.segment_easings).clone()).is_none() {
+    let mut out = allocate_entity();
+    crate::host_set("host.components", track.components);
+    crate::host_set("host.easing", (track.easing).clone());
+    crate::host_set("host.interpolation", (track.interpolation).clone());
+    crate::host_set("host.quaternion", track.quaternion);
+    crate::host_set(
+        "host.segmentEasings",
+        if ((track.segment_easings).clone()).is_none() {
             None
         } else {
             Some((track.segment_easings.as_ref().unwrap()).clone())
         },
-        times: match &(clone_number_buffer(&track.times)) {
-            crate::FlightUnion2::A(values) => values
-                .iter()
-                .map(|__flight_value| *__flight_value)
-                .collect::<Vec<_>>(),
-            crate::FlightUnion2::B(values) => values
-                .iter()
-                .map(|__flight_value| (*__flight_value) as f64)
-                .collect::<Vec<_>>(),
-        },
-        values: match &(clone_number_buffer(&track.values)) {
-            crate::FlightUnion2::A(values) => values
-                .iter()
-                .map(|__flight_value| *__flight_value)
-                .collect::<Vec<_>>(),
-            crate::FlightUnion2::B(values) => values
-                .iter()
-                .map(|__flight_value| (*__flight_value) as f64)
-                .collect::<Vec<_>>(),
-        },
-    }));
+    );
+    crate::host_set("host.times", clone_number_buffer(&track.times));
+    crate::host_set("host.values", clone_number_buffer(&track.values));
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:27 (sha256:fcf9940824510f421234ddad37994d5cb4932508f752b6f89a60ec7b41ed471f)
+// Source: upstream/packages/animation/src/animationTrack.ts:25 (sha256:afa957e5e9c34735dc9c677f684acb57179ef7fce712accf255b2cf9737d5013)
 pub fn create_animation_track(opts: &SharedStructuralRecord1) -> AnimationTrack {
-    return create_entity(Some(AnimationTrack {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        components: (opts.components).unwrap_or(1.0_f64),
-        easing: (opts.easing).clone(),
-        interpolation: ((opts.interpolation).clone())
-            .unwrap_or((animation_interpolation_linear_constant).to_owned()),
-        quaternion: (opts.quaternion).unwrap_or(false),
-        segment_easings: (opts.segment_easings).clone(),
-        times: (opts.times).clone(),
-        values: (opts.values).clone(),
-    }));
+    let mut out = allocate_entity();
+    initialize_animation_track((out).clone(), opts);
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:52 (sha256:6505b73c5885152dfad1ec6e26da4e1c84d3f388880610a9506828b2315ed977)
+// Source: upstream/packages/animation/src/animationTrack.ts:42 (sha256:9d1ef0c1f9c20dbce3089bba18a73d9c7e5498deaba5659316b432266b38c348)
+pub fn initialize_animation_track(
+    out: EntityConstruction<AnimationTrack>,
+    opts: &SharedStructuralRecord1,
+) -> () {
+    crate::host_set("host.components", (opts.components).unwrap_or(1.0_f64));
+    crate::host_set("host.easing", (opts.easing).clone());
+    crate::host_set(
+        "host.interpolation",
+        ((opts.interpolation).clone())
+            .unwrap_or((animation_interpolation_linear_constant).to_owned()),
+    );
+    crate::host_set("host.quaternion", (opts.quaternion).unwrap_or(false));
+    crate::host_set("host.segmentEasings", (opts.segment_easings).clone());
+    crate::host_set("host.times", (opts.times).clone());
+    crate::host_set("host.values", (opts.values).clone());
+}
+
+// Source: upstream/packages/animation/src/animationTrack.ts:68 (sha256:6505b73c5885152dfad1ec6e26da4e1c84d3f388880610a9506828b2315ed977)
 pub fn sample_animation_track(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     track: &AnimationTrack,
@@ -207,7 +198,7 @@ pub fn sample_animation_track(
     }
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:111 (sha256:988484a98be2b5acef5a9cd68f8f1b11c09e0b31cd257e951c96731fd2baaa39)
+// Source: upstream/packages/animation/src/animationTrack.ts:127 (sha256:d6670bfca7b335e8ff1c72c64a896f992f5733bda31414dfd791e10ed2f0a79b)
 pub fn trim_animation_track(
     track: &AnimationTrack,
     start_time: f64,
@@ -249,37 +240,35 @@ pub fn trim_animation_track(
             };
         }
     }
-    return create_entity(Some(AnimationTrack {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        components: components,
-        easing: (track.easing).clone(),
-        interpolation: (track.interpolation).clone(),
-        quaternion: track.quaternion,
-        segment_easings: if (((track.segment_easings).clone()).is_none())
+    let mut out = allocate_entity();
+    crate::host_set("host.components", components);
+    crate::host_set("host.easing", (track.easing).clone());
+    crate::host_set("host.interpolation", (track.interpolation).clone());
+    crate::host_set("host.quaternion", track.quaternion);
+    crate::host_set(
+        "host.segmentEasings",
+        if (((track.segment_easings).clone()).is_none())
             || ((source_keyframes.len() as f64) < 2.0_f64)
         {
             if ((track.segment_easings).clone()).is_none() {
                 None
             } else {
-                Some(vec![])
+                vec![]
             }
         } else {
-            Some(
-                (track.segment_easings.as_ref().unwrap())[(source_keyframes[0.0_f64 as usize]
-                    .clone()) as usize
-                    ..(source_keyframes[((source_keyframes.len() as f64) - 1.0_f64) as usize]
-                        .clone()) as usize]
-                    .to_vec(),
-            )
+            (track.segment_easings.as_ref().unwrap())[(source_keyframes[0.0_f64 as usize].clone())
+                as usize
+                ..(source_keyframes[((source_keyframes.len() as f64) - 1.0_f64) as usize].clone())
+                    as usize]
+                .to_vec()
         },
-        times: (out_times).clone(),
-        values: (out_values).clone(),
-    }));
+    );
+    crate::host_set("host.times", out_times);
+    crate::host_set("host.values", out_values);
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:149 (sha256:f9479860c1212366ddcfc872bb3f15dc3b70144887b5a6ee98610a1201ad837b)
+// Source: upstream/packages/animation/src/animationTrack.ts:165 (sha256:f9479860c1212366ddcfc872bb3f15dc3b70144887b5a6ee98610a1201ad837b)
 pub fn validate_animation_track(
     track: &AnimationTrack,
 ) -> Option<Vec<AnimationTrackValidationDiagnostic>> {
@@ -337,7 +326,7 @@ pub fn validate_animation_track(
     };
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:183 (sha256:18109128439552d43471e9ed58704c9022c0384a02c401632c6fd0ac388e6f58)
+// Source: upstream/packages/animation/src/animationTrack.ts:199 (sha256:18109128439552d43471e9ed58704c9022c0384a02c401632c6fd0ac388e6f58)
 fn clone_number_buffer(src: &Vec<f64>) -> crate::FlightUnion2<Vec<f64>, Vec<f32>> {
     if false {
         return crate::FlightUnion2::<Vec<f64>, Vec<f32>>::A((src).clone());
@@ -364,7 +353,7 @@ fn clone_number_buffer(src: &Vec<f64>) -> crate::FlightUnion2<Vec<f64>, Vec<f32>
     return crate::FlightUnion2::<Vec<f64>, Vec<f32>>::A((out).clone());
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:190 (sha256:4fdf472a9d796ad467f2bd6a87d180467025444138194da9a584cf917e4f8df0)
+// Source: upstream/packages/animation/src/animationTrack.ts:206 (sha256:4fdf472a9d796ad467f2bd6a87d180467025444138194da9a584cf917e4f8df0)
 fn copy_keyframe_value(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     track: &AnimationTrack,
@@ -394,7 +383,7 @@ fn copy_keyframe_value(
     }
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:197 (sha256:d800b0a1f4c15b53b6886ef0fb38fdc942c1d325e3aeff4d952f9c37bcb46e65)
+// Source: upstream/packages/animation/src/animationTrack.ts:213 (sha256:d800b0a1f4c15b53b6886ef0fb38fdc942c1d325e3aeff4d952f9c37bcb46e65)
 fn keyframe_stride(track: &AnimationTrack) -> f64 {
     return if ((track.interpolation).clone() == "Cubic") {
         (track.components * 3.0_f64)
@@ -403,7 +392,7 @@ fn keyframe_stride(track: &AnimationTrack) -> f64 {
     };
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:203 (sha256:ec1397cdd5b6485d345beaf22e682e83d49bf05b67b2aacd1b04ded58451af29)
+// Source: upstream/packages/animation/src/animationTrack.ts:219 (sha256:ec1397cdd5b6485d345beaf22e682e83d49bf05b67b2aacd1b04ded58451af29)
 fn keyframe_value_offset(track: &AnimationTrack, k: f64) -> f64 {
     let stride = keyframe_stride(track);
     return if ((track.interpolation).clone() == "Cubic") {
@@ -413,7 +402,7 @@ fn keyframe_value_offset(track: &AnimationTrack, k: f64) -> f64 {
     };
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:208 (sha256:658a02c6e1ef46c1ec5fc85444fab4e2447d569b07edfc32f2ddb90c5f8dcdda)
+// Source: upstream/packages/animation/src/animationTrack.ts:224 (sha256:658a02c6e1ef46c1ec5fc85444fab4e2447d569b07edfc32f2ddb90c5f8dcdda)
 fn normalize_flat_quaternion(out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>) -> () {
     let x = {
         let __flight_index = (0.0_f64) as usize;
@@ -497,7 +486,7 @@ fn normalize_flat_quaternion(out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>) 
     }
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:226 (sha256:141770b866450d5904f607b17c37e1395c24904708c8d12c2dba10ff0e2c4c24)
+// Source: upstream/packages/animation/src/animationTrack.ts:242 (sha256:141770b866450d5904f607b17c37e1395c24904708c8d12c2dba10ff0e2c4c24)
 fn sample_cubic_segment(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     track: &AnimationTrack,
@@ -546,7 +535,7 @@ fn sample_cubic_segment(
     }
 }
 
-// Source: upstream/packages/animation/src/animationTrack.ts:255 (sha256:3bf822cfd02a04a268843d4af724cf990bc59ab4d4db60c485ef3baa0364de2e)
+// Source: upstream/packages/animation/src/animationTrack.ts:271 (sha256:3bf822cfd02a04a268843d4af724cf990bc59ab4d4db60c485ef3baa0364de2e)
 fn slerp_flat_quaternion(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     values: &Vec<f64>,

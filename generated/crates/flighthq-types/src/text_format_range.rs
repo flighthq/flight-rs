@@ -6,13 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::TextFormat;
+use crate::{EntityRuntime, TextFormat};
 
-// Source: upstream/packages/types/src/TextFormatRange.ts:3 (sha256:2fbda001021463d274256011f3219ce1967f554a26d37e1db2e928d8ba7bfbe1)
+// Source: upstream/packages/types/src/TextFormatRange.ts:4 (sha256:b48b213565648c7e907d1249bfda5d2947b278b004d20a8270965a2d98381ca2)
 #[derive(Clone, Default)]
 pub struct TextFormatRange {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub end: f64,
     pub format: TextFormat,
     pub start: f64,
@@ -20,5 +24,23 @@ pub struct TextFormatRange {
 impl PartialEq for TextFormatRange {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for TextFormatRange {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

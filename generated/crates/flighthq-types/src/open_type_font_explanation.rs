@@ -24,5 +24,5 @@ impl PartialEq for OpenTypeFontExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/OpenTypeFontExplanation.ts:55 (sha256:f9f69127039bba3259ff1af9ef47660e7108797bf520210e41c0be7617df77dd)
+// Source: upstream/packages/types/src/OpenTypeFontExplanation.ts:51 (sha256:903343f5d236cf994f204b7cff8bd7803f8ef6a0313a0adca5d4b3ce61b4e7a9)
 pub type OpenTypeFontExplanationReason = String;

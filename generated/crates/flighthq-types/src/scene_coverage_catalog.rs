@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{Kind, RenderRegistry};
+use crate::{Kind, RenderRegistryTable};
 
 // Source: upstream/packages/types/src/SceneCoverageCatalog.ts:6 (sha256:359fc1ad0b03454fe4b30b9b03e6c0d3168dc09661565639c4b852f15805603b)
 #[derive(Clone, Default)]
@@ -22,14 +22,14 @@ impl PartialEq for CatalogRegistration {
     }
 }
 
-// Source: upstream/packages/types/src/SceneCoverageCatalog.ts:13 (sha256:61e5a2afeb5fc4305782f3ec26802e743184324e02741a4f319c17f6fa1a4f71)
+// Source: upstream/packages/types/src/SceneCoverageCatalog.ts:13 (sha256:528b6eafcf515057821ea4b4f19186ad8fe74b20ad778158d67865d77148124b)
 #[derive(Clone)]
 pub struct CatalogEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: Kind,
     pub registrations: Vec<CatalogRegistration>,
-    pub registry: RenderRegistry,
+    pub registry: RenderRegistryTable,
 }
 impl PartialEq for CatalogEntry {
     fn eq(&self, other: &Self) -> bool {

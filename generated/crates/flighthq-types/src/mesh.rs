@@ -7,11 +7,11 @@
 #![allow(unused_parens)]
 
 use crate::{
-    Aabb, EntityRuntime, Kind, Material, MeshGeometry, MeshMorph, NodeData, Quaternion, Skin,
+    Aabb, EntityRuntime, Kind, Material3D, MeshGeometry, MeshMorph, NodeData, Quaternion, Skin,
     Vector3,
 };
 
-// Source: upstream/packages/types/src/Mesh.ts:26 (sha256:7706a57bd2ba7e0313a79f3f77ee6031a1740fc17da12c42efc4657bbd66b507)
+// Source: upstream/packages/types/src/Mesh.ts:26 (sha256:3173807c9b577967b0d9c8332f71ee6d6110fe9d330a0a87513bd02465518e0a)
 #[derive(Clone, Default)]
 pub struct Mesh {
     #[doc(hidden)]
@@ -30,7 +30,7 @@ pub struct Mesh {
     pub rotation: Quaternion,
     pub scale: Vector3,
     pub geometry: MeshGeometry,
-    pub materials: Vec<Option<Material>>,
+    pub materials: Vec<Option<Material3D>>,
     pub morph: Option<MeshMorph>,
     pub skin: Option<Skin>,
 }

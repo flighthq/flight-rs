@@ -6,38 +6,46 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{GlShapeMesh, Image};
+use crate::{CanvasSurface, EntityRuntime, GlShapeMesh, ImageResource};
 
-// Source: upstream/packages/types/src/GlShapeRendererData.ts:7 (sha256:106de80ca0ba81c8d7d820fd5e6287b21cea576240f6a61c12c7844d0cf9feb8)
-#[derive(Clone, Default)]
-pub struct GlShapeRasterSurface {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub canvas: crate::OpaqueHostValue,
-    pub ctx: crate::OpaqueHostValue,
-    pub image: Image,
-}
-impl PartialEq for GlShapeRasterSurface {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/types/src/GlShapeRendererData.ts:20 (sha256:ae1793eea0c5323a3989c3b263cf25e9d862080401783b4209e04677c86e3f65)
+// Source: upstream/packages/types/src/GlShapeRendererData.ts:14 (sha256:eebfe72cf1a8da3d09790e097c92fade3e8632c8499bb484d4bf0858f2cef6e0)
 #[derive(Clone, Default)]
 pub struct GlShapeRendererData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub surface: Option<GlShapeRasterSurface>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
+    pub image: Option<ImageResource>,
     pub last_content_id: f64,
+    pub last_h: f64,
     pub last_pixel_ratio: f64,
     pub last_w: f64,
-    pub last_h: f64,
     pub mesh_version: f64,
     pub meshes: Option<Vec<GlShapeMesh>>,
+    pub surface: Option<CanvasSurface>,
 }
 impl PartialEq for GlShapeRendererData {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for GlShapeRendererData {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

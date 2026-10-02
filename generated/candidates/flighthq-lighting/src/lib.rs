@@ -35,6 +35,8 @@ pub mod light_analysis;
 pub use light_analysis::*;
 pub mod light_intensity;
 pub use light_intensity::*;
+pub mod light_probe;
+pub use light_probe::*;
 pub mod point_light;
 pub use point_light::*;
 pub mod scene_forward_lights;

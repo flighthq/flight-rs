@@ -6,13 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Signal;
+use crate::{EntityRuntime, Signal};
 
-// Source: upstream/packages/types/src/TilemapSignals.ts:3 (sha256:27106cd4450b0c994aa8c9c764d46c27bd47d4208ae31cad2c1dd206bcd34bb8)
+// Source: upstream/packages/types/src/TilemapSignals.ts:4 (sha256:d00ec60a9d88e918f8ec087ce42dd7f8fd39b4f5da2513ce043ff81e51c5281d)
 #[derive(Clone)]
 pub struct TilemapSignals {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub on_cleared:
         Signal<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>>,
     pub on_tile_changed: Signal<
@@ -25,5 +29,23 @@ pub struct TilemapSignals {
 impl PartialEq for TilemapSignals {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for TilemapSignals {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

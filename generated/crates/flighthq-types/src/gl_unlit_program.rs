@@ -6,13 +6,14 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/GlUnlitProgram.ts:6 (sha256:0f2616b769eaaf92696448aaa31de31a4000b4a57a45a911ae7f2835918b3b43)
+// Source: upstream/packages/types/src/GlUnlitProgram.ts:6 (sha256:02ab85d6747a58c2e9d682fd48a6f8686e299c00295b466adbe936a37c393e8e)
 #[derive(Clone, Default)]
 pub struct GlUnlitDefineKey {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_mask_enabled: bool,
     pub has_color_map: bool,
+    pub has_instances: Option<bool>,
     pub has_skin: Option<bool>,
     pub has_uv_transform: bool,
     pub vertex_color: bool,
@@ -23,7 +24,7 @@ impl PartialEq for GlUnlitDefineKey {
     }
 }
 
-// Source: upstream/packages/types/src/GlUnlitProgram.ts:21 (sha256:b6dabb6a67295f3fde8a10576757919722c6c2769695c3ba5f9d2e71fb817f78)
+// Source: upstream/packages/types/src/GlUnlitProgram.ts:20 (sha256:b6dabb6a67295f3fde8a10576757919722c6c2769695c3ba5f9d2e71fb817f78)
 #[derive(Clone, Default)]
 pub struct GlUnlitProgram {
     #[doc(hidden)]
@@ -38,6 +39,8 @@ pub struct GlUnlitProgram {
     pub loc_object_alpha: Option<crate::OpaqueHostValue>,
     pub loc_alpha_is_coverage: Option<crate::OpaqueHostValue>,
     pub loc_joint_texture: Option<crate::OpaqueHostValue>,
+    pub loc_instance_palette: Option<crate::OpaqueHostValue>,
+    pub loc_instance_color_palette: Option<crate::OpaqueHostValue>,
     pub loc_joint_normal_texture: Option<crate::OpaqueHostValue>,
     pub loc_model: Option<crate::OpaqueHostValue>,
     pub loc_normal_matrix: Option<crate::OpaqueHostValue>,

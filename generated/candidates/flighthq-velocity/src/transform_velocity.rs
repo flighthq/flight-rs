@@ -96,7 +96,31 @@ fn visit_transform_velocity(field: &mut VelocityField, node: &Transform2DNode) -
                 i,
             );
             if ((child).clone()).is_some() {
-                visit_transform_velocity(field, &(child.as_ref().unwrap()).clone());
+                visit_transform_velocity(field, &{
+                    let __flight_source = &((child.as_ref().unwrap()).clone());
+                    Transform2DNode {
+                        __flight_identity: std::sync::Arc::clone(
+                            &__flight_source.__flight_identity,
+                        ),
+                        __flight_entity_runtime: std::sync::Arc::clone(
+                            &__flight_source.__flight_entity_runtime,
+                        ),
+                        __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
+                        data: (__flight_source.data).clone(),
+                        enabled: __flight_source.enabled,
+                        kind: (__flight_source.kind).clone(),
+                        name: (__flight_source.name).clone(),
+                        pivot_x: Default::default(),
+                        pivot_y: Default::default(),
+                        rotation: Default::default(),
+                        scale_x: Default::default(),
+                        scale_y: Default::default(),
+                        skew_x: Default::default(),
+                        skew_y: Default::default(),
+                        x: Default::default(),
+                        y: Default::default(),
+                    }
+                });
             }
             {
                 i += 1.0;

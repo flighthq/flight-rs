@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, Node2DData};
+use crate::{BlendMode, ClipRegion, EntityRuntime, Kind, Material2D, MaterialData, NodeData};
 
 // Source: upstream/packages/types/src/DisplayObject.ts:3 (sha256:e688892ea522789fa7a4c7ad3a097f0f00715631f93d454b3f1d5fc626f93f68)
 pub type DisplayObjectRuntime = crate::EntityRuntime;
@@ -20,7 +20,7 @@ pub struct DisplayObject {
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     #[doc(hidden)]
     pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
-    pub data: Option<Node2DData>,
+    pub data: Option<NodeData>,
     pub enabled: bool,
     pub kind: Kind,
     pub name: Option<String>,
@@ -28,7 +28,7 @@ pub struct DisplayObject {
     pub visible: bool,
     pub blend_mode: Option<BlendMode>,
     pub clip: Option<ClipRegion>,
-    pub material: Option<Material>,
+    pub material: Option<Material2D>,
     pub material_data: Option<MaterialData>,
     pub pivot_x: f64,
     pub pivot_y: f64,

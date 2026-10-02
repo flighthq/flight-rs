@@ -35,10 +35,18 @@ pub fn fract(value: f64) -> f64 {
     return (value - (value).trunc());
 }
 
-// Source: upstream/packages/math/src/rounding.ts:49 (sha256:930f63a2f47ae5e5b9c4047fc72f04d64def424775bb193df8fa19f21b391409)
+// Source: upstream/packages/math/src/rounding.ts:49 (sha256:6f4c1e06371f82c50d3b2538a0dc0537ba98c70295fd4931a6ffa651d553fb30)
 pub fn round_to(value: f64, step: f64) -> f64 {
     if (step <= 0.0_f64) {
         return value;
     }
-    return ((value / step).round() * step);
+    let magnitude = (((value).abs() / step).round() * step);
+    if (magnitude == 0.0_f64) {
+        return 0.0_f64;
+    }
+    return if (value < 0.0_f64) {
+        (-magnitude)
+    } else {
+        magnitude
+    };
 }

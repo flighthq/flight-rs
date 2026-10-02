@@ -29,9 +29,9 @@ impl PartialEq for HapticsCapabilities {
     }
 }
 
-// Source: upstream/packages/types/src/Haptics.ts:17 (sha256:7451aefe9a23805b4a47234fa02bd11c635b0188891dbcb413899544b2e44573)
+// Source: upstream/packages/types/src/Haptics.ts:17 (sha256:cb3691e2ebc4abca8e14245185398c085be75a86d415eaac5bd807fe3b639be2)
 #[derive(Clone)]
-pub struct HapticsBackend {
+pub struct HostHapticsCapability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub cancel: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> bool + Send + 'static>>>,
@@ -60,8 +60,11 @@ pub struct HapticsBackend {
         >,
     >,
 }
-impl PartialEq for HapticsBackend {
+impl PartialEq for HostHapticsCapability {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+
+// Source: upstream/packages/types/src/Haptics.ts:41 (sha256:6730a1adbaa5d4725757cee7d02a34785960b7222e049dc75ebc92a773cdfab2)
+pub type HapticsOperation = HostHapticsCapability;

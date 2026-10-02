@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{FontVariation, TextFormatAlign, TextFormatListMarker};
+use crate::{FontVariation, TextFormat, TextFormatAlign, TextFormatListMarker};
 
 #[derive(Clone, Default)]
 pub struct FlightPartialRecord2825584428 {
@@ -57,7 +57,9 @@ impl PartialEq for MarkupTagEffect {
     }
 }
 
-// Source: upstream/packages/types/src/MarkupTagHandler.ts:32 (sha256:237d44b6317e7b18de6866656d42e8769df452608341a35e8c8d9d28355309ae)
+// Source: upstream/packages/types/src/MarkupTagHandler.ts:32 (sha256:a796172f62112e795f8f847964a6d1454ee4c0ee5be1dc4afa751e7d92a4785f)
 pub type MarkupTagHandler = std::sync::Arc<
-    std::sync::Mutex<Box<dyn FnMut(Vec<(String, String)>) -> MarkupTagResult + Send + 'static>>,
+    std::sync::Mutex<
+        Box<dyn FnMut(Vec<(String, String)>, TextFormat) -> MarkupTagResult + Send + 'static>,
+    >,
 >;

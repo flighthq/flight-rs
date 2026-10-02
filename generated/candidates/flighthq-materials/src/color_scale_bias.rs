@@ -6,8 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
-use flighthq_types::{ColorScaleBias, ColorScaleBiasLike};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{ColorScaleBias, ColorScaleBiasLike, EntityConstruction};
 
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
@@ -166,30 +166,36 @@ pub fn copy_color_scale_bias_to_arrays(
     };
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:49 (sha256:c4b5331c7b20f14f99a43fb9910b9181ae308655fe5dfa1b8a9cacdc1ca9b1dd)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:49 (sha256:3287caad35a736b28d2ebcfb2fd7c4185c5dcb292e5b21dae14320178f89390d)
 pub fn create_color_scale_bias(opts: Option<FlightPartialRecord2155237004>) -> ColorScaleBias {
-    return create_entity(Some(ColorScaleBias {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        red_scale: (opts.as_ref().and_then(|value| value.red_scale)).unwrap_or(1.0_f64),
-        green_scale: (opts.as_ref().and_then(|value| value.green_scale)).unwrap_or(1.0_f64),
-        blue_scale: (opts.as_ref().and_then(|value| value.blue_scale)).unwrap_or(1.0_f64),
-        alpha_scale: (opts.as_ref().and_then(|value| value.alpha_scale)).unwrap_or(1.0_f64),
-        red_bias: (opts.as_ref().and_then(|value| value.red_bias)).unwrap_or(0.0_f64),
-        green_bias: (opts.as_ref().and_then(|value| value.green_bias)).unwrap_or(0.0_f64),
-        blue_bias: (opts.as_ref().and_then(|value| value.blue_bias)).unwrap_or(0.0_f64),
-        alpha_bias: (opts.as_ref().and_then(|value| value.alpha_bias)).unwrap_or(0.0_f64),
-    }));
+    let mut out = allocate_entity();
+    initialize_color_scale_bias(
+        (out).clone(),
+        ((opts).clone()).as_ref().map(|__flight_value| {
+            let __flight_source = &(__flight_value);
+            FlightPartialRecord2155237004 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                alpha_scale: __flight_source.alpha_scale,
+                alpha_bias: __flight_source.alpha_bias,
+                blue_scale: __flight_source.blue_scale,
+                blue_bias: __flight_source.blue_bias,
+                green_scale: __flight_source.green_scale,
+                green_bias: __flight_source.green_bias,
+                red_scale: __flight_source.red_scale,
+                red_bias: __flight_source.red_bias,
+            }
+        }),
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:62 (sha256:603a5da1aa69a6ade166bb03d80147dc6cbaa201fd7e48c929ec497414f63279)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:55 (sha256:603a5da1aa69a6ade166bb03d80147dc6cbaa201fd7e48c929ec497414f63279)
 pub fn equals_color_scale_bias(a: &ColorScaleBiasLike, b: &ColorScaleBiasLike) -> bool {
     return (equals_color_scale_bias_biases(a, b, None))
         && (equals_color_scale_bias_scales(a, b, None));
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:66 (sha256:674a178c33bab2ec06f8bd61c34eb47b18f8cfa5294d4e287eea56960b8ff6b2)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:59 (sha256:674a178c33bab2ec06f8bd61c34eb47b18f8cfa5294d4e287eea56960b8ff6b2)
 pub fn equals_color_scale_bias_biases(
     a: &ColorScaleBiasLike,
     b: &ColorScaleBiasLike,
@@ -201,7 +207,7 @@ pub fn equals_color_scale_bias_biases(
         && ((!compare_alpha) || (a.alpha_bias == b.alpha_bias));
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:79 (sha256:bb5176ee29d804d9b16018cbee12f94866f37048bfe48b5a7665f2272c8682be)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:72 (sha256:bb5176ee29d804d9b16018cbee12f94866f37048bfe48b5a7665f2272c8682be)
 pub fn equals_color_scale_bias_scales(
     a: &ColorScaleBiasLike,
     b: &ColorScaleBiasLike,
@@ -213,7 +219,7 @@ pub fn equals_color_scale_bias_scales(
         && ((!compare_alpha) || (a.alpha_scale == b.alpha_scale));
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:92 (sha256:204c23236166e260f511cc498c6b6edead2da84c00850722fd25042aa1bae50b)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:85 (sha256:204c23236166e260f511cc498c6b6edead2da84c00850722fd25042aa1bae50b)
 pub fn get_color_scale_bias_bias_rgb(source: &ColorScaleBiasLike) -> f64 {
     return (__flight_js_to_i32(
         (__flight_js_to_i32(
@@ -226,7 +232,7 @@ pub fn get_color_scale_bias_bias_rgb(source: &ColorScaleBiasLike) -> f64 {
     ) | __flight_js_to_i32((source.blue_bias * 255.0_f64).round())) as f64;
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:100 (sha256:c71b2144b4f5c2dc9fad870c0c42262b284a83a89cae5beed524962671011b71)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:93 (sha256:c71b2144b4f5c2dc9fad870c0c42262b284a83a89cae5beed524962671011b71)
 pub fn get_color_scale_bias_bias_rgba(source: &ColorScaleBiasLike) -> f64 {
     return (__flight_js_to_i32(
         (__flight_js_to_i32(
@@ -244,7 +250,46 @@ pub fn get_color_scale_bias_bias_rgba(source: &ColorScaleBiasLike) -> f64 {
     ) | __flight_js_to_i32((source.alpha_bias * 255.0_f64).round())) as f64;
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:109 (sha256:64d500c7d0fd0993c8b7afbf3065d398b7ac20c631a8665647dcbaad8fa58017)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:102 (sha256:b81a179acd6de00b77c65a423cd9b388fe51cbf4229eace14334735daf915968)
+pub fn initialize_color_scale_bias(
+    out: EntityConstruction<ColorScaleBias>,
+    opts: Option<FlightPartialRecord2155237004>,
+) -> () {
+    crate::host_set(
+        "host.redScale",
+        (opts.as_ref().and_then(|value| value.red_scale)).unwrap_or(1.0_f64),
+    );
+    crate::host_set(
+        "host.greenScale",
+        (opts.as_ref().and_then(|value| value.green_scale)).unwrap_or(1.0_f64),
+    );
+    crate::host_set(
+        "host.blueScale",
+        (opts.as_ref().and_then(|value| value.blue_scale)).unwrap_or(1.0_f64),
+    );
+    crate::host_set(
+        "host.alphaScale",
+        (opts.as_ref().and_then(|value| value.alpha_scale)).unwrap_or(1.0_f64),
+    );
+    crate::host_set(
+        "host.redBias",
+        (opts.as_ref().and_then(|value| value.red_bias)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.greenBias",
+        (opts.as_ref().and_then(|value| value.green_bias)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.blueBias",
+        (opts.as_ref().and_then(|value| value.blue_bias)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.alphaBias",
+        (opts.as_ref().and_then(|value| value.alpha_bias)).unwrap_or(0.0_f64),
+    );
+}
+
+// Source: upstream/packages/materials/src/colorScaleBias.ts:116 (sha256:64d500c7d0fd0993c8b7afbf3065d398b7ac20c631a8665647dcbaad8fa58017)
 pub fn invert_color_scale_bias(out: &mut ColorScaleBiasLike, source: &ColorScaleBiasLike) -> () {
     out.red_scale = if (source.red_scale != 0.0_f64) {
         (1.0_f64 / source.red_scale)
@@ -272,7 +317,7 @@ pub fn invert_color_scale_bias(out: &mut ColorScaleBiasLike, source: &ColorScale
     out.alpha_bias = (-source.alpha_bias);
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:120 (sha256:779bb7789589579f964efde0ed21f96a982370e0ebb791b072a3f86869e45119)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:127 (sha256:779bb7789589579f964efde0ed21f96a982370e0ebb791b072a3f86869e45119)
 pub fn is_identity_color_scale_bias(
     source: &ColorScaleBiasLike,
     compare_alpha_scale: Option<bool>,
@@ -323,7 +368,7 @@ pub fn is_identity_color_scale_bias(
     ));
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:129 (sha256:d215e86aae4d1d0201568c2e695760587fad3248cd4a3739d0f0930d0d967b73)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:136 (sha256:d215e86aae4d1d0201568c2e695760587fad3248cd4a3739d0f0930d0d967b73)
 pub fn set_color_scale_bias(
     out: &mut ColorScaleBiasLike,
     red_scale: f64,
@@ -345,7 +390,7 @@ pub fn set_color_scale_bias(
     out.alpha_bias = alpha_bias;
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:150 (sha256:40006d44a2c4a35009ea8e3cdf2d04706310e89c63a83daedcafef6d83966ce5)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:157 (sha256:40006d44a2c4a35009ea8e3cdf2d04706310e89c63a83daedcafef6d83966ce5)
 pub fn set_color_scale_bias_bias_rgb(out: &mut ColorScaleBiasLike, value: f64) -> () {
     out.red_bias = ((__flight_js_to_i32(
         (__flight_js_to_i32(value) >> (__flight_js_to_u32(16.0_f64) & 31)) as f64,
@@ -364,7 +409,7 @@ pub fn set_color_scale_bias_bias_rgb(out: &mut ColorScaleBiasLike, value: f64) -
     out.alpha_scale = 1.0_f64;
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:161 (sha256:4de3c71e0eaa6916459ef831c518657b0b2b9cb23a729df61511f711cc91cd43)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:168 (sha256:4de3c71e0eaa6916459ef831c518657b0b2b9cb23a729df61511f711cc91cd43)
 pub fn set_color_scale_bias_bias_rgba(out: &mut ColorScaleBiasLike, value: f64) -> () {
     out.red_bias = ((__flight_js_to_i32(
         (__flight_js_to_i32(value) >> (__flight_js_to_u32(24.0_f64) & 31)) as f64,
@@ -386,7 +431,7 @@ pub fn set_color_scale_bias_bias_rgba(out: &mut ColorScaleBiasLike, value: f64) 
     out.alpha_scale = 0.0_f64;
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:172 (sha256:eec65f3b731660a3f6af839a364b180b37529dba0649340dff0c9d7ea026514a)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:179 (sha256:eec65f3b731660a3f6af839a364b180b37529dba0649340dff0c9d7ea026514a)
 pub fn set_color_scale_bias_identity(out: &mut ColorScaleBias) -> () {
     {
         out.red_scale = 1.0_f64;
@@ -400,6 +445,6 @@ pub fn set_color_scale_bias_identity(out: &mut ColorScaleBias) -> () {
     };
 }
 
-// Source: upstream/packages/materials/src/colorScaleBias.ts:176 (sha256:446724a7984be7aed29fb9732c2e9edc32186a3f70c837ee71601ce9bb2148df)
+// Source: upstream/packages/materials/src/colorScaleBias.ts:183 (sha256:446724a7984be7aed29fb9732c2e9edc32186a3f70c837ee71601ce9bb2148df)
 static _IDENTITY: std::sync::LazyLock<ColorScaleBias> =
     std::sync::LazyLock::new(|| create_color_scale_bias(None));

@@ -21,10 +21,10 @@ impl PartialEq for PathSegmentRecord1 {
 pub struct PathSegmentRecord2 {
     pub __flight_identity: std::sync::Arc<()>,
     pub kind: String,
-    pub control1_x: f64,
-    pub control1_y: f64,
-    pub control2_x: f64,
-    pub control2_y: f64,
+    pub control_x1: f64,
+    pub control_y1: f64,
+    pub control_x2: f64,
+    pub control_y2: f64,
     pub x: f64,
     pub y: f64,
 }
@@ -75,7 +75,7 @@ impl PartialEq for PathSegmentRecord5 {
     }
 }
 
-// Source: upstream/packages/types/src/PathSegment.ts:12 (sha256:db16b55842026cbb291940c65ffaefa52646bfcbdbc43d08be6790754e4c8b20)
+// Source: upstream/packages/types/src/PathSegment.ts:12 (sha256:526b0a559687296765dc670d71a0b87853bc581e0b17a0c4c1283df9f9c905fa)
 pub type PathSegment = crate::FlightUnion2<
     PathSegmentRecord5,
     crate::FlightUnion2<

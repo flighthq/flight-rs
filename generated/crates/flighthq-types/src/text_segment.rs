@@ -39,9 +39,9 @@ impl PartialEq for TextSegmentRange {
     }
 }
 
-// Source: upstream/packages/types/src/TextSegment.ts:33 (sha256:0a3e2f66fc1a39a37dc580ccaf23d8d6222e508de148314d910a79667e546c86)
+// Source: upstream/packages/types/src/TextSegment.ts:33 (sha256:091bb07f4c271f58998f43f60ccc1c92cf3d34c4114438d9718b7ec5d17d892b)
 #[derive(Clone)]
-pub struct TextSegmenterBackend {
+pub struct HostTextSegmenterCapability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub segment: std::sync::Arc<
@@ -54,8 +54,30 @@ pub struct TextSegmenterBackend {
         >,
     >,
 }
-impl PartialEq for TextSegmenterBackend {
+impl PartialEq for HostTextSegmenterCapability {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+
+// Source: upstream/packages/types/src/TextSegment.ts:37 (sha256:1a7468415204f7a6163109870985a6411344c0f1f75f3f003e3e63748c31eb09)
+pub type TextSegmenterKind = String;
+
+// Source: upstream/packages/types/src/TextSegment.ts:40 (sha256:1bb8eb574c31c2d2f405e015445b580f34a0fddb3985b03d10a4f9978294b587)
+#[derive(Clone, Default)]
+pub struct TextSegmenterExplanation {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub available: bool,
+    pub backend: TextSegmenterKind,
+    pub intl_segmenter_available: bool,
+}
+impl PartialEq for TextSegmenterExplanation {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/TextSegment.ts:47 (sha256:e898a6b87aba75ac8f411ab3aaa769d4602bb91b8d59d94db125480a8e24bfaf)
+pub type TextSegmentGuard =
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>;

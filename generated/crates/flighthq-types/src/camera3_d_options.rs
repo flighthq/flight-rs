@@ -6,15 +6,16 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Projection;
+use crate::{Plane, Projection};
 
-// Source: upstream/packages/types/src/Camera3DOptions.ts:4 (sha256:1b6e166caabd6ba14eb054d0fc9df1efd93be3b2590e689bbb5cac95bf42c77f)
+// Source: upstream/packages/types/src/Camera3DOptions.ts:5 (sha256:8a3e02c24c3425cd71675f3fb34813a3da9b4ec1c78630de376c56cbf2b5ec15)
 #[derive(Clone)]
 pub struct Camera3DOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub far: f64,
     pub near: f64,
+    pub near_clip_plane: Option<Plane>,
     pub projection: Projection,
 }
 impl PartialEq for Camera3DOptions {

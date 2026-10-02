@@ -6,11 +6,14 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_geometry::create_vector2;
 use flighthq_path::{get_path_length, get_path_position_at_distance, get_path_tangent_at_distance};
-use flighthq_types::{MotionPath, MotionPathLoopMode, Path, Vector2, Vector2Like};
+use flighthq_types::{
+    EntityConstruction, MotionPath, MotionPathLoopMode, Path, Vector2, Vector2Like,
+};
 
-// Source: upstream/packages/motionpath/src/motionPath.ts:12 (sha256:8094d2232ee15414bacdfd1e50a3b65ed92ca74e3d6eff8a98f0ed28642f5f95)
+// Source: upstream/packages/motionpath/src/motionPath.ts:6 (sha256:cdbd8da4d428fd9b91afecd20c83dcd392ad019987c62786eea147ad9da4befc)
 pub fn create_motion_path(
     path: &Path,
     speed: Option<f64>,
@@ -19,18 +22,18 @@ pub fn create_motion_path(
 ) -> MotionPath {
     let speed = speed.unwrap_or(0.0_f64);
     let loop_mode = loop_mode.unwrap_or("clamp".to_owned());
-    return MotionPath {
-        __flight_identity: std::sync::Arc::new(()),
-        direction: 1.0_f64,
-        distance: 0.0_f64,
-        length: get_path_length(path, (tolerance).clone()),
-        loop_mode: (loop_mode).clone(),
-        path: (*path).clone(),
-        speed: speed,
-    };
+    let mut out = allocate_entity();
+    initialize_motion_path(
+        (out).clone(),
+        path,
+        Some(speed),
+        Some(((loop_mode).clone()).clone()),
+        (tolerance).clone(),
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/motionpath/src/motionPath.ts:32 (sha256:11588e1a4d311775614e3907dfdf779161fc08dc219ea8325a5e6168776d7d13)
+// Source: upstream/packages/motionpath/src/motionPath.ts:21 (sha256:11588e1a4d311775614e3907dfdf779161fc08dc219ea8325a5e6168776d7d13)
 pub fn get_motion_path_heading(mp: &MotionPath) -> f64 {
     get_path_tangent_at_distance(
         &mp.path,
@@ -41,11 +44,7 @@ pub fn get_motion_path_heading(mp: &MotionPath) -> f64 {
     return ((*SCRATCH_TANGENT.lock().unwrap()).y).atan2((*SCRATCH_TANGENT.lock().unwrap()).x);
 }
 
-// Source: upstream/packages/motionpath/src/motionPath.ts:37 (sha256:2e10d36ed25d4ebcc04d55068ab9c532efe1d4fc3f34793fd89445b65802a4be)
-static SCRATCH_TANGENT: std::sync::LazyLock<std::sync::Mutex<Vector2>> =
-    std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector2(None, None)));
-
-// Source: upstream/packages/motionpath/src/motionPath.ts:43 (sha256:7686723f3f68bf4690e34510395f148d8a4590c68cecf3279539dbcb436484fc)
+// Source: upstream/packages/motionpath/src/motionPath.ts:30 (sha256:7686723f3f68bf4690e34510395f148d8a4590c68cecf3279539dbcb436484fc)
 pub fn get_motion_path_position(
     mp: &MotionPath,
     point_out: &mut Vector2Like,
@@ -54,7 +53,7 @@ pub fn get_motion_path_position(
     return get_path_position_at_distance(&mp.path, mp.distance, point_out, tangent_out, None);
 }
 
-// Source: upstream/packages/motionpath/src/motionPath.ts:53 (sha256:429b7e3fefcaef8591c12c85dd06323ca598ca8586cb82eb6350bc02df43d1fb)
+// Source: upstream/packages/motionpath/src/motionPath.ts:40 (sha256:429b7e3fefcaef8591c12c85dd06323ca598ca8586cb82eb6350bc02df43d1fb)
 pub fn get_motion_path_progress(mp: &MotionPath) -> f64 {
     return if (mp.length > 0.0_f64) {
         (mp.distance / mp.length)
@@ -63,7 +62,39 @@ pub fn get_motion_path_progress(mp: &MotionPath) -> f64 {
     };
 }
 
-// Source: upstream/packages/motionpath/src/motionPath.ts:59 (sha256:dafdaf31f8e675c97650e82b611cde0c53574cfa713dbd344246b20d15864b78)
+// Source: upstream/packages/motionpath/src/motionPath.ts:51 (sha256:0b1d6496f8b8a6ff44245914d9b1f6fb690a5ac23dc47c85852ccb0b803bb530)
+pub fn initialize_motion_path(
+    out: EntityConstruction<MotionPath>,
+    path: &Path,
+    speed: Option<f64>,
+    loop_mode: Option<MotionPathLoopMode>,
+    tolerance: Option<f64>,
+) -> () {
+    let speed = speed.unwrap_or(0.0_f64);
+    let loop_mode = loop_mode.unwrap_or("clamp".to_owned());
+    crate::host_set("host.direction", 1.0_f64);
+    crate::host_set("host.distance", 0.0_f64);
+    crate::host_set("host.length", get_path_length(path, (tolerance).clone()));
+    crate::host_set("host.loopMode", loop_mode);
+    crate::host_set("host.path", path);
+    crate::host_set("host.speed", speed);
+}
+
+// Source: upstream/packages/motionpath/src/motionPath.ts:66 (sha256:e5af31af1a152693471c3ced7b2bdc285658572c32c771581e4f5547da5fc2f8)
+pub fn is_motion_path_at_end(mp: &MotionPath) -> bool {
+    return if (mp.direction > 0.0_f64) {
+        (mp.distance >= mp.length)
+    } else {
+        (mp.distance <= 0.0_f64)
+    };
+}
+
+// Source: upstream/packages/motionpath/src/motionPath.ts:70 (sha256:9b967efc248fa06efcaaf30c9f1970e6816c1c7373980cf87b2a7f84483eaacb)
+pub fn set_motion_path_direction(mp: &mut MotionPath, direction: f64) -> () {
+    mp.direction = direction;
+}
+
+// Source: upstream/packages/motionpath/src/motionPath.ts:76 (sha256:dafdaf31f8e675c97650e82b611cde0c53574cfa713dbd344246b20d15864b78)
 pub fn set_motion_path_distance(mp: &mut MotionPath, distance: f64) -> () {
     let length = mp.length;
     let mut clamped = distance;
@@ -77,7 +108,7 @@ pub fn set_motion_path_distance(mp: &mut MotionPath, distance: f64) -> () {
     mp.distance = clamped;
 }
 
-// Source: upstream/packages/motionpath/src/motionPath.ts:69 (sha256:87233ac5b2a6211f0807526f2b5c1a09d30e0fb607f37372c8c504d1f3d81e0c)
+// Source: upstream/packages/motionpath/src/motionPath.ts:86 (sha256:87233ac5b2a6211f0807526f2b5c1a09d30e0fb607f37372c8c504d1f3d81e0c)
 pub fn set_motion_path_progress(mp: &mut MotionPath, t: f64) -> () {
     let mut clamped = t;
     if (clamped < 0.0_f64) {
@@ -90,7 +121,7 @@ pub fn set_motion_path_progress(mp: &mut MotionPath, t: f64) -> () {
     mp.distance = (clamped * mp.length);
 }
 
-// Source: upstream/packages/motionpath/src/motionPath.ts:80 (sha256:f6da18ac4d3158bf216568d9f9d211ef0f3ca3f2e72b1013d93a73a410206cc8)
+// Source: upstream/packages/motionpath/src/motionPath.ts:97 (sha256:f6da18ac4d3158bf216568d9f9d211ef0f3ca3f2e72b1013d93a73a410206cc8)
 pub fn update_motion_path(mp: &mut MotionPath, delta_time: f64) -> () {
     if (delta_time <= 0.0_f64) {
         return;
@@ -103,7 +134,7 @@ pub fn update_motion_path(mp: &mut MotionPath, delta_time: f64) -> () {
     apply_motion_path_loop_mode(mp, move_, length);
 }
 
-// Source: upstream/packages/motionpath/src/motionPath.ts:99 (sha256:861da4dbeebc47e75da16d02e565793fb705d9a89c951e779f19486e268ebc2d)
+// Source: upstream/packages/motionpath/src/motionPath.ts:116 (sha256:861da4dbeebc47e75da16d02e565793fb705d9a89c951e779f19486e268ebc2d)
 fn apply_motion_path_loop_mode(mp: &mut MotionPath, move_: f64, length: f64) -> () {
     let loop_mode = (mp.loop_mode).clone();
     let distance = mp.distance;
@@ -146,3 +177,7 @@ fn apply_motion_path_loop_mode(mp: &mut MotionPath, move_: f64, length: f64) -> 
     }
     mp.distance = clamped;
 }
+
+// Source: upstream/packages/motionpath/src/motionPath.ts:151 (sha256:2e10d36ed25d4ebcc04d55068ab9c532efe1d4fc3f34793fd89445b65802a4be)
+static SCRATCH_TANGENT: std::sync::LazyLock<std::sync::Mutex<Vector2>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(create_vector2(None, None)));

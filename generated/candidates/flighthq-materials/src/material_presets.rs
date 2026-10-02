@@ -16,11 +16,11 @@ use flighthq_types::{
 
 // Source: upstream/packages/materials/src/materialPresets.ts:20 (sha256:37bf6a37ffd0849714ad8499eb0e6b52ef5b1c6a8f276385256df8c490589610)
 pub fn create_aluminum_standard_pbr_material(
-    opts: Option<crate::pbr_materials::FlightPartialRecord3584171057>,
+    opts: Option<crate::pbr_materials::FlightPartialRecord3953157034>,
 ) -> StandardPbrMaterial {
     return create_standard_pbr_material(Some({
         let __flight_spread_3 = ((opts).clone()).unwrap_or_default();
-        crate::pbr_materials::FlightPartialRecord3584171057 {
+        crate::pbr_materials::FlightPartialRecord3953157034 {
             __flight_identity: std::sync::Arc::new(()),
             kind: (__flight_spread_3.kind).clone(),
             name: (__flight_spread_3.name).clone(),
@@ -28,14 +28,14 @@ pub fn create_aluminum_standard_pbr_material(
             alpha_mode: (__flight_spread_3.alpha_mode).clone(),
             blend_mode: (__flight_spread_3.blend_mode).clone(),
             double_sided: __flight_spread_3.double_sided,
-            extensions: (__flight_spread_3.extensions).clone(),
-            standard: (__flight_spread_3.standard).clone(),
-            shader_key: (__flight_spread_3.shader_key).clone(),
-            textures: (__flight_spread_3.textures).clone(),
-            uniforms: (__flight_spread_3.uniforms).clone(),
-            alpha_map: (__flight_spread_3.alpha_map).clone(),
+            color: __flight_spread_3.color,
+            thickness: __flight_spread_3.thickness,
+            tint: __flight_spread_3.tint,
             base_color: __flight_spread_3.base_color,
             base_color_map: (__flight_spread_3.base_color_map).clone(),
+            ramp: (__flight_spread_3.ramp).clone(),
+            steps: __flight_spread_3.steps,
+            alpha_map: (__flight_spread_3.alpha_map).clone(),
             emissive: __flight_spread_3.emissive,
             emissive_map: (__flight_spread_3.emissive_map).clone(),
             emissive_strength: __flight_spread_3.emissive_strength,
@@ -46,17 +46,33 @@ pub fn create_aluminum_standard_pbr_material(
             occlusion_map: (__flight_spread_3.occlusion_map).clone(),
             occlusion_strength: __flight_spread_3.occlusion_strength,
             roughness: __flight_spread_3.roughness,
+            diffuse: __flight_spread_3.diffuse,
+            diffuse_map: (__flight_spread_3.diffuse_map).clone(),
+            glossiness: __flight_spread_3.glossiness,
+            specular: __flight_spread_3.specular,
+            specular_glossiness_map: (__flight_spread_3.specular_glossiness_map).clone(),
+            modifiers: (__flight_spread_3.modifiers).clone(),
+            shininess: __flight_spread_3.shininess,
+            specular_map: (__flight_spread_3.specular_map).clone(),
+            matcap: (__flight_spread_3.matcap).clone(),
+            extensions: (__flight_spread_3.extensions).clone(),
+            standard: (__flight_spread_3.standard).clone(),
+            far: __flight_spread_3.far,
+            near: __flight_spread_3.near,
+            shader_key: (__flight_spread_3.shader_key).clone(),
+            textures: (__flight_spread_3.textures).clone(),
+            uniforms: (__flight_spread_3.uniforms).clone(),
         }
     }));
 }
 
 // Source: upstream/packages/materials/src/materialPresets.ts:31 (sha256:8fad8dc882e56f36710e1f987034293853e63b686144e0d61ab7b4efb621c0ff)
 pub fn create_carbon_standard_pbr_material(
-    opts: Option<crate::pbr_materials::FlightPartialRecord3584171057>,
+    opts: Option<crate::pbr_materials::FlightPartialRecord3953157034>,
 ) -> StandardPbrMaterial {
     return create_standard_pbr_material(Some({
         let __flight_spread_3 = ((opts).clone()).unwrap_or_default();
-        crate::pbr_materials::FlightPartialRecord3584171057 {
+        crate::pbr_materials::FlightPartialRecord3953157034 {
             __flight_identity: std::sync::Arc::new(()),
             kind: (__flight_spread_3.kind).clone(),
             name: (__flight_spread_3.name).clone(),
@@ -64,14 +80,14 @@ pub fn create_carbon_standard_pbr_material(
             alpha_mode: (__flight_spread_3.alpha_mode).clone(),
             blend_mode: (__flight_spread_3.blend_mode).clone(),
             double_sided: __flight_spread_3.double_sided,
-            extensions: (__flight_spread_3.extensions).clone(),
-            standard: (__flight_spread_3.standard).clone(),
-            shader_key: (__flight_spread_3.shader_key).clone(),
-            textures: (__flight_spread_3.textures).clone(),
-            uniforms: (__flight_spread_3.uniforms).clone(),
-            alpha_map: (__flight_spread_3.alpha_map).clone(),
+            color: __flight_spread_3.color,
+            thickness: __flight_spread_3.thickness,
+            tint: __flight_spread_3.tint,
             base_color: __flight_spread_3.base_color,
             base_color_map: (__flight_spread_3.base_color_map).clone(),
+            ramp: (__flight_spread_3.ramp).clone(),
+            steps: __flight_spread_3.steps,
+            alpha_map: (__flight_spread_3.alpha_map).clone(),
             emissive: __flight_spread_3.emissive,
             emissive_map: (__flight_spread_3.emissive_map).clone(),
             emissive_strength: __flight_spread_3.emissive_strength,
@@ -82,6 +98,22 @@ pub fn create_carbon_standard_pbr_material(
             occlusion_map: (__flight_spread_3.occlusion_map).clone(),
             occlusion_strength: __flight_spread_3.occlusion_strength,
             roughness: __flight_spread_3.roughness,
+            diffuse: __flight_spread_3.diffuse,
+            diffuse_map: (__flight_spread_3.diffuse_map).clone(),
+            glossiness: __flight_spread_3.glossiness,
+            specular: __flight_spread_3.specular,
+            specular_glossiness_map: (__flight_spread_3.specular_glossiness_map).clone(),
+            modifiers: (__flight_spread_3.modifiers).clone(),
+            shininess: __flight_spread_3.shininess,
+            specular_map: (__flight_spread_3.specular_map).clone(),
+            matcap: (__flight_spread_3.matcap).clone(),
+            extensions: (__flight_spread_3.extensions).clone(),
+            standard: (__flight_spread_3.standard).clone(),
+            far: __flight_spread_3.far,
+            near: __flight_spread_3.near,
+            shader_key: (__flight_spread_3.shader_key).clone(),
+            textures: (__flight_spread_3.textures).clone(),
+            uniforms: (__flight_spread_3.uniforms).clone(),
         }
     }));
 }
@@ -92,7 +124,7 @@ pub fn create_glass_extended_pbr_material(
 ) -> ExtendedPbrMaterial {
     return create_extended_pbr_material(Some({
         let __flight_spread_0 = ((opts).clone()).unwrap_or_default();
-        crate::extended_pbr_material::FlightPartialRecord3120887473 {
+        crate::extended_pbr_material::FlightPartialRecord1774687694 {
             __flight_identity: std::sync::Arc::new(()),
             kind: None,
             name: None,
@@ -100,6 +132,33 @@ pub fn create_glass_extended_pbr_material(
             alpha_mode: (__flight_spread_0.alpha_mode).clone(),
             blend_mode: (__flight_spread_0.blend_mode).clone(),
             double_sided: __flight_spread_0.double_sided,
+            color: None,
+            thickness: None,
+            tint: None,
+            base_color: None,
+            base_color_map: None,
+            ramp: None,
+            steps: None,
+            alpha_map: None,
+            emissive: None,
+            emissive_map: None,
+            emissive_strength: None,
+            metallic: None,
+            metallic_roughness_map: None,
+            normal_map: None,
+            normal_scale: None,
+            occlusion_map: None,
+            occlusion_strength: None,
+            roughness: None,
+            diffuse: None,
+            diffuse_map: None,
+            glossiness: None,
+            specular: None,
+            specular_glossiness_map: None,
+            modifiers: None,
+            shininess: None,
+            specular_map: None,
+            matcap: None,
             extensions: Some(vec![{
                 let __flight_source = &(create_transmission_volume_pbr_extension(Some({
                     let __flight_spread_2 = (opts
@@ -241,6 +300,8 @@ pub fn create_glass_extended_pbr_material(
                     roughness: __flight_spread_3.roughness,
                 }
             }))),
+            far: None,
+            near: None,
             shader_key: None,
             textures: None,
             uniforms: None,
@@ -250,11 +311,11 @@ pub fn create_glass_extended_pbr_material(
 
 // Source: upstream/packages/materials/src/materialPresets.ts:63 (sha256:d98f9f1d62d29f41e2d5d19de7b0cb28609ad353bb45184ca449a58d7af5d370)
 pub fn create_gold_standard_pbr_material(
-    opts: Option<crate::pbr_materials::FlightPartialRecord3584171057>,
+    opts: Option<crate::pbr_materials::FlightPartialRecord3953157034>,
 ) -> StandardPbrMaterial {
     return create_standard_pbr_material(Some({
         let __flight_spread_3 = ((opts).clone()).unwrap_or_default();
-        crate::pbr_materials::FlightPartialRecord3584171057 {
+        crate::pbr_materials::FlightPartialRecord3953157034 {
             __flight_identity: std::sync::Arc::new(()),
             kind: (__flight_spread_3.kind).clone(),
             name: (__flight_spread_3.name).clone(),
@@ -262,14 +323,14 @@ pub fn create_gold_standard_pbr_material(
             alpha_mode: (__flight_spread_3.alpha_mode).clone(),
             blend_mode: (__flight_spread_3.blend_mode).clone(),
             double_sided: __flight_spread_3.double_sided,
-            extensions: (__flight_spread_3.extensions).clone(),
-            standard: (__flight_spread_3.standard).clone(),
-            shader_key: (__flight_spread_3.shader_key).clone(),
-            textures: (__flight_spread_3.textures).clone(),
-            uniforms: (__flight_spread_3.uniforms).clone(),
-            alpha_map: (__flight_spread_3.alpha_map).clone(),
+            color: __flight_spread_3.color,
+            thickness: __flight_spread_3.thickness,
+            tint: __flight_spread_3.tint,
             base_color: __flight_spread_3.base_color,
             base_color_map: (__flight_spread_3.base_color_map).clone(),
+            ramp: (__flight_spread_3.ramp).clone(),
+            steps: __flight_spread_3.steps,
+            alpha_map: (__flight_spread_3.alpha_map).clone(),
             emissive: __flight_spread_3.emissive,
             emissive_map: (__flight_spread_3.emissive_map).clone(),
             emissive_strength: __flight_spread_3.emissive_strength,
@@ -280,17 +341,33 @@ pub fn create_gold_standard_pbr_material(
             occlusion_map: (__flight_spread_3.occlusion_map).clone(),
             occlusion_strength: __flight_spread_3.occlusion_strength,
             roughness: __flight_spread_3.roughness,
+            diffuse: __flight_spread_3.diffuse,
+            diffuse_map: (__flight_spread_3.diffuse_map).clone(),
+            glossiness: __flight_spread_3.glossiness,
+            specular: __flight_spread_3.specular,
+            specular_glossiness_map: (__flight_spread_3.specular_glossiness_map).clone(),
+            modifiers: (__flight_spread_3.modifiers).clone(),
+            shininess: __flight_spread_3.shininess,
+            specular_map: (__flight_spread_3.specular_map).clone(),
+            matcap: (__flight_spread_3.matcap).clone(),
+            extensions: (__flight_spread_3.extensions).clone(),
+            standard: (__flight_spread_3.standard).clone(),
+            far: __flight_spread_3.far,
+            near: __flight_spread_3.near,
+            shader_key: (__flight_spread_3.shader_key).clone(),
+            textures: (__flight_spread_3.textures).clone(),
+            uniforms: (__flight_spread_3.uniforms).clone(),
         }
     }));
 }
 
 // Source: upstream/packages/materials/src/materialPresets.ts:74 (sha256:107a10d2a6ef94f08211dd15c88d8ce086e4f396393dea1ada79f9a53dbd4139)
 pub fn create_iron_standard_pbr_material(
-    opts: Option<crate::pbr_materials::FlightPartialRecord3584171057>,
+    opts: Option<crate::pbr_materials::FlightPartialRecord3953157034>,
 ) -> StandardPbrMaterial {
     return create_standard_pbr_material(Some({
         let __flight_spread_3 = ((opts).clone()).unwrap_or_default();
-        crate::pbr_materials::FlightPartialRecord3584171057 {
+        crate::pbr_materials::FlightPartialRecord3953157034 {
             __flight_identity: std::sync::Arc::new(()),
             kind: (__flight_spread_3.kind).clone(),
             name: (__flight_spread_3.name).clone(),
@@ -298,14 +375,14 @@ pub fn create_iron_standard_pbr_material(
             alpha_mode: (__flight_spread_3.alpha_mode).clone(),
             blend_mode: (__flight_spread_3.blend_mode).clone(),
             double_sided: __flight_spread_3.double_sided,
-            extensions: (__flight_spread_3.extensions).clone(),
-            standard: (__flight_spread_3.standard).clone(),
-            shader_key: (__flight_spread_3.shader_key).clone(),
-            textures: (__flight_spread_3.textures).clone(),
-            uniforms: (__flight_spread_3.uniforms).clone(),
-            alpha_map: (__flight_spread_3.alpha_map).clone(),
+            color: __flight_spread_3.color,
+            thickness: __flight_spread_3.thickness,
+            tint: __flight_spread_3.tint,
             base_color: __flight_spread_3.base_color,
             base_color_map: (__flight_spread_3.base_color_map).clone(),
+            ramp: (__flight_spread_3.ramp).clone(),
+            steps: __flight_spread_3.steps,
+            alpha_map: (__flight_spread_3.alpha_map).clone(),
             emissive: __flight_spread_3.emissive,
             emissive_map: (__flight_spread_3.emissive_map).clone(),
             emissive_strength: __flight_spread_3.emissive_strength,
@@ -316,17 +393,33 @@ pub fn create_iron_standard_pbr_material(
             occlusion_map: (__flight_spread_3.occlusion_map).clone(),
             occlusion_strength: __flight_spread_3.occlusion_strength,
             roughness: __flight_spread_3.roughness,
+            diffuse: __flight_spread_3.diffuse,
+            diffuse_map: (__flight_spread_3.diffuse_map).clone(),
+            glossiness: __flight_spread_3.glossiness,
+            specular: __flight_spread_3.specular,
+            specular_glossiness_map: (__flight_spread_3.specular_glossiness_map).clone(),
+            modifiers: (__flight_spread_3.modifiers).clone(),
+            shininess: __flight_spread_3.shininess,
+            specular_map: (__flight_spread_3.specular_map).clone(),
+            matcap: (__flight_spread_3.matcap).clone(),
+            extensions: (__flight_spread_3.extensions).clone(),
+            standard: (__flight_spread_3.standard).clone(),
+            far: __flight_spread_3.far,
+            near: __flight_spread_3.near,
+            shader_key: (__flight_spread_3.shader_key).clone(),
+            textures: (__flight_spread_3.textures).clone(),
+            uniforms: (__flight_spread_3.uniforms).clone(),
         }
     }));
 }
 
 // Source: upstream/packages/materials/src/materialPresets.ts:85 (sha256:491e857dd109b8011c2343482b72a1e95b4b38e617401ed58fcf03677af9bc5a)
 pub fn create_marble_standard_pbr_material(
-    opts: Option<crate::pbr_materials::FlightPartialRecord3584171057>,
+    opts: Option<crate::pbr_materials::FlightPartialRecord3953157034>,
 ) -> StandardPbrMaterial {
     return create_standard_pbr_material(Some({
         let __flight_spread_3 = ((opts).clone()).unwrap_or_default();
-        crate::pbr_materials::FlightPartialRecord3584171057 {
+        crate::pbr_materials::FlightPartialRecord3953157034 {
             __flight_identity: std::sync::Arc::new(()),
             kind: (__flight_spread_3.kind).clone(),
             name: (__flight_spread_3.name).clone(),
@@ -334,14 +427,14 @@ pub fn create_marble_standard_pbr_material(
             alpha_mode: (__flight_spread_3.alpha_mode).clone(),
             blend_mode: (__flight_spread_3.blend_mode).clone(),
             double_sided: __flight_spread_3.double_sided,
-            extensions: (__flight_spread_3.extensions).clone(),
-            standard: (__flight_spread_3.standard).clone(),
-            shader_key: (__flight_spread_3.shader_key).clone(),
-            textures: (__flight_spread_3.textures).clone(),
-            uniforms: (__flight_spread_3.uniforms).clone(),
-            alpha_map: (__flight_spread_3.alpha_map).clone(),
+            color: __flight_spread_3.color,
+            thickness: __flight_spread_3.thickness,
+            tint: __flight_spread_3.tint,
             base_color: __flight_spread_3.base_color,
             base_color_map: (__flight_spread_3.base_color_map).clone(),
+            ramp: (__flight_spread_3.ramp).clone(),
+            steps: __flight_spread_3.steps,
+            alpha_map: (__flight_spread_3.alpha_map).clone(),
             emissive: __flight_spread_3.emissive,
             emissive_map: (__flight_spread_3.emissive_map).clone(),
             emissive_strength: __flight_spread_3.emissive_strength,
@@ -352,17 +445,33 @@ pub fn create_marble_standard_pbr_material(
             occlusion_map: (__flight_spread_3.occlusion_map).clone(),
             occlusion_strength: __flight_spread_3.occlusion_strength,
             roughness: __flight_spread_3.roughness,
+            diffuse: __flight_spread_3.diffuse,
+            diffuse_map: (__flight_spread_3.diffuse_map).clone(),
+            glossiness: __flight_spread_3.glossiness,
+            specular: __flight_spread_3.specular,
+            specular_glossiness_map: (__flight_spread_3.specular_glossiness_map).clone(),
+            modifiers: (__flight_spread_3.modifiers).clone(),
+            shininess: __flight_spread_3.shininess,
+            specular_map: (__flight_spread_3.specular_map).clone(),
+            matcap: (__flight_spread_3.matcap).clone(),
+            extensions: (__flight_spread_3.extensions).clone(),
+            standard: (__flight_spread_3.standard).clone(),
+            far: __flight_spread_3.far,
+            near: __flight_spread_3.near,
+            shader_key: (__flight_spread_3.shader_key).clone(),
+            textures: (__flight_spread_3.textures).clone(),
+            uniforms: (__flight_spread_3.uniforms).clone(),
         }
     }));
 }
 
 // Source: upstream/packages/materials/src/materialPresets.ts:96 (sha256:870a311b88865e43c684dea86b257a880568246fe8825ab79dffa10ef7a3a382)
 pub fn create_plastic_standard_pbr_material(
-    opts: Option<crate::pbr_materials::FlightPartialRecord3584171057>,
+    opts: Option<crate::pbr_materials::FlightPartialRecord3953157034>,
 ) -> StandardPbrMaterial {
     return create_standard_pbr_material(Some({
         let __flight_spread_3 = ((opts).clone()).unwrap_or_default();
-        crate::pbr_materials::FlightPartialRecord3584171057 {
+        crate::pbr_materials::FlightPartialRecord3953157034 {
             __flight_identity: std::sync::Arc::new(()),
             kind: (__flight_spread_3.kind).clone(),
             name: (__flight_spread_3.name).clone(),
@@ -370,14 +479,14 @@ pub fn create_plastic_standard_pbr_material(
             alpha_mode: (__flight_spread_3.alpha_mode).clone(),
             blend_mode: (__flight_spread_3.blend_mode).clone(),
             double_sided: __flight_spread_3.double_sided,
-            extensions: (__flight_spread_3.extensions).clone(),
-            standard: (__flight_spread_3.standard).clone(),
-            shader_key: (__flight_spread_3.shader_key).clone(),
-            textures: (__flight_spread_3.textures).clone(),
-            uniforms: (__flight_spread_3.uniforms).clone(),
-            alpha_map: (__flight_spread_3.alpha_map).clone(),
+            color: __flight_spread_3.color,
+            thickness: __flight_spread_3.thickness,
+            tint: __flight_spread_3.tint,
             base_color: __flight_spread_3.base_color,
             base_color_map: (__flight_spread_3.base_color_map).clone(),
+            ramp: (__flight_spread_3.ramp).clone(),
+            steps: __flight_spread_3.steps,
+            alpha_map: (__flight_spread_3.alpha_map).clone(),
             emissive: __flight_spread_3.emissive,
             emissive_map: (__flight_spread_3.emissive_map).clone(),
             emissive_strength: __flight_spread_3.emissive_strength,
@@ -388,17 +497,33 @@ pub fn create_plastic_standard_pbr_material(
             occlusion_map: (__flight_spread_3.occlusion_map).clone(),
             occlusion_strength: __flight_spread_3.occlusion_strength,
             roughness: __flight_spread_3.roughness,
+            diffuse: __flight_spread_3.diffuse,
+            diffuse_map: (__flight_spread_3.diffuse_map).clone(),
+            glossiness: __flight_spread_3.glossiness,
+            specular: __flight_spread_3.specular,
+            specular_glossiness_map: (__flight_spread_3.specular_glossiness_map).clone(),
+            modifiers: (__flight_spread_3.modifiers).clone(),
+            shininess: __flight_spread_3.shininess,
+            specular_map: (__flight_spread_3.specular_map).clone(),
+            matcap: (__flight_spread_3.matcap).clone(),
+            extensions: (__flight_spread_3.extensions).clone(),
+            standard: (__flight_spread_3.standard).clone(),
+            far: __flight_spread_3.far,
+            near: __flight_spread_3.near,
+            shader_key: (__flight_spread_3.shader_key).clone(),
+            textures: (__flight_spread_3.textures).clone(),
+            uniforms: (__flight_spread_3.uniforms).clone(),
         }
     }));
 }
 
 // Source: upstream/packages/materials/src/materialPresets.ts:107 (sha256:a04bd6f96f8726b3e73a294602398a742949366ced747c5ce3ab071bb02f2c2e)
 pub fn create_rubber_standard_pbr_material(
-    opts: Option<crate::pbr_materials::FlightPartialRecord3584171057>,
+    opts: Option<crate::pbr_materials::FlightPartialRecord3953157034>,
 ) -> StandardPbrMaterial {
     return create_standard_pbr_material(Some({
         let __flight_spread_3 = ((opts).clone()).unwrap_or_default();
-        crate::pbr_materials::FlightPartialRecord3584171057 {
+        crate::pbr_materials::FlightPartialRecord3953157034 {
             __flight_identity: std::sync::Arc::new(()),
             kind: (__flight_spread_3.kind).clone(),
             name: (__flight_spread_3.name).clone(),
@@ -406,14 +531,14 @@ pub fn create_rubber_standard_pbr_material(
             alpha_mode: (__flight_spread_3.alpha_mode).clone(),
             blend_mode: (__flight_spread_3.blend_mode).clone(),
             double_sided: __flight_spread_3.double_sided,
-            extensions: (__flight_spread_3.extensions).clone(),
-            standard: (__flight_spread_3.standard).clone(),
-            shader_key: (__flight_spread_3.shader_key).clone(),
-            textures: (__flight_spread_3.textures).clone(),
-            uniforms: (__flight_spread_3.uniforms).clone(),
-            alpha_map: (__flight_spread_3.alpha_map).clone(),
+            color: __flight_spread_3.color,
+            thickness: __flight_spread_3.thickness,
+            tint: __flight_spread_3.tint,
             base_color: __flight_spread_3.base_color,
             base_color_map: (__flight_spread_3.base_color_map).clone(),
+            ramp: (__flight_spread_3.ramp).clone(),
+            steps: __flight_spread_3.steps,
+            alpha_map: (__flight_spread_3.alpha_map).clone(),
             emissive: __flight_spread_3.emissive,
             emissive_map: (__flight_spread_3.emissive_map).clone(),
             emissive_strength: __flight_spread_3.emissive_strength,
@@ -424,17 +549,33 @@ pub fn create_rubber_standard_pbr_material(
             occlusion_map: (__flight_spread_3.occlusion_map).clone(),
             occlusion_strength: __flight_spread_3.occlusion_strength,
             roughness: __flight_spread_3.roughness,
+            diffuse: __flight_spread_3.diffuse,
+            diffuse_map: (__flight_spread_3.diffuse_map).clone(),
+            glossiness: __flight_spread_3.glossiness,
+            specular: __flight_spread_3.specular,
+            specular_glossiness_map: (__flight_spread_3.specular_glossiness_map).clone(),
+            modifiers: (__flight_spread_3.modifiers).clone(),
+            shininess: __flight_spread_3.shininess,
+            specular_map: (__flight_spread_3.specular_map).clone(),
+            matcap: (__flight_spread_3.matcap).clone(),
+            extensions: (__flight_spread_3.extensions).clone(),
+            standard: (__flight_spread_3.standard).clone(),
+            far: __flight_spread_3.far,
+            near: __flight_spread_3.near,
+            shader_key: (__flight_spread_3.shader_key).clone(),
+            textures: (__flight_spread_3.textures).clone(),
+            uniforms: (__flight_spread_3.uniforms).clone(),
         }
     }));
 }
 
 // Source: upstream/packages/materials/src/materialPresets.ts:118 (sha256:a57f595677317b19c0f1c4b13ec257dceb02b01df554c311e346a167e5377d8e)
 pub fn create_silver_standard_pbr_material(
-    opts: Option<crate::pbr_materials::FlightPartialRecord3584171057>,
+    opts: Option<crate::pbr_materials::FlightPartialRecord3953157034>,
 ) -> StandardPbrMaterial {
     return create_standard_pbr_material(Some({
         let __flight_spread_3 = ((opts).clone()).unwrap_or_default();
-        crate::pbr_materials::FlightPartialRecord3584171057 {
+        crate::pbr_materials::FlightPartialRecord3953157034 {
             __flight_identity: std::sync::Arc::new(()),
             kind: (__flight_spread_3.kind).clone(),
             name: (__flight_spread_3.name).clone(),
@@ -442,14 +583,14 @@ pub fn create_silver_standard_pbr_material(
             alpha_mode: (__flight_spread_3.alpha_mode).clone(),
             blend_mode: (__flight_spread_3.blend_mode).clone(),
             double_sided: __flight_spread_3.double_sided,
-            extensions: (__flight_spread_3.extensions).clone(),
-            standard: (__flight_spread_3.standard).clone(),
-            shader_key: (__flight_spread_3.shader_key).clone(),
-            textures: (__flight_spread_3.textures).clone(),
-            uniforms: (__flight_spread_3.uniforms).clone(),
-            alpha_map: (__flight_spread_3.alpha_map).clone(),
+            color: __flight_spread_3.color,
+            thickness: __flight_spread_3.thickness,
+            tint: __flight_spread_3.tint,
             base_color: __flight_spread_3.base_color,
             base_color_map: (__flight_spread_3.base_color_map).clone(),
+            ramp: (__flight_spread_3.ramp).clone(),
+            steps: __flight_spread_3.steps,
+            alpha_map: (__flight_spread_3.alpha_map).clone(),
             emissive: __flight_spread_3.emissive,
             emissive_map: (__flight_spread_3.emissive_map).clone(),
             emissive_strength: __flight_spread_3.emissive_strength,
@@ -460,17 +601,33 @@ pub fn create_silver_standard_pbr_material(
             occlusion_map: (__flight_spread_3.occlusion_map).clone(),
             occlusion_strength: __flight_spread_3.occlusion_strength,
             roughness: __flight_spread_3.roughness,
+            diffuse: __flight_spread_3.diffuse,
+            diffuse_map: (__flight_spread_3.diffuse_map).clone(),
+            glossiness: __flight_spread_3.glossiness,
+            specular: __flight_spread_3.specular,
+            specular_glossiness_map: (__flight_spread_3.specular_glossiness_map).clone(),
+            modifiers: (__flight_spread_3.modifiers).clone(),
+            shininess: __flight_spread_3.shininess,
+            specular_map: (__flight_spread_3.specular_map).clone(),
+            matcap: (__flight_spread_3.matcap).clone(),
+            extensions: (__flight_spread_3.extensions).clone(),
+            standard: (__flight_spread_3.standard).clone(),
+            far: __flight_spread_3.far,
+            near: __flight_spread_3.near,
+            shader_key: (__flight_spread_3.shader_key).clone(),
+            textures: (__flight_spread_3.textures).clone(),
+            uniforms: (__flight_spread_3.uniforms).clone(),
         }
     }));
 }
 
 // Source: upstream/packages/materials/src/materialPresets.ts:129 (sha256:6530a0ced19c503c71c857238735c33f55a792f056c13bcb0d4542e845537d0b)
 pub fn create_skin_standard_pbr_material(
-    opts: Option<crate::pbr_materials::FlightPartialRecord3584171057>,
+    opts: Option<crate::pbr_materials::FlightPartialRecord3953157034>,
 ) -> StandardPbrMaterial {
     return create_standard_pbr_material(Some({
         let __flight_spread_3 = ((opts).clone()).unwrap_or_default();
-        crate::pbr_materials::FlightPartialRecord3584171057 {
+        crate::pbr_materials::FlightPartialRecord3953157034 {
             __flight_identity: std::sync::Arc::new(()),
             kind: (__flight_spread_3.kind).clone(),
             name: (__flight_spread_3.name).clone(),
@@ -478,14 +635,14 @@ pub fn create_skin_standard_pbr_material(
             alpha_mode: (__flight_spread_3.alpha_mode).clone(),
             blend_mode: (__flight_spread_3.blend_mode).clone(),
             double_sided: __flight_spread_3.double_sided,
-            extensions: (__flight_spread_3.extensions).clone(),
-            standard: (__flight_spread_3.standard).clone(),
-            shader_key: (__flight_spread_3.shader_key).clone(),
-            textures: (__flight_spread_3.textures).clone(),
-            uniforms: (__flight_spread_3.uniforms).clone(),
-            alpha_map: (__flight_spread_3.alpha_map).clone(),
+            color: __flight_spread_3.color,
+            thickness: __flight_spread_3.thickness,
+            tint: __flight_spread_3.tint,
             base_color: __flight_spread_3.base_color,
             base_color_map: (__flight_spread_3.base_color_map).clone(),
+            ramp: (__flight_spread_3.ramp).clone(),
+            steps: __flight_spread_3.steps,
+            alpha_map: (__flight_spread_3.alpha_map).clone(),
             emissive: __flight_spread_3.emissive,
             emissive_map: (__flight_spread_3.emissive_map).clone(),
             emissive_strength: __flight_spread_3.emissive_strength,
@@ -496,17 +653,33 @@ pub fn create_skin_standard_pbr_material(
             occlusion_map: (__flight_spread_3.occlusion_map).clone(),
             occlusion_strength: __flight_spread_3.occlusion_strength,
             roughness: __flight_spread_3.roughness,
+            diffuse: __flight_spread_3.diffuse,
+            diffuse_map: (__flight_spread_3.diffuse_map).clone(),
+            glossiness: __flight_spread_3.glossiness,
+            specular: __flight_spread_3.specular,
+            specular_glossiness_map: (__flight_spread_3.specular_glossiness_map).clone(),
+            modifiers: (__flight_spread_3.modifiers).clone(),
+            shininess: __flight_spread_3.shininess,
+            specular_map: (__flight_spread_3.specular_map).clone(),
+            matcap: (__flight_spread_3.matcap).clone(),
+            extensions: (__flight_spread_3.extensions).clone(),
+            standard: (__flight_spread_3.standard).clone(),
+            far: __flight_spread_3.far,
+            near: __flight_spread_3.near,
+            shader_key: (__flight_spread_3.shader_key).clone(),
+            textures: (__flight_spread_3.textures).clone(),
+            uniforms: (__flight_spread_3.uniforms).clone(),
         }
     }));
 }
 
 // Source: upstream/packages/materials/src/materialPresets.ts:140 (sha256:246fb70543d8587a017230d1fc082db9d37112b929d9cc869aafb2533cd44e99)
 pub fn create_wood_standard_pbr_material(
-    opts: Option<crate::pbr_materials::FlightPartialRecord3584171057>,
+    opts: Option<crate::pbr_materials::FlightPartialRecord3953157034>,
 ) -> StandardPbrMaterial {
     return create_standard_pbr_material(Some({
         let __flight_spread_3 = ((opts).clone()).unwrap_or_default();
-        crate::pbr_materials::FlightPartialRecord3584171057 {
+        crate::pbr_materials::FlightPartialRecord3953157034 {
             __flight_identity: std::sync::Arc::new(()),
             kind: (__flight_spread_3.kind).clone(),
             name: (__flight_spread_3.name).clone(),
@@ -514,14 +687,14 @@ pub fn create_wood_standard_pbr_material(
             alpha_mode: (__flight_spread_3.alpha_mode).clone(),
             blend_mode: (__flight_spread_3.blend_mode).clone(),
             double_sided: __flight_spread_3.double_sided,
-            extensions: (__flight_spread_3.extensions).clone(),
-            standard: (__flight_spread_3.standard).clone(),
-            shader_key: (__flight_spread_3.shader_key).clone(),
-            textures: (__flight_spread_3.textures).clone(),
-            uniforms: (__flight_spread_3.uniforms).clone(),
-            alpha_map: (__flight_spread_3.alpha_map).clone(),
+            color: __flight_spread_3.color,
+            thickness: __flight_spread_3.thickness,
+            tint: __flight_spread_3.tint,
             base_color: __flight_spread_3.base_color,
             base_color_map: (__flight_spread_3.base_color_map).clone(),
+            ramp: (__flight_spread_3.ramp).clone(),
+            steps: __flight_spread_3.steps,
+            alpha_map: (__flight_spread_3.alpha_map).clone(),
             emissive: __flight_spread_3.emissive,
             emissive_map: (__flight_spread_3.emissive_map).clone(),
             emissive_strength: __flight_spread_3.emissive_strength,
@@ -532,6 +705,22 @@ pub fn create_wood_standard_pbr_material(
             occlusion_map: (__flight_spread_3.occlusion_map).clone(),
             occlusion_strength: __flight_spread_3.occlusion_strength,
             roughness: __flight_spread_3.roughness,
+            diffuse: __flight_spread_3.diffuse,
+            diffuse_map: (__flight_spread_3.diffuse_map).clone(),
+            glossiness: __flight_spread_3.glossiness,
+            specular: __flight_spread_3.specular,
+            specular_glossiness_map: (__flight_spread_3.specular_glossiness_map).clone(),
+            modifiers: (__flight_spread_3.modifiers).clone(),
+            shininess: __flight_spread_3.shininess,
+            specular_map: (__flight_spread_3.specular_map).clone(),
+            matcap: (__flight_spread_3.matcap).clone(),
+            extensions: (__flight_spread_3.extensions).clone(),
+            standard: (__flight_spread_3.standard).clone(),
+            far: __flight_spread_3.far,
+            near: __flight_spread_3.near,
+            shader_key: (__flight_spread_3.shader_key).clone(),
+            textures: (__flight_spread_3.textures).clone(),
+            uniforms: (__flight_spread_3.uniforms).clone(),
         }
     }));
 }

@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, TextAutoSize, TextFormat,
+    BlendMode, ClipRegion, EntityRuntime, Kind, Material2D, MaterialData, TextAutoSize, TextFormat,
     TextVerticalAlign,
 };
 
@@ -16,6 +16,10 @@ use crate::{
 pub struct TextLabelData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub auto_size: TextAutoSize,
     pub height: f64,
     pub text: String,
@@ -28,11 +32,29 @@ impl PartialEq for TextLabelData {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for TextLabelData {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/TextLabel.ts:18 (sha256:db7e05906a3f2b5f6884a839980220d5bdfa14ef1bb5a1d9e1899983f004d07f)
+// Source: upstream/packages/types/src/TextLabel.ts:18 (sha256:668abe75927fb5e032cce2bf278377fd1515b63ef688c280c1aa75fc7c8b8a99)
 pub type TextLabelRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/TextLabel.ts:31 (sha256:f0658231700532c1d5a1d52e203c8f41115d1e60669fa2fd9a98bad1aacb4416)
+// Source: upstream/packages/types/src/TextLabel.ts:35 (sha256:f0658231700532c1d5a1d52e203c8f41115d1e60669fa2fd9a98bad1aacb4416)
 #[derive(Clone, Default)]
 pub struct TextLabel {
     #[doc(hidden)]
@@ -49,7 +71,7 @@ pub struct TextLabel {
     pub visible: bool,
     pub blend_mode: Option<BlendMode>,
     pub clip: Option<ClipRegion>,
-    pub material: Option<Material>,
+    pub material: Option<Material2D>,
     pub material_data: Option<MaterialData>,
     pub pivot_x: f64,
     pub pivot_y: f64,
@@ -85,5 +107,5 @@ impl crate::FlightEntity for TextLabel {
     }
 }
 
-// Source: upstream/packages/types/src/TextLabel.ts:35 (sha256:800f6cacad6f11058247fb3a2fe6ad16ab7f1ea94d9d9a986dfb4599742ef0e2)
+// Source: upstream/packages/types/src/TextLabel.ts:39 (sha256:800f6cacad6f11058247fb3a2fe6ad16ab7f1ea94d9d9a986dfb4599742ef0e2)
 pub const TEXT_LABEL_KIND: &'static str = "TextLabel";

@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{CapsStyle, JointStyle, Shape, ShapeCommandToken};
+use crate::{CapsStyle, JointStyle, Shape, ShapeCommandKey, ShapeCommandToken};
 
 // Source: upstream/packages/types/src/ShapeBounds.ts:4 (sha256:f2ca496237f0642dc6330d7b742019a7b59b9a4340ce8883c8b0f1728c884faf)
 pub type ShapeBoundsMode = String;
@@ -27,7 +27,7 @@ impl PartialEq for ShapeCommandArgumentCursor {
     }
 }
 
-// Source: upstream/packages/types/src/ShapeBounds.ts:15 (sha256:816537ac79f4a27deace04ebd04cca7fd4ad415fb36a761577f3f9d5e912e72f)
+// Source: upstream/packages/types/src/ShapeBounds.ts:15 (sha256:99f70eb3fee7991d55f851e7d97968f179038b6f4c7a7b8bb0e740f9fdd53360)
 #[derive(Clone)]
 pub struct ShapeBoundsContext {
     #[doc(hidden)]
@@ -36,19 +36,22 @@ pub struct ShapeBoundsContext {
     pub cubic_curve_to: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(f64, f64, f64, f64, f64, f64) -> () + Send + 'static>>,
     >,
-    pub curve_to:
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64, f64, f64) -> () + Send + 'static>>>,
     pub draw_circle:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64, f64) -> () + Send + 'static>>>,
     pub draw_ellipse:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64, f64, f64) -> () + Send + 'static>>>,
     pub draw_rectangle:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64, f64, f64) -> () + Send + 'static>>>,
+    pub draw_rounded_rectangle: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(f64, f64, f64, f64, f64) -> () + Send + 'static>>,
+    >,
     pub expand_point:
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64) -> () + Send + 'static>>>,
     pub flush_path: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
     pub line_to: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64) -> () + Send + 'static>>>,
     pub move_to: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64) -> () + Send + 'static>>>,
+    pub quadratic_curve_to:
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(f64, f64, f64, f64) -> () + Send + 'static>>>,
     pub set_stroke_style: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(f64, CapsStyle, JointStyle, f64) -> () + Send + 'static>>,
     >,
@@ -59,16 +62,16 @@ impl PartialEq for ShapeBoundsContext {
     }
 }
 
-// Source: upstream/packages/types/src/ShapeBounds.ts:36 (sha256:549dc6ce1c4066055a30b73a0370ba6859cd46621726e8721f2bcb4dc83e2d60)
+// Source: upstream/packages/types/src/ShapeBounds.ts:30 (sha256:549dc6ce1c4066055a30b73a0370ba6859cd46621726e8721f2bcb4dc83e2d60)
 pub type ShapeBoundsCommandHandler = std::sync::Arc<
     std::sync::Mutex<
         Box<dyn FnMut(ShapeBoundsContext, ShapeCommandArgumentCursor) -> () + Send + 'static>,
     >,
 >;
 
-// Source: upstream/packages/types/src/ShapeBounds.ts:43 (sha256:d5779fc44f043aa3a8a3926a093db87cf0d91e7888c2472726a188b256542f99)
+// Source: upstream/packages/types/src/ShapeBounds.ts:37 (sha256:d5779fc44f043aa3a8a3926a093db87cf0d91e7888c2472726a188b256542f99)
 #[derive(Clone)]
-pub struct ShapeBoundsCommand<K> {
+pub struct ShapeBoundsCommand<K = ShapeCommandKey> {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub key: K,
@@ -81,7 +84,7 @@ impl<K> PartialEq for ShapeBoundsCommand<K> {
     }
 }
 
-// Source: upstream/packages/types/src/ShapeBounds.ts:49 (sha256:88fb377a6d4d253414a4aa9ebd31c3f92d1ec68f8b80dfd0f3e4defe926c90f1)
+// Source: upstream/packages/types/src/ShapeBounds.ts:43 (sha256:88fb377a6d4d253414a4aa9ebd31c3f92d1ec68f8b80dfd0f3e4defe926c90f1)
 #[derive(Clone, Default)]
 pub struct ShapeBoundsExplanation {
     #[doc(hidden)]
@@ -96,7 +99,7 @@ impl PartialEq for ShapeBoundsExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/ShapeBounds.ts:55 (sha256:5177c92ede303074e409131fde86f60c5b629ea79bfb0918795cc096caa9e81f)
+// Source: upstream/packages/types/src/ShapeBounds.ts:49 (sha256:5177c92ede303074e409131fde86f60c5b629ea79bfb0918795cc096caa9e81f)
 pub type ShapeBoundsGuard = std::sync::Arc<
     std::sync::Mutex<Box<dyn FnMut(Shape, ShapeBoundsMode, String) -> () + Send + 'static>>,
 >;

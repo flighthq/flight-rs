@@ -6,9 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{ImportDiagnostic, ParticleEmitterConfig, ParticleSerializeResult};
+use crate::{
+    ImportDiagnostic, ParseParticleConfigOptions, ParticleEmitterConfig, ParticleSerializeResult,
+};
 
-// Source: upstream/packages/types/src/ParticleFormatCodec.ts:5 (sha256:d47fe92f7235d26926b010d0ac005f2504b005cb6c402a62e8774852c2bf5776)
+// Source: upstream/packages/types/src/ParticleFormatCodec.ts:6 (sha256:56a85f8b7139b6a08324154fe461ca60acc1ecc9521ccc39654a24cc688e1679)
 #[derive(Clone, Default)]
 pub struct ParticleFormatCodecRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -27,14 +29,28 @@ pub struct ParticleFormatCodec {
     pub __flight_identity: std::sync::Arc<()>,
     pub detect: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String) -> bool + Send + 'static>>>,
     pub parse_to_config: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> ParticleEmitterConfig + Send + 'static>>,
+        std::sync::Mutex<
+            Box<
+                dyn FnMut(String, Option<ParseParticleConfigOptions>) -> ParticleEmitterConfig
+                    + Send
+                    + 'static,
+            >,
+        >,
     >,
     pub parse_to_document: std::sync::Arc<
-        std::sync::Mutex<Box<dyn FnMut(String) -> ParticleFormatCodecRecord1 + Send + 'static>>,
-    >,
-    pub serialize: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(ParticleEmitterConfig) -> ParticleSerializeResult + Send + 'static>,
+            Box<
+                dyn FnMut(String, Option<ParseParticleConfigOptions>) -> ParticleFormatCodecRecord1
+                    + Send
+                    + 'static,
+            >,
+        >,
+    >,
+    pub serialize: Option<
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<dyn FnMut(ParticleEmitterConfig) -> ParticleSerializeResult + Send + 'static>,
+            >,
         >,
     >,
 }

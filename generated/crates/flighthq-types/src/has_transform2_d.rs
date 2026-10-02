@@ -54,7 +54,7 @@ impl crate::FlightEntity for HasTransform2D {
 // Source: upstream/packages/types/src/HasTransform2D.ts:22 (sha256:96c70f861965d4d1f68717a0a39a14317f7304603f79b6048c18a9291671a96a)
 pub type HasTransform2DRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/HasTransform2D.ts:30 (sha256:c744a508e3181c3c31e026d800f8f5928e2793b375bf32ecd637815510d9ab88)
+// Source: upstream/packages/types/src/HasTransform2D.ts:30 (sha256:fc6313f3f0bff0f41c8b3d5f8f2fcae3b0a5ee8fd2b560443a942d53411eaeaf)
 #[derive(Clone, Default)]
 pub struct Transform2DNode {
     #[doc(hidden)]

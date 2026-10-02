@@ -7,15 +7,15 @@
 #![allow(unused_parens)]
 
 use flighthq_log::{
-    add_log_sink, clear_log_channel_level, clear_log_channel_levels, create_console_log_sink,
-    get_log_channel_level, get_log_level, remove_log_sink, set_log_channel_level, set_log_level,
+    add_log_sink, clear_log_channel_level, create_console_log_sink, get_log_channel_level,
+    get_log_level, remove_log_sink, set_log_channel_level, set_log_level,
 };
-use flighthq_render::{enable_color_adjustment_guards, enable_render_registry_guards};
+use flighthq_render::{enable_color_adjustment_guards, enable_render_registries_guards};
 use flighthq_types::{
     DebugOptions, DebugSubsystemHooks, DebugSubsystemName, LogLevel, LogSink, RenderState,
 };
 
-// Source: upstream/packages/debug/src/debug.ts:26 (sha256:db7c1086c01a5a0e0ff577301df07c656f8e538a6150f8e50b19d3127f90cd23)
+// Source: upstream/packages/debug/src/debug.ts:25 (sha256:db7c1086c01a5a0e0ff577301df07c656f8e538a6150f8e50b19d3127f90cd23)
 pub fn disable_debug() -> () {
     if (!_ENABLED.load(std::sync::atomic::Ordering::Relaxed)) {
         return;
@@ -34,12 +34,12 @@ pub fn disable_debug() -> () {
     _ENABLED.store(false, std::sync::atomic::Ordering::Relaxed);
 }
 
-// Source: upstream/packages/debug/src/debug.ts:42 (sha256:55b73e98c5d9747c4310b282484d10e62a6e0df62d86f25c049171961320461e)
+// Source: upstream/packages/debug/src/debug.ts:41 (sha256:586623d65f633444e37aaeda035f39e29a5d76f3c60cce3ebcff4f39f9a751a6)
 #[derive(Clone, Default)]
-struct EnableDebugRecord9 {
+struct EnableDebugRecord1 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for EnableDebugRecord9 {
+impl PartialEq for EnableDebugRecord1 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
@@ -155,14 +155,15 @@ pub fn enable_debug(options: Option<DebugOptions>) -> () {
             }
         }
     }
+    (*_SAVED_CHANNEL_LEVELS.lock().unwrap()) = saved_channel_levels;
     _ENABLED.store(true, std::sync::atomic::Ordering::Relaxed);
 }
 
-// Source: upstream/packages/debug/src/debug.ts:89 (sha256:570508dbab5412bbf9f2898134fb8fd84d5c48f904c5d7de281b47eb7c3059c6)
+// Source: upstream/packages/debug/src/debug.ts:89 (sha256:a7858addc1b7ed50f145f788120850abacc74bbe17e3bf20f633264a8b498a9c)
 pub fn enable_flight_diagnostics(state: &RenderState) -> () {
     enable_debug(None);
     enable_color_adjustment_guards(state);
-    enable_render_registry_guards((state).clone());
+    enable_render_registries_guards((state).clone());
 }
 
 // Source: upstream/packages/debug/src/debug.ts:96 (sha256:713183a8744dba3aa296c5c64a257d953e21ebfb93b9d8c5c1bde4baba1e9abb)
@@ -221,7 +222,12 @@ static _INSTALLED_SINK: std::sync::LazyLock<std::sync::Mutex<Option<LogSink>>> =
 static _SAVED_GLOBAL_LEVEL: std::sync::LazyLock<std::sync::Mutex<LogLevel>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(LogLevel::Verbose));
 
-// Source: upstream/packages/debug/src/debug.ts:123 (sha256:224426a6057cd2d451a818ec407bd76d5c12ac3f955be77270752996087c47fe)
+// Source: upstream/packages/debug/src/debug.ts:121 (sha256:f8f2365c26122d345edc69e113f8300cf53a323994f68d14fd33a4ec96ae8d28)
+static _SAVED_CHANNEL_LEVELS: std::sync::LazyLock<
+    std::sync::Mutex<Vec<(String, Option<LogLevel>)>>,
+> = std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
+
+// Source: upstream/packages/debug/src/debug.ts:124 (sha256:224426a6057cd2d451a818ec407bd76d5c12ac3f955be77270752996087c47fe)
 fn _apply_debug_levels(level: LogLevel, channels: &Vec<String>) -> () {
     set_log_level(level);
     for channel in (channels).iter().cloned() {
@@ -229,7 +235,7 @@ fn _apply_debug_levels(level: LogLevel, channels: &Vec<String>) -> () {
     }
 }
 
-// Source: upstream/packages/debug/src/debug.ts:129 (sha256:743e28d1ab40a93d5a10647e50b50c3d60608d1f427f4de036a7e3bdbed9aec4)
+// Source: upstream/packages/debug/src/debug.ts:130 (sha256:743e28d1ab40a93d5a10647e50b50c3d60608d1f427f4de036a7e3bdbed9aec4)
 fn _collect_debug_channels(
     subsystems: &Vec<DebugSubsystemHooks>,
     extra: &Option<Vec<String>>,
@@ -252,13 +258,13 @@ fn _collect_debug_channels(
     return channels;
 }
 
-// Source: upstream/packages/debug/src/debug.ts:142 (sha256:fe488eaa18eae0bb8fc093e7fab7a012fdf155f0de853ceb2480cc6769126be7)
+// Source: upstream/packages/debug/src/debug.ts:143 (sha256:fe488eaa18eae0bb8fc093e7fab7a012fdf155f0de853ceb2480cc6769126be7)
 fn _install_debug_sink(sink: LogSink) -> () {
     (*_INSTALLED_SINK.lock().unwrap()) = Some((sink).clone());
     add_log_sink((sink).clone());
 }
 
-// Source: upstream/packages/debug/src/debug.ts:148 (sha256:12765af0ae8bab60c885ab5edaa4668748aa1ca8382ae5455f84d5ed0a339668)
+// Source: upstream/packages/debug/src/debug.ts:149 (sha256:12765af0ae8bab60c885ab5edaa4668748aa1ca8382ae5455f84d5ed0a339668)
 fn _remove_debug_sink() -> () {
     if ((*_INSTALLED_SINK.lock().unwrap()).clone()).is_none() {
         return;
@@ -267,7 +273,7 @@ fn _remove_debug_sink() -> () {
     (*_INSTALLED_SINK.lock().unwrap()) = None;
 }
 
-// Source: upstream/packages/debug/src/debug.ts:156 (sha256:8f048e0281e53fbbea1c86cd627ffdf8c75f7351ceaf8ee25d781b64e555a65e)
+// Source: upstream/packages/debug/src/debug.ts:157 (sha256:8f048e0281e53fbbea1c86cd627ffdf8c75f7351ceaf8ee25d781b64e555a65e)
 fn _resolve_debug_subsystems(names: &Option<Vec<DebugSubsystemName>>) -> Vec<DebugSubsystemHooks> {
     if (names).is_none() {
         return {
@@ -296,8 +302,20 @@ fn _resolve_debug_subsystems(names: &Option<Vec<DebugSubsystemName>>) -> Vec<Deb
     return resolved;
 }
 
-// Source: upstream/packages/debug/src/debug.ts:169 (sha256:4f1d34bf8ef921904c56b309fc405dd874017df2c56f61ad4da7e32c7bcac860)
+// Source: upstream/packages/debug/src/debug.ts:169 (sha256:deb062b834523ee6902ec3380f38eada9c55a02c44bb8dcafe9311a9e77858fd)
 fn _restore_debug_levels() -> () {
     set_log_level((*_SAVED_GLOBAL_LEVEL.lock().unwrap()).clone());
-    clear_log_channel_levels();
+    for __iteration1 in ((*_SAVED_CHANNEL_LEVELS.lock().unwrap()).clone())
+        .iter()
+        .cloned()
+    {
+        let channel = __iteration1.0.clone();
+        let saved_level = __iteration1.1.clone();
+        if (saved_level).is_none() {
+            clear_log_channel_level((channel).clone());
+        } else {
+            set_log_channel_level((channel).clone(), *(saved_level.as_ref().unwrap()));
+        }
+    }
+    (*_SAVED_CHANNEL_LEVELS.lock().unwrap()) = Vec::new();
 }

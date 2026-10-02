@@ -9,7 +9,7 @@
 use crate::invalidate_bitmap;
 use flighthq_types::BitmapRegion;
 
-// Source: upstream/packages/bitmap/src/bitmapChannel.ts:18 (sha256:047f722d8abba9cadcd8dff8df5ce2486323dfe8e5d0b05703b836dc903a682a)
+// Source: upstream/packages/bitmap/src/bitmapChannel.ts:37 (sha256:047f722d8abba9cadcd8dff8df5ce2486323dfe8e5d0b05703b836dc903a682a)
 pub fn merge_bitmap_channels(
     out: &mut BitmapRegion,
     r: &BitmapRegion,

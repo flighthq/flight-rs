@@ -6,15 +6,15 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{CompressedImage, GlCompressedTextureDecoder, TextureColorSpace};
+use crate::{CompressedImageResource, GlCompressedTextureDecoder, GlContext, TextureColorSpace};
 
-// Source: upstream/packages/types/src/GlCompressedTextureUploader.ts:14 (sha256:9d7a1f772fd51dd2a0ce88fa6bc27bfd6808f7972eec022784099f51acd6228d)
+// Source: upstream/packages/types/src/GlCompressedTextureUploader.ts:15 (sha256:dd2143e919eb7475e9f998ed6fcc85463e7fff9954fe6334617e66d4f9b601e6)
 pub type GlCompressedTextureUploader = std::sync::Arc<
     std::sync::Mutex<
         Box<
             dyn FnMut(
-                    crate::OpaqueHostValue,
-                    CompressedImage,
+                    GlContext,
+                    CompressedImageResource,
                     Option<GlCompressedTextureDecoder>,
                     Option<TextureColorSpace>,
                 ) -> bool

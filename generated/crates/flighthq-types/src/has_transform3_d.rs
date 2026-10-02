@@ -48,7 +48,7 @@ impl crate::FlightEntity for HasTransform3D {
 // Source: upstream/packages/types/src/HasTransform3D.ts:18 (sha256:1d64b827bad156d3d07cd1ca90f99aecb21a157026d06c1920d015992b2d3e2e)
 pub type HasTransform3DRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/HasTransform3D.ts:28 (sha256:da9298db6d25709679d19c3277a12efc13fb2ea8c4793a128cb1288dba978dcf)
+// Source: upstream/packages/types/src/HasTransform3D.ts:28 (sha256:348d7425cf1234eb0f58670fc4e75ff67ab3bb760d5dccd26134b1e3ab14ee84)
 #[derive(Clone, Default)]
 pub struct Transform3DNode {
     #[doc(hidden)]

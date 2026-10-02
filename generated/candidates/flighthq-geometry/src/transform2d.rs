@@ -6,11 +6,11 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_math::RAD_TO_DEG as rad_to_deg_constant;
-use flighthq_types::{MatrixLike, Transform2D, Transform2DLike};
+use flighthq_types::{EntityConstruction, MatrixLike, Transform2D, Transform2DLike};
 
-// Source: upstream/packages/geometry/src/transform2d.ts:7 (sha256:6ce0056dbae519968f71d85e4880231545ea7fdcddbcd5330a2f602062721c15)
+// Source: upstream/packages/geometry/src/transform2d.ts:7 (sha256:1a5dc6ace4461f85fd76e87f80afd0bf2910a01313ca0c2de5bc5dcf9313397a)
 pub fn create_transform2_d(
     x: Option<f64>,
     y: Option<f64>,
@@ -22,23 +22,23 @@ pub fn create_transform2_d(
     pivot_x: Option<f64>,
     pivot_y: Option<f64>,
 ) -> Transform2D {
-    return create_entity(Some(Transform2D {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        pivot_x: (pivot_x).unwrap_or(0.0_f64),
-        pivot_y: (pivot_y).unwrap_or(0.0_f64),
-        rotation: (rotation).unwrap_or(0.0_f64),
-        scale_x: (scale_x).unwrap_or(1.0_f64),
-        scale_y: (scale_y).unwrap_or(1.0_f64),
-        skew_x: (skew_x).unwrap_or(0.0_f64),
-        skew_y: (skew_y).unwrap_or(0.0_f64),
-        x: (x).unwrap_or(0.0_f64),
-        y: (y).unwrap_or(0.0_f64),
-    }));
+    let mut out = allocate_entity();
+    initialize_transform2_d(
+        (out).clone(),
+        (x).unwrap_or(0.0_f64),
+        (y).unwrap_or(0.0_f64),
+        (rotation).unwrap_or(0.0_f64),
+        (scale_x).unwrap_or(1.0_f64),
+        (scale_y).unwrap_or(1.0_f64),
+        (skew_x).unwrap_or(0.0_f64),
+        (skew_y).unwrap_or(0.0_f64),
+        (pivot_x).unwrap_or(0.0_f64),
+        (pivot_y).unwrap_or(0.0_f64),
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/geometry/src/transform2d.ts:37 (sha256:8a448cc78e4a55f672d7ba6915f25be61f8c1727ef632cfd3706d039132f6354)
+// Source: upstream/packages/geometry/src/transform2d.ts:40 (sha256:8a448cc78e4a55f672d7ba6915f25be61f8c1727ef632cfd3706d039132f6354)
 pub fn decompose_matrix_to_transform2_d(out: &mut Transform2DLike, source: &MatrixLike) -> () {
     let a = source.a;
     let b = source.b;
@@ -72,4 +72,28 @@ pub fn decompose_matrix_to_transform2_d(out: &mut Transform2DLike, source: &Matr
     out.scale_y = scale_y;
     out.x = source.tx;
     out.y = source.ty;
+}
+
+// Source: upstream/packages/geometry/src/transform2d.ts:72 (sha256:a50ffeb4b2c36970dba0eaec42b893125cfd66fabc3b27eac276ea6ced5ed3c8)
+pub fn initialize_transform2_d(
+    out: EntityConstruction<Transform2D>,
+    x: f64,
+    y: f64,
+    rotation: f64,
+    scale_x: f64,
+    scale_y: f64,
+    skew_x: f64,
+    skew_y: f64,
+    pivot_x: f64,
+    pivot_y: f64,
+) -> () {
+    crate::host_set("host.x", x);
+    crate::host_set("host.y", y);
+    crate::host_set("host.rotation", rotation);
+    crate::host_set("host.scaleX", scale_x);
+    crate::host_set("host.scaleY", scale_y);
+    crate::host_set("host.skewX", skew_x);
+    crate::host_set("host.skewY", skew_y);
+    crate::host_set("host.pivotX", pivot_x);
+    crate::host_set("host.pivotY", pivot_y);
 }

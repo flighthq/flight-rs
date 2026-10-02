@@ -21,7 +21,7 @@ impl PartialEq for HasColorScaleBias {
     }
 }
 
-// Source: upstream/packages/types/src/HasColorScaleBias.ts:15 (sha256:c5e6a9258fbb6a3cd8c6386936d53229385808d99395817f572e7cd9b6a853d3)
+// Source: upstream/packages/types/src/HasColorScaleBias.ts:15 (sha256:50c00aa50f3c480c51fbc56032efea273ed8109b2e11df0d79ecdda88082f288)
 #[derive(Clone, Default)]
 pub struct ColorScaleBiasNode {
     #[doc(hidden)]

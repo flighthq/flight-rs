@@ -6,7 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::{ColorTransformFunction, LiftGammaGainAdjustment};
+use crate::initialize_color_lut_adjustment;
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{ColorTransformFunction, EntityConstruction, LiftGammaGainAdjustment};
 
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
@@ -34,7 +36,7 @@ impl PartialEq for FlightOmitRecord2651849460 {
     }
 }
 
-// Source: upstream/packages/adjustments/src/liftGammaGainAdjustment.ts:6 (sha256:e86a15b30666226017b1cb779869b1d6dd87c356e86675c76432e2d7dda3271d)
+// Source: upstream/packages/adjustments/src/liftGammaGainAdjustment.ts:11 (sha256:301a676520b4dd4b4793e7ca6a91c31675cf90bb20e9da136d304c33b370c43c)
 #[derive(Clone, Default)]
 struct CreateLiftGammaGainAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
@@ -48,6 +50,43 @@ impl PartialEq for CreateLiftGammaGainAdjustmentRecord2 {
 pub fn create_lift_gamma_gain_adjustment(
     options: Option<FlightOmitRecord2651849460>,
 ) -> LiftGammaGainAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord2651849460 {
+        __flight_identity: std::sync::Arc::new(()),
+        lift: None,
+        gamma: None,
+        gain: None,
+    });
+    let mut out = allocate_entity();
+    initialize_lift_gamma_gain_adjustment(
+        (out).clone(),
+        Some({
+            let __flight_source = &((options).clone());
+            FlightOmitRecord2651849460 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                lift: __flight_source.lift,
+                gamma: __flight_source.gamma,
+                gain: __flight_source.gain,
+            }
+        }),
+    );
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/adjustments/src/liftGammaGainAdjustment.ts:22 (sha256:cb59e456d29b93e4d9a898dc973e09206dbe6e4f3f0b55170e1bf4fbfd6383d0)
+#[derive(Clone, Default)]
+struct InitializeLiftGammaGainAdjustmentRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for InitializeLiftGammaGainAdjustmentRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn initialize_lift_gamma_gain_adjustment(
+    out: EntityConstruction<LiftGammaGainAdjustment>,
+    options: Option<FlightOmitRecord2651849460>,
+) -> () {
     let options = options.unwrap_or(FlightOmitRecord2651849460 {
         __flight_identity: std::sync::Arc::new(()),
         lift: None,
@@ -113,20 +152,17 @@ pub fn create_lift_gamma_gain_adjustment(
             }
         })
             as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>));
-    return {
-        let __flight_spread_1 = (options).clone();
-        LiftGammaGainAdjustment {
-            __flight_identity: std::sync::Arc::new(()),
-            kind: "LiftGammaGainAdjustment".to_owned(),
-            transform: (transform).clone(),
-            lift: __flight_spread_1.lift,
-            gamma: __flight_spread_1.gamma,
-            gain: __flight_spread_1.gain,
-        }
-    };
+    initialize_color_lut_adjustment(
+        (out).clone(),
+        "LiftGammaGainAdjustment".to_owned(),
+        (transform).clone(),
+    );
+    crate::host_set("host.lift", (options.lift).unwrap_or(255.0_f64));
+    crate::host_set("host.gamma", (options.gamma).unwrap_or(2155905279.0_f64));
+    crate::host_set("host.gain", (options.gain).unwrap_or(4294967295.0_f64));
 }
 
-// Source: upstream/packages/adjustments/src/liftGammaGainAdjustment.ts:26 (sha256:92c4452839ded0362c28adef5c15154deeaad9b404aff5129f0596af7fea21ad)
+// Source: upstream/packages/adjustments/src/liftGammaGainAdjustment.ts:46 (sha256:92c4452839ded0362c28adef5c15154deeaad9b404aff5129f0596af7fea21ad)
 fn clamp01(v: f64) -> f64 {
     return if (v < 0.0_f64) {
         0.0_f64
@@ -135,7 +171,7 @@ fn clamp01(v: f64) -> f64 {
     };
 }
 
-// Source: upstream/packages/adjustments/src/liftGammaGainAdjustment.ts:32 (sha256:28931813b5294ff30eb0603843143223641a413123fb98ae5206353a2ee44bb2)
+// Source: upstream/packages/adjustments/src/liftGammaGainAdjustment.ts:52 (sha256:28931813b5294ff30eb0603843143223641a413123fb98ae5206353a2ee44bb2)
 fn unpack_rgb(c: f64) -> Vec<f64> {
     return vec![
         ((__flight_js_to_i32((__flight_js_to_u32(c) >> (__flight_js_to_u32(24.0_f64) & 31)) as f64)

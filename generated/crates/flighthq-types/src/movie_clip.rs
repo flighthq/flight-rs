@@ -6,18 +6,40 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, Timeline};
+use crate::{BlendMode, ClipRegion, EntityRuntime, Kind, Material2D, MaterialData, Timeline};
 
 // Source: upstream/packages/types/src/MovieClip.ts:5 (sha256:5aa6485af78fca2067f0720a27927c1e85e3c6481c8299dbe80ef2b73dd1d259)
 #[derive(Clone, Default)]
 pub struct MovieClipData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub timeline: Option<Timeline>,
 }
 impl PartialEq for MovieClipData {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for MovieClipData {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }
 
@@ -41,7 +63,7 @@ pub struct MovieClip {
     pub visible: bool,
     pub blend_mode: Option<BlendMode>,
     pub clip: Option<ClipRegion>,
-    pub material: Option<Material>,
+    pub material: Option<Material2D>,
     pub material_data: Option<MaterialData>,
     pub pivot_x: f64,
     pub pivot_y: f64,

@@ -6,8 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::PbrExtension;
 use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Texture};
+use crate::{Modifier, PbrExtension};
 
 // Source: upstream/packages/types/src/StandardPbrMaterial.ts:11 (sha256:44fad9b5706a5df98cf0027a1603a725ef02feb70f58928c41700c9d56bd5de4)
 #[derive(Clone, Default)]
@@ -34,7 +34,7 @@ impl PartialEq for StandardPbrMaterialProperties {
     }
 }
 
-// Source: upstream/packages/types/src/StandardPbrMaterial.ts:30 (sha256:75623596e21f7fa8bdb96972f77d790d3fa4eaa91a9a238efce37fd2c87cff25)
+// Source: upstream/packages/types/src/StandardPbrMaterial.ts:30 (sha256:fc964533428b5715afdfd4d8e7ae22f300b2afab691a8608018abf3483cb8b89)
 #[derive(Clone, Default)]
 pub struct StandardPbrMaterial {
     #[doc(hidden)]
@@ -49,14 +49,14 @@ pub struct StandardPbrMaterial {
     pub alpha_mode: MaterialAlphaMode,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
-    pub extensions: Vec<PbrExtension>,
-    pub standard: StandardPbrMaterialProperties,
-    pub shader_key: String,
-    pub textures: Option<Vec<(String, Texture)>>,
-    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
-    pub alpha_map: Option<Texture>,
+    pub color: f64,
+    pub thickness: f64,
+    pub tint: f64,
     pub base_color: f64,
     pub base_color_map: Option<Texture>,
+    pub ramp: Option<Texture>,
+    pub steps: f64,
+    pub alpha_map: Option<Texture>,
     pub emissive: f64,
     pub emissive_map: Option<Texture>,
     pub emissive_strength: f64,
@@ -67,6 +67,22 @@ pub struct StandardPbrMaterial {
     pub occlusion_map: Option<Texture>,
     pub occlusion_strength: f64,
     pub roughness: f64,
+    pub diffuse: f64,
+    pub diffuse_map: Option<Texture>,
+    pub glossiness: f64,
+    pub specular: f64,
+    pub specular_glossiness_map: Option<Texture>,
+    pub modifiers: Vec<Modifier>,
+    pub shininess: f64,
+    pub specular_map: Option<Texture>,
+    pub matcap: Option<Texture>,
+    pub extensions: Vec<PbrExtension>,
+    pub standard: StandardPbrMaterialProperties,
+    pub far: f64,
+    pub near: f64,
+    pub shader_key: String,
+    pub textures: Option<Vec<(String, Texture)>>,
+    pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
 }
 impl PartialEq for StandardPbrMaterial {
     fn eq(&self, other: &Self) -> bool {
@@ -92,5 +108,5 @@ impl crate::FlightEntity for StandardPbrMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/StandardPbrMaterial.ts:32 (sha256:c10ef55cb5f965b373510f0a8bce10c727e60f301669267c100433d0a01cbd00)
+// Source: upstream/packages/types/src/StandardPbrMaterial.ts:34 (sha256:c10ef55cb5f965b373510f0a8bce10c727e60f301669267c100433d0a01cbd00)
 pub const STANDARD_PBR_MATERIAL_KIND: &'static str = "StandardPbrMaterial";

@@ -21,6 +21,8 @@ pub struct GlWireframeProgram {
     pub loc_object_alpha: Option<crate::OpaqueHostValue>,
     pub loc_alpha_is_coverage: Option<crate::OpaqueHostValue>,
     pub loc_joint_texture: Option<crate::OpaqueHostValue>,
+    pub loc_instance_palette: Option<crate::OpaqueHostValue>,
+    pub loc_instance_color_palette: Option<crate::OpaqueHostValue>,
     pub loc_joint_normal_texture: Option<crate::OpaqueHostValue>,
     pub loc_model: Option<crate::OpaqueHostValue>,
     pub loc_normal_matrix: Option<crate::OpaqueHostValue>,

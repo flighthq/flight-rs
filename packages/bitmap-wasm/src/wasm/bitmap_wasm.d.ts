@@ -33,8 +33,6 @@ export function copy_bitmap_alpha_wasm(dest_data: Uint8Array, dest_descriptor: F
 
 export function copy_bitmap_pixels_wasm(dest_data: Uint8Array, dest_descriptor: Float64Array, source_data: Uint8Array, source_descriptor: Float64Array, composite: boolean): void;
 
-export function create_bitmap_fingerprint_wasm(out: Uint8Array, source_data: Uint8Array, source_width: number, source_height: number, grid_size: number): void;
-
 export function dilate_bitmap_wasm(out: Uint8Array, source_data: Uint8Array, source_descriptor: Float64Array, radius: number): void;
 
 export function erode_bitmap_wasm(out: Uint8Array, source_data: Uint8Array, source_descriptor: Float64Array, radius: number): void;
@@ -89,7 +87,6 @@ export interface InitOutput {
     readonly convolve_bitmap_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number, p: number) => void;
     readonly copy_bitmap_alpha_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number) => void;
     readonly copy_bitmap_pixels_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number, j: number) => void;
-    readonly create_bitmap_fingerprint_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number) => void;
     readonly dilate_bitmap_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number) => void;
     readonly erode_bitmap_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number) => void;
     readonly fill_bitmap_noise_wasm: (a: number, b: number, c: any, d: number, e: number, f: number, g: number, h: number, i: number) => void;

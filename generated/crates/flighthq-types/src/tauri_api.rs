@@ -17,7 +17,7 @@ impl PartialEq for SharedStructuralRecord1 {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:25 (sha256:44bcb932c0e88a332e71c3d85aecb67af098ff10aec46f4e8e656678fcc4e7e7)
+// Source: upstream/packages/types/src/TauriApi.ts:30 (sha256:44bcb932c0e88a332e71c3d85aecb67af098ff10aec46f4e8e656678fcc4e7e7)
 #[derive(Clone)]
 pub struct TauriApi {
     #[doc(hidden)]
@@ -40,7 +40,7 @@ impl PartialEq for TauriApi {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:41 (sha256:08ba953ebe17678812ac5f1d64dbc33f14efaf9220a0f1cee1e2230703b4bab2)
+// Source: upstream/packages/types/src/TauriApi.ts:46 (sha256:08ba953ebe17678812ac5f1d64dbc33f14efaf9220a0f1cee1e2230703b4bab2)
 #[derive(Clone)]
 pub struct TauriAppModule {
     #[doc(hidden)]
@@ -64,7 +64,7 @@ impl PartialEq for TauriAppModule {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:49 (sha256:35324ce52779be833b631b8d82def6f0ce825a591689017d192cac5714c3be88)
+// Source: upstream/packages/types/src/TauriApi.ts:54 (sha256:35324ce52779be833b631b8d82def6f0ce825a591689017d192cac5714c3be88)
 #[derive(Clone)]
 pub struct TauriProcessPlugin {
     #[doc(hidden)]
@@ -82,7 +82,7 @@ impl PartialEq for TauriProcessPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:57 (sha256:bf7fd8824727c8c3f680374dbfe73273055779ffad9068b3ff1d35c44df31671)
+// Source: upstream/packages/types/src/TauriApi.ts:62 (sha256:bf7fd8824727c8c3f680374dbfe73273055779ffad9068b3ff1d35c44df31671)
 #[derive(Clone)]
 pub struct TauriClipboardManager {
     #[doc(hidden)]
@@ -103,7 +103,7 @@ impl PartialEq for TauriClipboardManager {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:63 (sha256:848104b3231dd7fe86e34964bd7bcb006970d585f8d000e8ce1e6767fb80981e)
+// Source: upstream/packages/types/src/TauriApi.ts:68 (sha256:848104b3231dd7fe86e34964bd7bcb006970d585f8d000e8ce1e6767fb80981e)
 #[derive(Clone, Default)]
 pub struct TauriDialogFilter {
     #[doc(hidden)]
@@ -117,7 +117,7 @@ impl PartialEq for TauriDialogFilter {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:68 (sha256:22ed44bcb96b8f67cd39fe84a77893cf46a6ee2cd208e8c70f749556d6500b2d)
+// Source: upstream/packages/types/src/TauriApi.ts:73 (sha256:22ed44bcb96b8f67cd39fe84a77893cf46a6ee2cd208e8c70f749556d6500b2d)
 #[derive(Clone, Default)]
 pub struct TauriDialogOpenOptions {
     #[doc(hidden)]
@@ -134,7 +134,7 @@ impl PartialEq for TauriDialogOpenOptions {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:76 (sha256:79b0f0a9802bd9ba8f4b15fd807719090ec911fac7c4ff60102a310c417cfc02)
+// Source: upstream/packages/types/src/TauriApi.ts:81 (sha256:79b0f0a9802bd9ba8f4b15fd807719090ec911fac7c4ff60102a310c417cfc02)
 #[derive(Clone, Default)]
 pub struct TauriDialogSaveOptions {
     #[doc(hidden)]
@@ -149,7 +149,7 @@ impl PartialEq for TauriDialogSaveOptions {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:82 (sha256:a5dad1a143a0d23700b36a5760065d93fdc9e08d0bf6dcd3ac27ea699cc67704)
+// Source: upstream/packages/types/src/TauriApi.ts:87 (sha256:a5dad1a143a0d23700b36a5760065d93fdc9e08d0bf6dcd3ac27ea699cc67704)
 #[derive(Clone, Default)]
 pub struct TauriDialogMessageOptions {
     #[doc(hidden)]
@@ -165,7 +165,7 @@ impl PartialEq for TauriDialogMessageOptions {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:91 (sha256:12394dbfbb0cc34c339c5cb83c02aa4d0d0ba5a4026b573f1889e97c0c85bf4e)
+// Source: upstream/packages/types/src/TauriApi.ts:96 (sha256:57161950eae6eb4f2df828b2b19c596fd401c6f14aa00afbb9352e837a648dfb)
 #[derive(Clone)]
 pub struct TauriDialogPlugin {
     #[doc(hidden)]
@@ -191,7 +191,10 @@ pub struct TauriDialogPlugin {
     pub message: std::sync::Arc<
         std::sync::Mutex<
             Box<
-                dyn FnMut(String, Option<TauriDialogMessageOptions>) -> crate::FlightTask<()>
+                dyn FnMut(
+                        String,
+                        Option<TauriDialogMessageOptions>,
+                    ) -> crate::FlightTask<crate::FlightValue>
                     + Send
                     + 'static,
             >,
@@ -225,10 +228,10 @@ impl PartialEq for TauriDialogPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:99 (sha256:77b9cd06deee3e51f9616500425b499e45c4e8648bd6ee11130d5d4050dceae8)
+// Source: upstream/packages/types/src/TauriApi.ts:104 (sha256:77b9cd06deee3e51f9616500425b499e45c4e8648bd6ee11130d5d4050dceae8)
 pub type TauriNotificationPermission = String;
 
-// Source: upstream/packages/types/src/TauriApi.ts:101 (sha256:f2414ca446a1db6aa5010db8fe98cd38e538cf9efe1aa6d4ee6953c682d69374)
+// Source: upstream/packages/types/src/TauriApi.ts:106 (sha256:f2414ca446a1db6aa5010db8fe98cd38e538cf9efe1aa6d4ee6953c682d69374)
 #[derive(Clone, Default)]
 pub struct TauriNotificationOptions {
     #[doc(hidden)]
@@ -243,7 +246,7 @@ impl PartialEq for TauriNotificationOptions {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:110 (sha256:83c32c6416a1a0cb682c64a7194b97bd8b2a72f5d2d019e5afbdff503b45f82e)
+// Source: upstream/packages/types/src/TauriApi.ts:115 (sha256:83c32c6416a1a0cb682c64a7194b97bd8b2a72f5d2d019e5afbdff503b45f82e)
 #[derive(Clone)]
 pub struct TauriNotificationPlugin {
     #[doc(hidden)]
@@ -266,20 +269,16 @@ impl PartialEq for TauriNotificationPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:118 (sha256:4d6a0b7cef7e70e5ac1f13b54957ce8a0725636c97dd50ddea63064f93e966a3)
+// Source: upstream/packages/types/src/TauriApi.ts:123 (sha256:19c8040db7ed4de0d8c20c0411247a9157d41152e3101188f66472b9f1b36770)
 #[derive(Clone)]
 pub struct TauriOpenerPlugin {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub open_path: std::sync::Arc<
-        std::sync::Mutex<
-            Box<dyn FnMut(String, Option<String>) -> crate::FlightTask<()> + Send + 'static>,
-        >,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<()> + Send + 'static>>,
     >,
     pub open_url: std::sync::Arc<
-        std::sync::Mutex<
-            Box<dyn FnMut(String, Option<String>) -> crate::FlightTask<()> + Send + 'static>,
-        >,
+        std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<()> + Send + 'static>>,
     >,
     pub reveal_item_in_dir: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(String) -> crate::FlightTask<()> + Send + 'static>>,
@@ -291,14 +290,15 @@ impl PartialEq for TauriOpenerPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:126 (sha256:246e12e848faaf96cde9adad6bf3a31cf7ea15db79020049b2298cfd6afb62ba)
+// Source: upstream/packages/types/src/TauriApi.ts:131 (sha256:51bb801639300468ab84bdf9592b2c78ee0dcb73ee763af4281ce5dd8a43d32d)
 #[derive(Clone)]
 pub struct TauriOsModule {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub arch: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> String + Send + 'static>>>,
-    pub locale:
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> Option<String> + Send + 'static>>>,
+    pub locale: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<Option<String>> + Send + 'static>>,
+    >,
     pub platform: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> String + Send + 'static>>>,
     pub version: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> String + Send + 'static>>>,
 }
@@ -308,7 +308,7 @@ impl PartialEq for TauriOsModule {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:135 (sha256:794fb58853246d9ab4a4f300331b775bab0098b139b36d6a444587450d93b560)
+// Source: upstream/packages/types/src/TauriApi.ts:140 (sha256:794fb58853246d9ab4a4f300331b775bab0098b139b36d6a444587450d93b560)
 #[derive(Clone, Default)]
 pub struct TauriShortcutEvent {
     #[doc(hidden)]
@@ -322,7 +322,7 @@ impl PartialEq for TauriShortcutEvent {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:142 (sha256:7c928fec3b33199f0ddb197c838842a9e006f7e39da7dc3598ede1838a9d5bdf)
+// Source: upstream/packages/types/src/TauriApi.ts:147 (sha256:7c928fec3b33199f0ddb197c838842a9e006f7e39da7dc3598ede1838a9d5bdf)
 #[derive(Clone)]
 pub struct TauriGlobalShortcutPlugin {
     #[doc(hidden)]
@@ -359,7 +359,7 @@ impl PartialEq for TauriGlobalShortcutPlugin {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:151 (sha256:3559c6a53952ea41b47eb4fc080062a0abdf3584067b8b7add1b33b146cb239f)
+// Source: upstream/packages/types/src/TauriApi.ts:156 (sha256:3559c6a53952ea41b47eb4fc080062a0abdf3584067b8b7add1b33b146cb239f)
 #[derive(Clone)]
 pub struct TauriMenuModule {
     #[doc(hidden)]
@@ -375,7 +375,7 @@ impl PartialEq for TauriMenuModule {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:160 (sha256:f070520820b61a76ef694c0787550a09dd00349be9c2f453232ba28d195d8d92)
+// Source: upstream/packages/types/src/TauriApi.ts:165 (sha256:f070520820b61a76ef694c0787550a09dd00349be9c2f453232ba28d195d8d92)
 #[derive(Clone)]
 pub struct TauriMenuFactory {
     #[doc(hidden)]
@@ -396,7 +396,7 @@ impl PartialEq for TauriMenuFactory {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:164 (sha256:90c757a268354e5da4e49b8741a2241193872d41e80d6679842810cf9b36de5c)
+// Source: upstream/packages/types/src/TauriApi.ts:169 (sha256:90c757a268354e5da4e49b8741a2241193872d41e80d6679842810cf9b36de5c)
 #[derive(Clone)]
 pub struct TauriMenuItemFactory {
     #[doc(hidden)]
@@ -417,7 +417,7 @@ impl PartialEq for TauriMenuItemFactory {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:168 (sha256:b84446ab6e3888a4e5a2c6e2a27b3fe0d31428f385f687ca390dd088652dd83c)
+// Source: upstream/packages/types/src/TauriApi.ts:173 (sha256:b84446ab6e3888a4e5a2c6e2a27b3fe0d31428f385f687ca390dd088652dd83c)
 #[derive(Clone)]
 pub struct TauriSubmenuFactory {
     #[doc(hidden)]
@@ -438,7 +438,7 @@ impl PartialEq for TauriSubmenuFactory {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:172 (sha256:83a21eecaaf09c6ac0f9f4583a5255c52a0f2c5df324742ccc22600c61af08e4)
+// Source: upstream/packages/types/src/TauriApi.ts:177 (sha256:83a21eecaaf09c6ac0f9f4583a5255c52a0f2c5df324742ccc22600c61af08e4)
 #[derive(Clone)]
 pub struct TauriPredefinedMenuItemFactory {
     #[doc(hidden)]
@@ -459,7 +459,7 @@ impl PartialEq for TauriPredefinedMenuItemFactory {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:176 (sha256:2f7aaa2534ac26b17b72d89270bbec3aa0a0babab510d5e1df9c33177361f6ab)
+// Source: upstream/packages/types/src/TauriApi.ts:181 (sha256:2f7aaa2534ac26b17b72d89270bbec3aa0a0babab510d5e1df9c33177361f6ab)
 #[derive(Clone, Default)]
 pub struct TauriMenuOptions {
     #[doc(hidden)]
@@ -472,7 +472,7 @@ impl PartialEq for TauriMenuOptions {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:180 (sha256:e22a71cd15e5913f236052f007b50d5cd40773ea611f34a36a5183b6d0cc92e2)
+// Source: upstream/packages/types/src/TauriApi.ts:185 (sha256:e22a71cd15e5913f236052f007b50d5cd40773ea611f34a36a5183b6d0cc92e2)
 #[derive(Clone, Default)]
 pub struct TauriMenuItemOptions {
     #[doc(hidden)]
@@ -490,7 +490,7 @@ impl PartialEq for TauriMenuItemOptions {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:188 (sha256:ad40af76de4a3c6d305c78b3644c5029d04f099160eb4857115de0514b6df4a1)
+// Source: upstream/packages/types/src/TauriApi.ts:193 (sha256:ad40af76de4a3c6d305c78b3644c5029d04f099160eb4857115de0514b6df4a1)
 #[derive(Clone, Default)]
 pub struct TauriSubmenuOptions {
     #[doc(hidden)]
@@ -505,7 +505,7 @@ impl PartialEq for TauriSubmenuOptions {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:195 (sha256:5311151b387cd5117bcc239053fab7cb73b4e67b1956291d1b54a5fa771ae8cc)
+// Source: upstream/packages/types/src/TauriApi.ts:200 (sha256:5311151b387cd5117bcc239053fab7cb73b4e67b1956291d1b54a5fa771ae8cc)
 #[derive(Clone, Default)]
 pub struct TauriPredefinedMenuItemOptions {
     #[doc(hidden)]
@@ -518,7 +518,7 @@ impl PartialEq for TauriPredefinedMenuItemOptions {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:199 (sha256:a30d7c3652dd87d91ff673ecc217533b42cc4efc44a3b0c528efcf806a6a876a)
+// Source: upstream/packages/types/src/TauriApi.ts:204 (sha256:a30d7c3652dd87d91ff673ecc217533b42cc4efc44a3b0c528efcf806a6a876a)
 #[derive(Clone, Default)]
 pub struct TauriMenuItemHandle {
     #[doc(hidden)]
@@ -531,11 +531,14 @@ impl PartialEq for TauriMenuItemHandle {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:203 (sha256:4373b3864066e880f3ab03c33ec6198de7052fe7e26962861073f4f2e7ee063e)
+// Source: upstream/packages/types/src/TauriApi.ts:208 (sha256:b2307aa34ff090cf4aa140903fafd929961fcd1bb63b0ed63267272187f1f0af)
 #[derive(Clone)]
 pub struct TauriMenu {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub close: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut() -> crate::FlightTask<()> + Send + 'static>>,
+    >,
     pub popup: std::sync::Arc<
         std::sync::Mutex<
             Box<
@@ -557,7 +560,7 @@ impl PartialEq for TauriMenu {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:210 (sha256:bc0882b4cde6b170e9220b5ccf903aaac10b91bcb817499e678c9ab47dec784a)
+// Source: upstream/packages/types/src/TauriApi.ts:216 (sha256:bc0882b4cde6b170e9220b5ccf903aaac10b91bcb817499e678c9ab47dec784a)
 #[derive(Clone)]
 pub struct TauriTrayModule {
     #[doc(hidden)]
@@ -570,7 +573,7 @@ impl PartialEq for TauriTrayModule {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:215 (sha256:db8cc14622e9cf957721cc052c747b7a71bbad62378bde3e4983c243c5ae52cf)
+// Source: upstream/packages/types/src/TauriApi.ts:221 (sha256:db8cc14622e9cf957721cc052c747b7a71bbad62378bde3e4983c243c5ae52cf)
 #[derive(Clone)]
 pub struct TauriTrayIconFactory {
     #[doc(hidden)]
@@ -591,7 +594,7 @@ impl PartialEq for TauriTrayIconFactory {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:219 (sha256:c5089b9fdde398f40991c5fa3f0cf77dc413ec70ff6cb11a0c44a8b97a46a898)
+// Source: upstream/packages/types/src/TauriApi.ts:225 (sha256:db21e7fa9994d17c28316be4f9f69a814e50199c4ae2687964a8c5ce65f9d341)
 #[derive(Clone, Default)]
 pub struct TauriTrayIconOptions {
     #[doc(hidden)]
@@ -600,6 +603,7 @@ pub struct TauriTrayIconOptions {
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(TauriTrayIconEvent) -> () + Send + 'static>>>,
     >,
     pub icon: Option<String>,
+    pub icon_as_template: Option<bool>,
     pub menu: Option<TauriMenu>,
     pub title: Option<String>,
     pub tooltip: Option<String>,
@@ -610,12 +614,27 @@ impl PartialEq for TauriTrayIconOptions {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:229 (sha256:2f7c1d2a94abb4a509f13633fc076210814d0e73374b24db36c4818390d6096b)
+// Source: upstream/packages/types/src/TauriApi.ts:236 (sha256:a6e995de3e7b815ebeeed535c9179f448981f9456cf9bae377ba83e39d917254)
+#[derive(Clone, Default)]
+pub struct TauriTrayIconEventRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub position: TauriPhysicalPositionLike,
+    pub size: TauriLogicalSizeLike,
+}
+impl PartialEq for TauriTrayIconEventRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 #[derive(Clone, Default)]
 pub struct TauriTrayIconEvent {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub button_state: Option<String>,
     pub button: Option<String>,
+    pub position: Option<TauriPhysicalPositionLike>,
+    pub rect: Option<TauriTrayIconEventRecord1>,
     pub type_: String,
 }
 impl PartialEq for TauriTrayIconEvent {
@@ -624,7 +643,7 @@ impl PartialEq for TauriTrayIconEvent {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:234 (sha256:d634e07888ec49ab7fd6886972c5fb90807a61c27675345eda326d9cd1718d05)
+// Source: upstream/packages/types/src/TauriApi.ts:247 (sha256:8dc857af7c3ad53eae4d871e4a60f877204c559399bcd55f65eef9f872d3c813)
 #[derive(Clone)]
 pub struct TauriTrayIcon {
     #[doc(hidden)]
@@ -634,6 +653,9 @@ pub struct TauriTrayIcon {
     >,
     pub set_icon: std::sync::Arc<
         std::sync::Mutex<Box<dyn FnMut(Option<String>) -> crate::FlightTask<()> + Send + 'static>>,
+    >,
+    pub set_icon_as_template: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(bool) -> crate::FlightTask<()> + Send + 'static>>,
     >,
     pub set_menu: std::sync::Arc<
         std::sync::Mutex<
@@ -653,7 +675,7 @@ impl PartialEq for TauriTrayIcon {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:245 (sha256:2795a5583f58aeeb92dedc7091398bf1b9d5b35285ca453ae1a70eec0d4e189b)
+// Source: upstream/packages/types/src/TauriApi.ts:259 (sha256:2795a5583f58aeeb92dedc7091398bf1b9d5b35285ca453ae1a70eec0d4e189b)
 #[derive(Clone)]
 pub struct TauriWindowModule {
     #[doc(hidden)]
@@ -669,7 +691,7 @@ impl PartialEq for TauriWindowModule {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:251 (sha256:bec9c6d2442908c970f5172e36d701331a52c6826d28ca8c4092b58dd46bcb97)
+// Source: upstream/packages/types/src/TauriApi.ts:265 (sha256:bec9c6d2442908c970f5172e36d701331a52c6826d28ca8c4092b58dd46bcb97)
 #[derive(Clone, Default)]
 pub struct TauriLogicalPositionConstructor {
     #[doc(hidden)]
@@ -682,7 +704,7 @@ impl PartialEq for TauriLogicalPositionConstructor {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:255 (sha256:74872f5d736e4e133d3482f2e11838aeb917e4c6a11938a864668cf17984cd4e)
+// Source: upstream/packages/types/src/TauriApi.ts:269 (sha256:74872f5d736e4e133d3482f2e11838aeb917e4c6a11938a864668cf17984cd4e)
 #[derive(Clone, Default)]
 pub struct TauriLogicalSizeConstructor {
     #[doc(hidden)]
@@ -695,7 +717,7 @@ impl PartialEq for TauriLogicalSizeConstructor {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:261 (sha256:ce3971126702a634cdfc546ae6c1186cd58316ffde5a7f9a05c80cce0c317ed6)
+// Source: upstream/packages/types/src/TauriApi.ts:275 (sha256:ce3971126702a634cdfc546ae6c1186cd58316ffde5a7f9a05c80cce0c317ed6)
 #[derive(Clone, Default)]
 pub struct TauriPhysicalPositionLike {
     #[doc(hidden)]
@@ -709,7 +731,7 @@ impl PartialEq for TauriPhysicalPositionLike {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:266 (sha256:a9b35df6942f65f75ad2e42011b0ea4cc6568491f38c0371dc609e1d68284e44)
+// Source: upstream/packages/types/src/TauriApi.ts:280 (sha256:a9b35df6942f65f75ad2e42011b0ea4cc6568491f38c0371dc609e1d68284e44)
 #[derive(Clone, Default)]
 pub struct TauriLogicalSizeLike {
     #[doc(hidden)]
@@ -723,10 +745,10 @@ impl PartialEq for TauriLogicalSizeLike {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:272 (sha256:9fd522b35ed4e4fef8f23d598d958cb5fdc3fcfeb57f1d6f2365280356d9bc9a)
+// Source: upstream/packages/types/src/TauriApi.ts:286 (sha256:9fd522b35ed4e4fef8f23d598d958cb5fdc3fcfeb57f1d6f2365280356d9bc9a)
 pub type TauriUnlisten = std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>;
 
-// Source: upstream/packages/types/src/TauriApi.ts:274 (sha256:e14778aebce9fedd52ae029a54e8939101af6bbbe5a6062b86158b5a9bb1a1e5)
+// Source: upstream/packages/types/src/TauriApi.ts:288 (sha256:e14778aebce9fedd52ae029a54e8939101af6bbbe5a6062b86158b5a9bb1a1e5)
 #[derive(Clone, Default)]
 pub struct TauriWindowRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -902,7 +924,7 @@ impl PartialEq for TauriWindow {
     }
 }
 
-// Source: upstream/packages/types/src/TauriApi.ts:302 (sha256:02ded392e35ee19c8530acdd378d18caabda7b1ea30daff03c403b69b5086168)
+// Source: upstream/packages/types/src/TauriApi.ts:316 (sha256:02ded392e35ee19c8530acdd378d18caabda7b1ea30daff03c403b69b5086168)
 #[derive(Clone)]
 pub struct TauriCloseRequestedEvent {
     #[doc(hidden)]

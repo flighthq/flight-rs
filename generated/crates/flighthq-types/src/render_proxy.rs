@@ -7,12 +7,12 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, ColorScaleBias, EntityRuntime, Kind, Material, MaterialData, Renderable, Renderer,
+    BlendMode, ColorScaleBias, EntityRuntime, Kind, Material, MaterialData, NodeAny, NodeRenderer,
     RendererData,
 };
 
-// Source: upstream/packages/types/src/RenderProxy.ts:9 (sha256:f0d40c25ffe0591e6ea74f08dd22ec61859b14d72b08dbf54d2b642fd68e5cb9)
-#[derive(Clone)]
+// Source: upstream/packages/types/src/RenderProxy.ts:9 (sha256:12fa8bef3be1b1231f35c3541fa03a7acfa56129269be67f48b232f27b79d505)
+#[derive(Clone, Default)]
 pub struct RenderProxy {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -20,7 +20,7 @@ pub struct RenderProxy {
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     #[doc(hidden)]
     pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
-    pub source: Renderable,
+    pub source: NodeAny,
     pub kind: Kind,
     pub next: Option<Box<RenderProxy>>,
     pub alpha: f64,
@@ -36,9 +36,9 @@ pub struct RenderProxy {
     pub last_local_transform_id: f64,
     pub last_parent_reference_id: f64,
     pub name: Option<String>,
-    pub renderer: Option<Renderer>,
+    pub renderer: Option<NodeRenderer>,
     pub renderer_data: Option<RendererData>,
-    pub renderer_data_source: Option<Renderable>,
+    pub renderer_data_source: Option<NodeAny>,
     pub renderer_map_id: f64,
     pub transform_frame_id: f64,
     pub visible: bool,

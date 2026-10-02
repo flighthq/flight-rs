@@ -9,7 +9,7 @@
 use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode, Modifier, Texture};
 use crate::{PbrExtension, StandardPbrMaterialProperties};
 
-// Source: upstream/packages/types/src/ShadedMaterial.ts:23 (sha256:f012cad97304e5b646c0f93382b021b88256802524f06f31c7c237f4904454f6)
+// Source: upstream/packages/types/src/ShadedMaterial.ts:23 (sha256:1e19ffcc7b3f09f283feabdc96ea2500adcbd3e6774b088d27cf4725b3794d3d)
 #[derive(Clone, Default)]
 pub struct ShadedMaterial {
     #[doc(hidden)]
@@ -24,19 +24,40 @@ pub struct ShadedMaterial {
     pub alpha_mode: MaterialAlphaMode,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub color: f64,
+    pub thickness: f64,
+    pub tint: f64,
+    pub base_color: f64,
+    pub base_color_map: Option<Texture>,
+    pub ramp: Option<Texture>,
+    pub steps: f64,
+    pub alpha_map: Option<Texture>,
+    pub emissive: f64,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: f64,
+    pub metallic: f64,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: f64,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: f64,
+    pub roughness: f64,
+    pub diffuse: f64,
+    pub diffuse_map: Option<Texture>,
+    pub glossiness: f64,
+    pub specular: f64,
+    pub specular_glossiness_map: Option<Texture>,
+    pub modifiers: Vec<Modifier>,
+    pub shininess: f64,
+    pub specular_map: Option<Texture>,
+    pub matcap: Option<Texture>,
     pub extensions: Vec<PbrExtension>,
     pub standard: StandardPbrMaterialProperties,
+    pub far: f64,
+    pub near: f64,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
-    pub diffuse: f64,
-    pub diffuse_map: Option<Texture>,
-    pub modifiers: Vec<Modifier>,
-    pub normal_map: Option<Texture>,
-    pub normal_scale: f64,
-    pub shininess: f64,
-    pub specular: f64,
-    pub specular_map: Option<Texture>,
 }
 impl PartialEq for ShadedMaterial {
     fn eq(&self, other: &Self) -> bool {
@@ -62,5 +83,5 @@ impl crate::FlightEntity for ShadedMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/ShadedMaterial.ts:34 (sha256:b7634fc89156534c53372e5bebcbed6102390550b5bcf8dc936efd1d74d135f0)
+// Source: upstream/packages/types/src/ShadedMaterial.ts:35 (sha256:b7634fc89156534c53372e5bebcbed6102390550b5bcf8dc936efd1d74d135f0)
 pub const SHADED_MATERIAL_KIND: &'static str = "ShadedMaterial";

@@ -6,4 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-pub use crate::{get_bidi_runs, reorder_bidi_line, resolve_bidi_levels};
+pub use crate::{
+    COMPACT_BIDI_CLASS_KERNEL, disable_text_bidi_guards, enable_text_bidi_guards,
+    explain_bidi_class_kernel, get_bidi_runs, reorder_bidi_line, resolve_bidi_levels,
+};

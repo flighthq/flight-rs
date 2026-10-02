@@ -54,7 +54,26 @@ impl PartialEq for NetRequest {
     }
 }
 
-// Source: upstream/packages/types/src/Net.ts:54 (sha256:9f072cdbc05e1b6f6f23c2f526fb60b394c28f9e5d14f3963903e565423c1d32)
+// Source: upstream/packages/types/src/Net.ts:54 (sha256:d840f17b5a2203b069d8f46eaba1eebd3ce5c55ffc9ad7c3b62c835a25bbea26)
+#[derive(Clone, Default)]
+pub struct NetGuardNotice {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub operation: String,
+    pub reason: String,
+    pub request: NetRequest,
+}
+impl PartialEq for NetGuardNotice {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Net.ts:60 (sha256:4930dccb24d81259ef9c93ccd68815e0d0f0c68ded3a9a7b8044f3f44b506acc)
+pub type NetGuard =
+    std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(NetGuardNotice) -> () + Send + 'static>>>;
+
+// Source: upstream/packages/types/src/Net.ts:65 (sha256:9f072cdbc05e1b6f6f23c2f526fb60b394c28f9e5d14f3963903e565423c1d32)
 #[derive(Clone, Default)]
 pub struct NetResponse {
     #[doc(hidden)]
@@ -72,7 +91,23 @@ impl PartialEq for NetResponse {
     }
 }
 
-// Source: upstream/packages/types/src/Net.ts:67 (sha256:d44c2fab2668dd3124b15bf357de97a81465504c11e7245ada6850a71efa8c76)
+// Source: upstream/packages/types/src/Net.ts:78 (sha256:53dffe299d668940c8c9b804c0ed55d003cb3a98e693fb4f463c2cd2253f3cc8)
+#[derive(Clone, Default)]
+pub struct NetResponseExplanation {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub reason: String,
+    pub status: f64,
+    pub status_text: String,
+    pub url: String,
+}
+impl PartialEq for NetResponseExplanation {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Net.ts:89 (sha256:d44c2fab2668dd3124b15bf357de97a81465504c11e7245ada6850a71efa8c76)
 #[derive(Clone, Default)]
 pub struct NetProgress {
     #[doc(hidden)]
@@ -87,7 +122,7 @@ impl PartialEq for NetProgress {
     }
 }
 
-// Source: upstream/packages/types/src/Net.ts:75 (sha256:eb3efc65ebc51bd352306b2bce221f8fb7d60e77e6b7ffda364ee0a9ec7268db)
+// Source: upstream/packages/types/src/Net.ts:97 (sha256:eb3efc65ebc51bd352306b2bce221f8fb7d60e77e6b7ffda364ee0a9ec7268db)
 #[derive(Clone, Default)]
 pub struct NetRequestOptions {
     #[doc(hidden)]
@@ -105,9 +140,9 @@ impl PartialEq for NetRequestOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Net.ts:82 (sha256:a696e70c7b6a85f7e8502e24c5bfcbb73de73d05e5ab826f0cb062ecfc8ebd07)
+// Source: upstream/packages/types/src/Net.ts:104 (sha256:f960336ed8bdd91555ed1b96148ad4f2a892ea786d876a7be087769381f04161)
 #[derive(Clone)]
-pub struct NetBackend {
+pub struct HostNetCapability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub send_net_request: std::sync::Arc<
@@ -120,7 +155,7 @@ pub struct NetBackend {
         >,
     >,
 }
-impl PartialEq for NetBackend {
+impl PartialEq for HostNetCapability {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

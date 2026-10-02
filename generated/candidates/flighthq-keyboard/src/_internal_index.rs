@@ -7,10 +7,8 @@
 #![allow(unused_parens)]
 
 pub use crate::{
-    attach_soft_keyboard, create_soft_keyboard, create_soft_keyboard_transition,
-    detach_soft_keyboard, dispose_soft_keyboard, get_soft_keyboard_height, get_soft_keyboard_info,
-    get_soft_keyboard_resize_mode, hide_soft_keyboard, is_soft_keyboard_accessory_bar_visible,
-    is_soft_keyboard_scroll_assist_enabled, set_soft_keyboard_accessory_bar_visible,
-    set_soft_keyboard_resize_mode, set_soft_keyboard_scroll_assist_enabled,
-    set_soft_keyboard_style, show_soft_keyboard,
+    attach_soft_keyboard, create_soft_keyboard, detach_soft_keyboard, dispose_soft_keyboard,
+    get_soft_keyboard_height, get_soft_keyboard_info, hide_soft_keyboard, is_soft_keyboard_visible,
+    set_soft_keyboard_accessory_bar_visible, set_soft_keyboard_resize_mode,
+    set_soft_keyboard_scroll_assist_enabled, set_soft_keyboard_style, show_soft_keyboard,
 };

@@ -6,24 +6,18 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
-use flighthq_types::{Kind, Material};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{EntityConstruction, Kind, Material};
 
-// Source: upstream/packages/materials/src/material.ts:6 (sha256:8bc3d74ced8427811d249dc4de6728f09afd84ead12470693ea66ea2e75ef998)
+// Source: upstream/packages/materials/src/material.ts:6 (sha256:3ce775b0696548bce396bc8cf635a7de2dec5248a7b4966dfe22bec26a295226)
 pub fn clone_material(source: &Material) -> Material {
-    let mut clone = create_entity(Some(Material {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        kind: (source.kind).clone(),
-        name: None,
-        ..Default::default()
-    }));
+    let mut clone = allocate_entity();
+    crate::host_set("host.kind", (source.kind).clone());
     copy_material_fields(&mut clone, source, (source.kind).clone());
-    return clone;
+    return finish_entity((clone).clone());
 }
 
-// Source: upstream/packages/materials/src/material.ts:14 (sha256:f4f6d26d442dce89d4d3d58c685d24f2d54b254a9799dc6aadaa62b09b70e94b)
+// Source: upstream/packages/materials/src/material.ts:15 (sha256:f4f6d26d442dce89d4d3d58c685d24f2d54b254a9799dc6aadaa62b09b70e94b)
 pub fn copy_material(out: &mut Material, source: &Material) -> () {
     if (out == source) {
         return;
@@ -31,21 +25,14 @@ pub fn copy_material(out: &mut Material, source: &Material) -> () {
     copy_material_fields(out, source, (source.kind).clone());
 }
 
-// Source: upstream/packages/materials/src/material.ts:19 (sha256:48b5bace9344eb193e68ae1cf5d25fb9aa194d64f8d368db2ea056d68511e4ec)
+// Source: upstream/packages/materials/src/material.ts:20 (sha256:b6207601eecee6c15f5987bf1886b36ac594a4e3b2f537b3782fde5aa8bd4387)
 pub fn create_material(kind: Kind) -> Material {
-    let mut material = create_entity(Some(Material {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        kind: (kind).clone(),
-        name: None,
-        ..Default::default()
-    }));
-    material.name = None;
-    return material;
+    let mut material = allocate_entity();
+    initialize_material((material).clone(), (kind).clone());
+    return finish_entity((material).clone());
 }
 
-// Source: upstream/packages/materials/src/material.ts:28 (sha256:1a48de1f6d32e81a24970552a896f290aea96a49b2f3fb841ec7f97863c86b42)
+// Source: upstream/packages/materials/src/material.ts:29 (sha256:feae53144c886197182cabf32d8f15f15550f0676f5937770a5a15ce73cf82cf)
 pub fn equals_material(a: &Material, b: &Material) -> bool {
     if (a == b) {
         return true;
@@ -55,14 +42,22 @@ pub fn equals_material(a: &Material, b: &Material) -> bool {
     }
     let a_fields = crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast");
     let b_fields = crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast");
-    for key in (a_fields
+    let a_keys = a_fields
         .iter()
         .map(|(entry_key, _)| entry_key.clone())
-        .collect::<Vec<_>>())
-    .iter()
-    .cloned()
-    {
-        if (key == "kind") {
+        .collect::<Vec<_>>();
+    let b_keys = b_fields
+        .iter()
+        .map(|(entry_key, _)| entry_key.clone())
+        .collect::<Vec<_>>();
+    if ((a_keys.len() as f64) != (b_keys.len() as f64)) {
+        return false;
+    }
+    for key in (a_keys).iter().cloned() {
+        if (!crate::host_value::<()>("host.hasOwn")) {
+            return false;
+        }
+        if ((key).clone() == "kind") {
             continue;
         }
         if ((a_fields
@@ -82,10 +77,10 @@ pub fn equals_material(a: &Material, b: &Material) -> bool {
     return true;
 }
 
-// Source: upstream/packages/materials/src/material.ts:45 (sha256:f7243c63cc0fe4a303d3cf43e3225823954c4137ee1703db6ba763009c1b6520)
+// Source: upstream/packages/materials/src/material.ts:50 (sha256:71fc461c19bff1416462397c78890c52fc43c55d19087fc95c208390dfbb052d)
 pub fn get_material_of_kind<T: Clone + flighthq_types::FlightEntity>(
     material: &Option<Material>,
-    kind: Kind,
+    kind: crate::OpaqueHostValue,
 ) -> Option<T> {
     return if ((material).is_some()) && ((material.as_ref().unwrap().kind).clone() == kind) {
         Some(
@@ -97,7 +92,13 @@ pub fn get_material_of_kind<T: Clone + flighthq_types::FlightEntity>(
     };
 }
 
-// Source: upstream/packages/materials/src/material.ts:52 (sha256:3ecd641f0460053cb1a7b61cfa11afbd981fc937c81b55090927a360c95052c0)
+// Source: upstream/packages/materials/src/material.ts:54 (sha256:5325789d96487ae077a653f8727dbf7f6b36cb977b0e090083dc866092be76de)
+pub fn initialize_material(material: EntityConstruction<Material>, kind: Kind) -> () {
+    crate::host_set("host.kind", kind);
+    crate::host_set("host.name", None);
+}
+
+// Source: upstream/packages/materials/src/material.ts:62 (sha256:3ecd641f0460053cb1a7b61cfa11afbd981fc937c81b55090927a360c95052c0)
 fn copy_material_fields(dst: &mut Material, src: &Material, kind: Kind) -> () {
     let mut dst_fields = crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast");
     let src_fields = crate::host_value::<Vec<(String, crate::FlightValue)>>("host.cast");

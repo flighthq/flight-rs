@@ -6,12 +6,14 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/BackendExplanation.ts:1 (sha256:ff9baccdc11a19a08078228c8985c8dc19daaf673f2fbfbd08ea4e7135672f36)
+// Source: upstream/packages/types/src/BackendExplanation.ts:1 (sha256:92cfa6569cb5ae5e4bfcf63c57f4b54339a43c30a40e966016cc3c605e850eb4)
 #[derive(Clone, Default)]
 pub struct BackendExplanation {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub conflict: bool,
     pub layer: String,
+    pub operation: Option<String>,
     pub viability: String,
 }
 impl PartialEq for BackendExplanation {

@@ -6,18 +6,26 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{AdvancedBlendMode, AnimationClip, DisplayObject, Image, LottieImageAsset};
+use crate::{
+    AnimationClip, DisplayObject, EntityRuntime, ImageResource, LottieAdvancedBlend,
+    LottieImageAsset, LottieLayerHandlerEntry, LottieMaskHandlerEntry, LottieShapeItemHandlerEntry,
+};
 
-// Source: upstream/packages/types/src/LottieDocumentImport.ts:11 (sha256:b97b138e2ffb8a5132a3dd9d9d86a70873374fe606b546316b8593105747b1c3)
+// Source: upstream/packages/types/src/LottieDocumentImport.ts:13 (sha256:1e2b32dd822a222a52b21766a512c860b779a4567ebe751d21fe76e315084d14)
 #[derive(Clone, Default)]
 pub struct LottieDocumentImportOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub layer_handlers: Option<Vec<LottieLayerHandlerEntry>>,
+    pub mask_handlers: Option<Vec<LottieMaskHandlerEntry>>,
     pub resolve_image_resource: Option<
         std::sync::Arc<
-            std::sync::Mutex<Box<dyn FnMut(LottieImageAsset) -> Option<Image> + Send + 'static>>,
+            std::sync::Mutex<
+                Box<dyn FnMut(LottieImageAsset) -> Option<ImageResource> + Send + 'static>,
+            >,
         >,
     >,
+    pub shape_item_handlers: Option<Vec<LottieShapeItemHandlerEntry>>,
 }
 impl PartialEq for LottieDocumentImportOptions {
     fn eq(&self, other: &Self) -> bool {
@@ -25,25 +33,15 @@ impl PartialEq for LottieDocumentImportOptions {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocumentImport.ts:19 (sha256:d29cc295b5c1d4b844ba0299e7e06a6e416938488922051f1738dbcf4014ad46)
-#[derive(Clone, Default)]
-pub struct LottieAdvancedBlend {
-    #[doc(hidden)]
-    pub __flight_identity: std::sync::Arc<()>,
-    pub mode: AdvancedBlendMode,
-    pub node: DisplayObject,
-}
-impl PartialEq for LottieAdvancedBlend {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/types/src/LottieDocumentImport.ts:29 (sha256:901d127e5694e632746bb2c671743d5abd0a607a98ba8736dcb08bd25da15542)
+// Source: upstream/packages/types/src/LottieDocumentImport.ts:20 (sha256:111c59a5d322dfa35bf314861944934b12c2e2a96dcccddd34d3abccac338871)
 #[derive(Clone, Default)]
 pub struct LottieDocumentImportResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub advanced_blends: Vec<LottieAdvancedBlend>,
     pub clip: AnimationClip,
     pub duration: f64,
@@ -53,5 +51,23 @@ pub struct LottieDocumentImportResult {
 impl PartialEq for LottieDocumentImportResult {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for LottieDocumentImportResult {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

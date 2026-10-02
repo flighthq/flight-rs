@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::{is_valid_material_ior, is_valid_material_weight, is_valid_pbr_uv_set};
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_types::{
-    Kind, PbrUvSet,
+    EntityConstruction, Kind, PbrUvSet,
     TRANSMISSION_VOLUME_PBR_EXTENSION_KIND as transmission_volume_pbr_extension_kind_constant,
     Texture, TransmissionVolumePbrExtension,
 };
@@ -71,39 +71,120 @@ impl PartialEq for FlightPartialRecord2066421274 {
     }
 }
 
-// Source: upstream/packages/materials/src/transmissionVolumePbrExtension.ts:8 (sha256:29c4c367f9c43e3f766ccd805cb3b5ecc12bf73f22aa0d0419dde501c76be9f8)
+// Source: upstream/packages/materials/src/transmissionVolumePbrExtension.ts:8 (sha256:8faea44cea7b29d919fbea9a5212698d98d6f237947c1f8800b69bb290840be4)
 pub fn create_transmission_volume_pbr_extension(
     opts: Option<FlightPartialRecord2066421274>,
 ) -> TransmissionVolumePbrExtension {
-    return create_entity(Some(TransmissionVolumePbrExtension {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        attenuation_color: (opts.as_ref().and_then(|value| value.attenuation_color))
-            .unwrap_or(4294967295.0_f64),
-        attenuation_distance: (opts.as_ref().and_then(|value| value.attenuation_distance))
-            .unwrap_or(f64::INFINITY),
-        ior: (opts.as_ref().and_then(|value| value.ior)).unwrap_or(1.5_f64),
-        kind: (transmission_volume_pbr_extension_kind_constant).to_owned(),
-        thickness: (opts.as_ref().and_then(|value| value.thickness)).unwrap_or(0.0_f64),
-        thickness_map: opts
-            .as_ref()
+    let mut out = allocate_entity();
+    initialize_transmission_volume_pbr_extension(
+        (out).clone(),
+        ((opts).clone()).as_ref().map(|__flight_value| {
+            let __flight_source = &(__flight_value);
+            FlightPartialRecord2066421274 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                kind: (__flight_source.kind).clone(),
+                thickness: __flight_source.thickness,
+                thickness_map: (__flight_source.thickness_map).clone(),
+                thickness_map_uv_set: __flight_source.thickness_map_uv_set,
+                wrapped_diffuse_color: __flight_source.wrapped_diffuse_color,
+                wrapped_diffuse_map: (__flight_source.wrapped_diffuse_map).clone(),
+                wrapped_diffuse_map_uv_set: __flight_source.wrapped_diffuse_map_uv_set,
+                wrapped_diffuse_strength: __flight_source.wrapped_diffuse_strength,
+                attenuation_color: __flight_source.attenuation_color,
+                attenuation_distance: __flight_source.attenuation_distance,
+                ior: __flight_source.ior,
+                transmission: __flight_source.transmission,
+                transmission_map: (__flight_source.transmission_map).clone(),
+                transmission_map_uv_set: __flight_source.transmission_map_uv_set,
+                specular: __flight_source.specular,
+                specular_color: __flight_source.specular_color,
+                specular_color_map: (__flight_source.specular_color_map).clone(),
+                specular_color_map_uv_set: __flight_source.specular_color_map_uv_set,
+                specular_map: (__flight_source.specular_map).clone(),
+                specular_map_uv_set: __flight_source.specular_map_uv_set,
+                sheen_color: __flight_source.sheen_color,
+                sheen_color_map: (__flight_source.sheen_color_map).clone(),
+                sheen_color_map_uv_set: __flight_source.sheen_color_map_uv_set,
+                sheen_roughness: __flight_source.sheen_roughness,
+                sheen_roughness_map: (__flight_source.sheen_roughness_map).clone(),
+                sheen_roughness_map_uv_set: __flight_source.sheen_roughness_map_uv_set,
+                iridescence: __flight_source.iridescence,
+                iridescence_ior: __flight_source.iridescence_ior,
+                iridescence_map: (__flight_source.iridescence_map).clone(),
+                iridescence_map_uv_set: __flight_source.iridescence_map_uv_set,
+                iridescence_thickness_map: (__flight_source.iridescence_thickness_map).clone(),
+                iridescence_thickness_map_uv_set: __flight_source.iridescence_thickness_map_uv_set,
+                iridescence_thickness_max: __flight_source.iridescence_thickness_max,
+                iridescence_thickness_min: __flight_source.iridescence_thickness_min,
+                clearcoat: __flight_source.clearcoat,
+                clearcoat_map: (__flight_source.clearcoat_map).clone(),
+                clearcoat_map_uv_set: __flight_source.clearcoat_map_uv_set,
+                clearcoat_normal_map: (__flight_source.clearcoat_normal_map).clone(),
+                clearcoat_normal_map_uv_set: __flight_source.clearcoat_normal_map_uv_set,
+                clearcoat_normal_scale: __flight_source.clearcoat_normal_scale,
+                clearcoat_roughness: __flight_source.clearcoat_roughness,
+                clearcoat_roughness_map: (__flight_source.clearcoat_roughness_map).clone(),
+                clearcoat_roughness_map_uv_set: __flight_source.clearcoat_roughness_map_uv_set,
+                anisotropy_map: (__flight_source.anisotropy_map).clone(),
+                anisotropy_map_uv_set: __flight_source.anisotropy_map_uv_set,
+                anisotropy_rotation: __flight_source.anisotropy_rotation,
+                anisotropy_strength: __flight_source.anisotropy_strength,
+            }
+        }),
+    );
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/materials/src/transmissionVolumePbrExtension.ts:16 (sha256:8a1f40b26ab97764b39a106280cb62918da0693c0465c1ba4e661378c273a13f)
+pub fn initialize_transmission_volume_pbr_extension(
+    out: EntityConstruction<TransmissionVolumePbrExtension>,
+    opts: Option<FlightPartialRecord2066421274>,
+) -> () {
+    crate::host_set(
+        "host.attenuationColor",
+        (opts.as_ref().and_then(|value| value.attenuation_color)).unwrap_or(4294967295.0_f64),
+    );
+    crate::host_set(
+        "host.attenuationDistance",
+        (opts.as_ref().and_then(|value| value.attenuation_distance)).unwrap_or(f64::INFINITY),
+    );
+    crate::host_set(
+        "host.ior",
+        (opts.as_ref().and_then(|value| value.ior)).unwrap_or(1.5_f64),
+    );
+    crate::host_set("host.kind", transmission_volume_pbr_extension_kind_constant);
+    crate::host_set(
+        "host.thickness",
+        (opts.as_ref().and_then(|value| value.thickness)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.thicknessMap",
+        opts.as_ref()
             .and_then(|value| (value.thickness_map).clone()),
-        thickness_map_uv_set: (opts.as_ref().and_then(|value| value.thickness_map_uv_set))
-            .unwrap_or(0.0_f64),
-        transmission: (opts.as_ref().and_then(|value| value.transmission)).unwrap_or(0.0_f64),
-        transmission_map: opts
-            .as_ref()
+    );
+    crate::host_set(
+        "host.thicknessMapUvSet",
+        (opts.as_ref().and_then(|value| value.thickness_map_uv_set)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.transmission",
+        (opts.as_ref().and_then(|value| value.transmission)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.transmissionMap",
+        opts.as_ref()
             .and_then(|value| (value.transmission_map).clone()),
-        transmission_map_uv_set: (opts
+    );
+    crate::host_set(
+        "host.transmissionMapUvSet",
+        (opts
             .as_ref()
             .and_then(|value| value.transmission_map_uv_set))
         .unwrap_or(0.0_f64),
-        ..Default::default()
-    }));
+    );
 }
 
-// Source: upstream/packages/materials/src/transmissionVolumePbrExtension.ts:25 (sha256:92573a315acb28e21ca4aa9d8d77d78efe1164ffc0508f2999d332de72230f00)
+// Source: upstream/packages/materials/src/transmissionVolumePbrExtension.ts:32 (sha256:92573a315acb28e21ca4aa9d8d77d78efe1164ffc0508f2999d332de72230f00)
 pub fn is_valid_transmission_volume_pbr_extension(value: &TransmissionVolumePbrExtension) -> bool {
     let valid_attenuation_distance = (value.attenuation_distance == f64::INFINITY)
         || (((value.attenuation_distance).is_finite()) && (value.attenuation_distance > 0.0_f64));

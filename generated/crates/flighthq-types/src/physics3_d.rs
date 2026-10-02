@@ -6,12 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{CollisionColliderShape3D, SpatialIndexBackend3D};
+use crate::{CollisionColliderShape3D, EntityRuntime, SpatialIndexBackend3D};
 
-// Source: upstream/packages/types/src/Physics3D.ts:28 (sha256:f484c4d4fc65e7121ea4ff88c9adb0f7623093ca2872e50787cbb5537230204e)
+// Source: upstream/packages/types/src/Physics3D.ts:29 (sha256:f484c4d4fc65e7121ea4ff88c9adb0f7623093ca2872e50787cbb5537230204e)
 pub type Physics3DBodyType = String;
 
-// Source: upstream/packages/types/src/Physics3D.ts:37 (sha256:9a89e8b866e39db1683ae559bf348b722b56ddf4ceaca2ffb841f5c34d7d09fd)
+// Source: upstream/packages/types/src/Physics3D.ts:38 (sha256:9a89e8b866e39db1683ae559bf348b722b56ddf4ceaca2ffb841f5c34d7d09fd)
 #[derive(Clone, Default)]
 pub struct Physics3DMaterial {
     #[doc(hidden)]
@@ -26,7 +26,7 @@ impl PartialEq for Physics3DMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:47 (sha256:1ee81caf276760e1000d88bdb511703a0227b6a15e9054bf44500ff76dcab997)
+// Source: upstream/packages/types/src/Physics3D.ts:48 (sha256:1ee81caf276760e1000d88bdb511703a0227b6a15e9054bf44500ff76dcab997)
 #[derive(Clone, Default)]
 pub struct Physics3DCollisionFilter {
     #[doc(hidden)]
@@ -41,11 +41,15 @@ impl PartialEq for Physics3DCollisionFilter {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:69 (sha256:2e33cadefb91c40d722d0d84800ed78d01cf34b3cd050be01da62f4ec02ca63f)
+// Source: upstream/packages/types/src/Physics3D.ts:70 (sha256:2c7f33bd993f5886ae293a98bd31a52e5a71fee04c390cf479c972db4771e0d1)
 #[derive(Clone)]
 pub struct Physics3DCollider {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub local: CollisionColliderShape3D,
     pub world: CollisionColliderShape3D,
     pub material: Physics3DMaterial,
@@ -57,12 +61,34 @@ impl PartialEq for Physics3DCollider {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DCollider {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:96 (sha256:280e588114daf5dcd9e2597b4995772ffbf8cb4fecc34588b8f09d93669e2ca3)
+// Source: upstream/packages/types/src/Physics3D.ts:97 (sha256:e8caf481441f38979b55e024587a3729058baa1601a900a19c191de260abe09a)
 #[derive(Clone, Default)]
 pub struct Physics3DMassData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub mass: f64,
     pub inertia_xx: f64,
     pub inertia_yy: f64,
@@ -79,12 +105,34 @@ impl PartialEq for Physics3DMassData {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DMassData {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:120 (sha256:0cdf69f452b4fed4ee03a4309468fc1ed3d5835d844cd6ad7ea054bebeb81e36)
+// Source: upstream/packages/types/src/Physics3D.ts:121 (sha256:18c210d3215d397691d9563449f421ca0bcacaae5ca69c816db2843568b31109)
 #[derive(Clone, Default)]
 pub struct RigidBody3D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub index: f64,
     pub type_: Physics3DBodyType,
     pub x: f64,
@@ -144,12 +192,34 @@ impl PartialEq for RigidBody3D {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for RigidBody3D {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:248 (sha256:37098485d1f3c0ab62d7c0e44485809fcf1db020778b9abdc217cc381057e848)
+// Source: upstream/packages/types/src/Physics3D.ts:249 (sha256:2b58699813dc5cf98e9dc283d9b53c6713b29fc05db2cace1d819059643623a8)
 #[derive(Clone, Default)]
 pub struct Physics3DContactPoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub x: f64,
     pub y: f64,
     pub z: f64,
@@ -167,12 +237,34 @@ impl PartialEq for Physics3DContactPoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DContactPoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:277 (sha256:627ac0f5bb3727cae170c10b6b27f7f846d15a8fdd01153d870841a87d4cc5c1)
+// Source: upstream/packages/types/src/Physics3D.ts:278 (sha256:b229cf49c7a5cd0c04b170569e64d10cb53a7d2afe98b8d98cc54792d973c2a1)
 #[derive(Clone, Default)]
 pub struct Physics3DContact {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub body_a: f64,
     pub body_b: f64,
     pub collider_a: f64,
@@ -193,8 +285,26 @@ impl PartialEq for Physics3DContact {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DContact {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:312 (sha256:bc73203c050847a8a91cb49f7a9dc71b915906866c51853b2899cdeb47bf1f7b)
+// Source: upstream/packages/types/src/Physics3D.ts:313 (sha256:bc73203c050847a8a91cb49f7a9dc71b915906866c51853b2899cdeb47bf1f7b)
 #[derive(Clone, Default)]
 pub struct Physics3DContactEvents {
     #[doc(hidden)]
@@ -208,12 +318,12 @@ impl PartialEq for Physics3DContactEvents {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:327 (sha256:df14fb65f782b9f5aa3355e358ab0e2f1089989c283ee79b53a2a6e2960f42d0)
+// Source: upstream/packages/types/src/Physics3D.ts:328 (sha256:df14fb65f782b9f5aa3355e358ab0e2f1089989c283ee79b53a2a6e2960f42d0)
 pub type Physics3DContactCallback = std::sync::Arc<
     std::sync::Mutex<Box<dyn FnMut(Physics3DWorld, Physics3DContact) -> () + Send + 'static>>,
 >;
 
-// Source: upstream/packages/types/src/Physics3D.ts:329 (sha256:8aa26c8f4630cb57690992902681fd3d1059268cf511deab5945f5a7b2d9c043)
+// Source: upstream/packages/types/src/Physics3D.ts:330 (sha256:8aa26c8f4630cb57690992902681fd3d1059268cf511deab5945f5a7b2d9c043)
 #[derive(Clone, Default)]
 pub struct Physics3DContactHooks {
     #[doc(hidden)]
@@ -227,11 +337,15 @@ impl PartialEq for Physics3DContactHooks {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:342 (sha256:262ba078e6dc17f030e8b05484f7767f17eec8b6912054f110ba8e1c96ebc41a)
+// Source: upstream/packages/types/src/Physics3D.ts:343 (sha256:8506838ab8060e0507427e1e0f7026b0c9667e2436cc4955ee7b15709ad12ce7)
 #[derive(Clone, Default)]
 pub struct Physics3DContactConstraintPoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub feature_id: f64,
     pub normal_impulse: f64,
     pub tangent_impulse0: f64,
@@ -246,12 +360,34 @@ impl PartialEq for Physics3DContactConstraintPoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DContactConstraintPoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:362 (sha256:6d07842a2d670fb1682fd93b1839bfaa4fe0a59f9deb40eaf02e28f44c143c85)
+// Source: upstream/packages/types/src/Physics3D.ts:363 (sha256:2320ca19f4344a49edcc752793f316c709f0e3c71e706c514052877b99ba92b4)
 #[derive(Clone, Default)]
 pub struct Physics3DContactConstraint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub contact: f64,
     pub tangent0_x: f64,
     pub tangent0_y: f64,
@@ -267,8 +403,26 @@ impl PartialEq for Physics3DContactConstraint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DContactConstraint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:384 (sha256:569dea4b7befc1d57bb8cbd31cb5ec7c9f07a375d0381bced28e4ab2636e3352)
+// Source: upstream/packages/types/src/Physics3D.ts:385 (sha256:569dea4b7befc1d57bb8cbd31cb5ec7c9f07a375d0381bced28e4ab2636e3352)
 #[derive(Clone, Default)]
 pub struct Physics3DSequentialImpulseState {
     #[doc(hidden)]
@@ -282,7 +436,7 @@ impl PartialEq for Physics3DSequentialImpulseState {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:400 (sha256:0de6797dfe9c8f540e889ae0af3a97e5cd7aff54d43a7d4cc885954bac19f8df)
+// Source: upstream/packages/types/src/Physics3D.ts:401 (sha256:0de6797dfe9c8f540e889ae0af3a97e5cd7aff54d43a7d4cc885954bac19f8df)
 #[derive(Clone, Default)]
 pub struct Physics3DSequentialImpulseConfig {
     #[doc(hidden)]
@@ -300,7 +454,7 @@ impl PartialEq for Physics3DSequentialImpulseConfig {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:415 (sha256:1883c0e833b33891623fec6c21c8c5493571363dfd339c209f86cc16060f2e72)
+// Source: upstream/packages/types/src/Physics3D.ts:416 (sha256:1883c0e833b33891623fec6c21c8c5493571363dfd339c209f86cc16060f2e72)
 #[derive(Clone, Default)]
 pub struct Physics3DSolverConfig {
     #[doc(hidden)]
@@ -321,7 +475,7 @@ impl PartialEq for Physics3DSolverConfig {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:458 (sha256:187b301955811c3de7115138e2c44a0d076c84a92749130d9bb5050b498bb95d)
+// Source: upstream/packages/types/src/Physics3D.ts:459 (sha256:187b301955811c3de7115138e2c44a0d076c84a92749130d9bb5050b498bb95d)
 #[derive(Clone, Default)]
 pub struct Physics3DRotationalCcdEnvelope {
     #[doc(hidden)]
@@ -338,7 +492,7 @@ impl PartialEq for Physics3DRotationalCcdEnvelope {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:478 (sha256:97429f7fe41883e04c005180f871d590ed107631efbd235f942558ebfe66dbf6)
+// Source: upstream/packages/types/src/Physics3D.ts:479 (sha256:97429f7fe41883e04c005180f871d590ed107631efbd235f942558ebfe66dbf6)
 #[derive(Clone, Default)]
 pub struct Physics3DCollisionExplanation {
     #[doc(hidden)]
@@ -352,7 +506,7 @@ impl PartialEq for Physics3DCollisionExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:483 (sha256:35ba8a002d72457ca72833a18e5220577ca860696ff0bd474f94da22cefbdf3c)
+// Source: upstream/packages/types/src/Physics3D.ts:484 (sha256:35ba8a002d72457ca72833a18e5220577ca860696ff0bd474f94da22cefbdf3c)
 #[derive(Clone, Default)]
 pub struct Physics3DStepExplanation {
     #[doc(hidden)]
@@ -375,19 +529,19 @@ impl PartialEq for Physics3DStepExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:500 (sha256:4c21e062154663c79db003b34d4bbfcacbe747d4e450b94d58b60b1f45819ce0)
+// Source: upstream/packages/types/src/Physics3D.ts:501 (sha256:4c21e062154663c79db003b34d4bbfcacbe747d4e450b94d58b60b1f45819ce0)
 pub type Physics3DStepGuard =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Physics3DWorld, f64) -> () + Send + 'static>>>;
 
-// Source: upstream/packages/types/src/Physics3D.ts:504 (sha256:c092cdc8419d54b8a2a5d8a3d40fd039e84a4c4e48333274dc6cb4ccfaaa33c6)
+// Source: upstream/packages/types/src/Physics3D.ts:505 (sha256:c092cdc8419d54b8a2a5d8a3d40fd039e84a4c4e48333274dc6cb4ccfaaa33c6)
 pub type Physics3DContactIntakeGuard =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Physics3DWorld) -> () + Send + 'static>>>;
 
-// Source: upstream/packages/types/src/Physics3D.ts:509 (sha256:3044174f22193198bccd0ab963547bd7509028b2d3dad49d61fc562f5ed579eb)
+// Source: upstream/packages/types/src/Physics3D.ts:510 (sha256:3044174f22193198bccd0ab963547bd7509028b2d3dad49d61fc562f5ed579eb)
 pub type Physics3DJointResolutionGuard =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Physics3DWorld) -> () + Send + 'static>>>;
 
-// Source: upstream/packages/types/src/Physics3D.ts:513 (sha256:c042cce5b85152550c502f3e506881254aaae28f10d57a1fa2172493a13e6fe8)
+// Source: upstream/packages/types/src/Physics3D.ts:514 (sha256:c042cce5b85152550c502f3e506881254aaae28f10d57a1fa2172493a13e6fe8)
 #[derive(Clone, Default)]
 pub struct Physics3DJointExplanation {
     #[doc(hidden)]
@@ -404,14 +558,18 @@ impl PartialEq for Physics3DJointExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:526 (sha256:d9bf6924c96c62b3c26137c72cf20c4138932d592568b0c4bb001a3396efca4e)
+// Source: upstream/packages/types/src/Physics3D.ts:527 (sha256:d9bf6924c96c62b3c26137c72cf20c4138932d592568b0c4bb001a3396efca4e)
 pub type Physics3DJointKind = String;
 
-// Source: upstream/packages/types/src/Physics3D.ts:538 (sha256:85e574683ced15dd5eb00cd982ee2557396622a98eade5eec2205576ccca5a03)
+// Source: upstream/packages/types/src/Physics3D.ts:539 (sha256:a14cfa3b7174725877c4ca89836cededa3f8756b683d644c03f87f46c1a31cdf)
 #[derive(Clone, Default)]
 pub struct Physics3DJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics3DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -443,8 +601,26 @@ impl PartialEq for Physics3DJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:596 (sha256:aa8e15e5302ee9097177e9c6e7c38808185c13eca993fbf7165e641bd70d6bb2)
+// Source: upstream/packages/types/src/Physics3D.ts:597 (sha256:aa8e15e5302ee9097177e9c6e7c38808185c13eca993fbf7165e641bd70d6bb2)
 #[derive(Clone)]
 pub struct Physics3DJointSolver {
     #[doc(hidden)]
@@ -493,7 +669,7 @@ impl PartialEq for Physics3DJointSolver {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:645 (sha256:bafab0a5ea70df233986468723f861cc7dff0a5b9eac722d256fe2f19e344f97)
+// Source: upstream/packages/types/src/Physics3D.ts:646 (sha256:bafab0a5ea70df233986468723f861cc7dff0a5b9eac722d256fe2f19e344f97)
 #[derive(Clone, Default)]
 pub struct Physics3DJointFrames {
     #[doc(hidden)]
@@ -513,11 +689,15 @@ impl PartialEq for Physics3DJointFrames {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:667 (sha256:3f4c5bb718f6d11126af59c4cc24a086d9bfbc8769d4e96900f4514336467044)
+// Source: upstream/packages/types/src/Physics3D.ts:668 (sha256:c8437dff84485cc71a4de839cae384b06f08f3bbc265d716f007333929078442)
 #[derive(Clone, Default)]
 pub struct Physics3DJointReaction {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub force_x: f64,
     pub force_y: f64,
     pub force_z: f64,
@@ -530,8 +710,26 @@ impl PartialEq for Physics3DJointReaction {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DJointReaction {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:679 (sha256:23de929fddd2f1c1e92d44f305ee36ad165fef4a9b1163cfa8dff85fc16a8f92)
+// Source: upstream/packages/types/src/Physics3D.ts:680 (sha256:23de929fddd2f1c1e92d44f305ee36ad165fef4a9b1163cfa8dff85fc16a8f92)
 #[derive(Clone, Default)]
 pub struct Physics3DJointEvents {
     #[doc(hidden)]
@@ -544,7 +742,7 @@ impl PartialEq for Physics3DJointEvents {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:683 (sha256:46ad4888a7ca52b21b8591d90409b267d6433313e236c5bf988ae892dd07b4ff)
+// Source: upstream/packages/types/src/Physics3D.ts:684 (sha256:46ad4888a7ca52b21b8591d90409b267d6433313e236c5bf988ae892dd07b4ff)
 #[derive(Clone, Default)]
 pub struct Physics3DJointOptions {
     #[doc(hidden)]
@@ -567,7 +765,7 @@ impl PartialEq for Physics3DJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:699 (sha256:edac07364f90df64b39c2d1ac50a306e9877d7e8c4ab1c4d6c02dc7e80cb0395)
+// Source: upstream/packages/types/src/Physics3D.ts:700 (sha256:edac07364f90df64b39c2d1ac50a306e9877d7e8c4ab1c4d6c02dc7e80cb0395)
 #[derive(Clone, Default)]
 pub struct Physics3DJointFrameOptions {
     #[doc(hidden)]
@@ -598,17 +796,21 @@ impl PartialEq for Physics3DJointFrameOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:716 (sha256:757088138e3362c0c0cb7259922734c69c19eb0cee7423a4a77895a1de6d83bc)
+// Source: upstream/packages/types/src/Physics3D.ts:717 (sha256:757088138e3362c0c0cb7259922734c69c19eb0cee7423a4a77895a1de6d83bc)
 pub type Physics3DBallAndSocketJoint = Physics3DJoint;
 
-// Source: upstream/packages/types/src/Physics3D.ts:717 (sha256:013b90024d32a84652fb6c5293125aabb56a10f6ad832222040754cb21fe7e45)
+// Source: upstream/packages/types/src/Physics3D.ts:718 (sha256:013b90024d32a84652fb6c5293125aabb56a10f6ad832222040754cb21fe7e45)
 pub type Physics3DBallAndSocketJointOptions = Physics3DJointOptions;
 
-// Source: upstream/packages/types/src/Physics3D.ts:738 (sha256:3d19fe52d4e6e931b5e0406372e92232cba810c05957104ff626c67b68453640)
+// Source: upstream/packages/types/src/Physics3D.ts:739 (sha256:3d19fe52d4e6e931b5e0406372e92232cba810c05957104ff626c67b68453640)
 #[derive(Clone, Default)]
 pub struct Physics3DDistanceJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics3DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -649,8 +851,26 @@ impl PartialEq for Physics3DDistanceJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DDistanceJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:761 (sha256:906a6b602bbc6e891f57613c25f8b1c909c30e638ad5956b82a30ac5c774e405)
+// Source: upstream/packages/types/src/Physics3D.ts:762 (sha256:906a6b602bbc6e891f57613c25f8b1c909c30e638ad5956b82a30ac5c774e405)
 #[derive(Clone, Default)]
 pub struct Physics3DDistanceJointOptions {
     #[doc(hidden)]
@@ -680,11 +900,15 @@ impl PartialEq for Physics3DDistanceJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:775 (sha256:b19829018e650687bb9eb237e86bb2723046d72879d622b2138cf9f433d97ae8)
+// Source: upstream/packages/types/src/Physics3D.ts:776 (sha256:b19829018e650687bb9eb237e86bb2723046d72879d622b2138cf9f433d97ae8)
 #[derive(Clone, Default)]
 pub struct Physics3DFixedJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics3DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -724,15 +948,37 @@ impl PartialEq for Physics3DFixedJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DFixedJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:776 (sha256:710c2552396be6cb30b1c8e6f45230b3a759d479384a256b7a8cf93e9efcb690)
+// Source: upstream/packages/types/src/Physics3D.ts:777 (sha256:710c2552396be6cb30b1c8e6f45230b3a759d479384a256b7a8cf93e9efcb690)
 pub type Physics3DFixedJointOptions = Physics3DJointFrameOptions;
 
-// Source: upstream/packages/types/src/Physics3D.ts:786 (sha256:7cdcbd182487a3c0fea4385828ea058a2622c2848a1e377996500b7d691bb753)
+// Source: upstream/packages/types/src/Physics3D.ts:787 (sha256:7cdcbd182487a3c0fea4385828ea058a2622c2848a1e377996500b7d691bb753)
 #[derive(Clone, Default)]
 pub struct Physics3DHingeJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics3DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -784,8 +1030,26 @@ impl PartialEq for Physics3DHingeJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DHingeJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:824 (sha256:e443913630322194d813f219dddac7f25b140d793dd13e438da46eb006c61767)
+// Source: upstream/packages/types/src/Physics3D.ts:825 (sha256:e443913630322194d813f219dddac7f25b140d793dd13e438da46eb006c61767)
 #[derive(Clone, Default)]
 pub struct Physics3DHingeJointOptions {
     #[doc(hidden)]
@@ -825,11 +1089,15 @@ impl PartialEq for Physics3DHingeJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:841 (sha256:050a531fd480fabcd1aea7602a27f733b1e2c3ef774e92d8c8679c5810e9c6c9)
+// Source: upstream/packages/types/src/Physics3D.ts:842 (sha256:050a531fd480fabcd1aea7602a27f733b1e2c3ef774e92d8c8679c5810e9c6c9)
 #[derive(Clone, Default)]
 pub struct Physics3DSliderJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics3DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -881,8 +1149,26 @@ impl PartialEq for Physics3DSliderJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DSliderJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:870 (sha256:b650c4be356e8fb63adfb19a36fed2fcd758153081aa0021a4d10b9d27489e30)
+// Source: upstream/packages/types/src/Physics3D.ts:871 (sha256:b650c4be356e8fb63adfb19a36fed2fcd758153081aa0021a4d10b9d27489e30)
 #[derive(Clone, Default)]
 pub struct Physics3DSliderJointOptions {
     #[doc(hidden)]
@@ -922,11 +1208,15 @@ impl PartialEq for Physics3DSliderJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:894 (sha256:799f1e572fee32caea94d4bd140ed192e65896eee0d7ea6eaa43a7cc93803755)
+// Source: upstream/packages/types/src/Physics3D.ts:895 (sha256:799f1e572fee32caea94d4bd140ed192e65896eee0d7ea6eaa43a7cc93803755)
 #[derive(Clone, Default)]
 pub struct Physics3DConeTwistJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics3DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -978,8 +1268,26 @@ impl PartialEq for Physics3DConeTwistJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DConeTwistJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:924 (sha256:72f01d11c5b90da5ff0c8e1af990caa524ecce6691a3ea967a63d94cd9e82a75)
+// Source: upstream/packages/types/src/Physics3D.ts:925 (sha256:72f01d11c5b90da5ff0c8e1af990caa524ecce6691a3ea967a63d94cd9e82a75)
 #[derive(Clone, Default)]
 pub struct Physics3DConeTwistJointOptions {
     #[doc(hidden)]
@@ -1019,11 +1327,15 @@ impl PartialEq for Physics3DConeTwistJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:950 (sha256:5e4c27794d880512671571711e950187f564950a5e70b027e9a1917bc8c16f99)
+// Source: upstream/packages/types/src/Physics3D.ts:951 (sha256:5e4c27794d880512671571711e950187f564950a5e70b027e9a1917bc8c16f99)
 #[derive(Clone, Default)]
 pub struct Physics3DGeneric6DofJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics3DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -1080,8 +1392,26 @@ impl PartialEq for Physics3DGeneric6DofJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DGeneric6DofJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:989 (sha256:1a3a86ea0b1f69e258717f4914660a834f0c7be7d67f4f95d5258fb93a7f3344)
+// Source: upstream/packages/types/src/Physics3D.ts:990 (sha256:1a3a86ea0b1f69e258717f4914660a834f0c7be7d67f4f95d5258fb93a7f3344)
 #[derive(Clone, Default)]
 pub struct Physics3DGeneric6DofJointOptions {
     #[doc(hidden)]
@@ -1127,11 +1457,15 @@ impl PartialEq for Physics3DGeneric6DofJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:1016 (sha256:e5725966d9ef05f5946cb352fed09496a74c30c0931384dfe860330c0b994b4f)
+// Source: upstream/packages/types/src/Physics3D.ts:1017 (sha256:6aac46424c61a4f3a9fbaa82edffb975babcc12407c879a47a6d54ef8c446fa4)
 #[derive(Clone)]
 pub struct Physics3DWorld {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub version: f64,
     pub bodies: Vec<RigidBody3D>,
     pub body_by_index: Vec<(f64, RigidBody3D)>,
@@ -1170,8 +1504,26 @@ impl PartialEq for Physics3DWorld {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DWorld {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:1087 (sha256:7792e78038f5523c00971cf948144cd3278b69db94a5641e1c86cbc515bc3a05)
+// Source: upstream/packages/types/src/Physics3D.ts:1088 (sha256:7792e78038f5523c00971cf948144cd3278b69db94a5641e1c86cbc515bc3a05)
 #[derive(Clone)]
 pub struct Physics3DQueryHit {
     #[doc(hidden)]
@@ -1186,11 +1538,15 @@ impl PartialEq for Physics3DQueryHit {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:1096 (sha256:1373f3257a48b93c7188d938ae1812bf157422dbc1c59d06c6dae472f28c8687)
+// Source: upstream/packages/types/src/Physics3D.ts:1097 (sha256:f2f3a94f5ffb4a9c1691bbd3facb23bae77209dd825b9f4a27f2bae7a3d3e6e8)
 #[derive(Clone, Default)]
 pub struct Physics3DQueryResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub hits: Vec<Physics3DQueryHit>,
     pub hit_count: f64,
 }
@@ -1199,8 +1555,26 @@ impl PartialEq for Physics3DQueryResult {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DQueryResult {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:1105 (sha256:a3727d7957b822279860980d0b98a80159f61da3a42580d5a0d471267b343796)
+// Source: upstream/packages/types/src/Physics3D.ts:1106 (sha256:a3727d7957b822279860980d0b98a80159f61da3a42580d5a0d471267b343796)
 #[derive(Clone, Default)]
 pub struct Physics3DQueryFilter {
     #[doc(hidden)]
@@ -1218,7 +1592,7 @@ impl PartialEq for Physics3DQueryFilter {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:1117 (sha256:073464a2cd7e45c2c2c21b0d11300740d7f5def31313b279b2aa4cf45ace64ee)
+// Source: upstream/packages/types/src/Physics3D.ts:1118 (sha256:073464a2cd7e45c2c2c21b0d11300740d7f5def31313b279b2aa4cf45ace64ee)
 #[derive(Clone)]
 pub struct Physics3DRayHit {
     #[doc(hidden)]
@@ -1240,11 +1614,15 @@ impl PartialEq for Physics3DRayHit {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:1127 (sha256:85ae043e27341cf0996a4ab25092dc51a312146c74cc155913c6d4be1670f7d6)
+// Source: upstream/packages/types/src/Physics3D.ts:1128 (sha256:1a3ea320bd4876c75e6ca521eca63262e7a81d07ad62d16c43b4ca158e7c43a9)
 #[derive(Clone, Default)]
 pub struct Physics3DRayResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub hits: Vec<Physics3DRayHit>,
     pub hit_count: f64,
 }
@@ -1253,12 +1631,34 @@ impl PartialEq for Physics3DRayResult {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DRayResult {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:1151 (sha256:bf7e54249cb6f41349c1974c7e5fae8f5372371e9c3f531d076fcfa2e02430db)
+// Source: upstream/packages/types/src/Physics3D.ts:1152 (sha256:670a86ab2aabde4db7ee2aef04006ecf11d90b6054bc718b485faad48b6fea63)
 #[derive(Clone, Default)]
 pub struct Physics3DShapeCastResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub body: Option<RigidBody3D>,
     pub collider: Option<Physics3DCollider>,
     pub collider_index: f64,
@@ -1276,11 +1676,29 @@ impl PartialEq for Physics3DShapeCastResult {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DShapeCastResult {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:1165 (sha256:e34c5fc23f41a153d60b952910d7836ca9a8cb27f56182a4b293d67160d80987)
+// Source: upstream/packages/types/src/Physics3D.ts:1166 (sha256:e34c5fc23f41a153d60b952910d7836ca9a8cb27f56182a4b293d67160d80987)
 pub type Physics3DDebugFeature = String;
 
-// Source: upstream/packages/types/src/Physics3D.ts:1170 (sha256:014ffe2b00511300ce9adc974a2ea751a7c914cc48f691da871aef43d82ccf55)
+// Source: upstream/packages/types/src/Physics3D.ts:1171 (sha256:014ffe2b00511300ce9adc974a2ea751a7c914cc48f691da871aef43d82ccf55)
 #[derive(Clone, Default)]
 pub struct Physics3DDebugLine {
     #[doc(hidden)]
@@ -1301,7 +1719,7 @@ impl PartialEq for Physics3DDebugLine {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:1185 (sha256:0e79c0e577df39815ed88968cac6273ec826f2dc9606d8b09b1b69976d46f665)
+// Source: upstream/packages/types/src/Physics3D.ts:1186 (sha256:0e79c0e577df39815ed88968cac6273ec826f2dc9606d8b09b1b69976d46f665)
 #[derive(Clone, Default)]
 pub struct Physics3DDebugSphere {
     #[doc(hidden)]
@@ -1320,11 +1738,15 @@ impl PartialEq for Physics3DDebugSphere {
     }
 }
 
-// Source: upstream/packages/types/src/Physics3D.ts:1197 (sha256:19468ae9c6d8c7ef251620dee16b88dfe3543d693768680eb25eb29ddd37d3b7)
+// Source: upstream/packages/types/src/Physics3D.ts:1198 (sha256:7d395a395dcc05a7c618179bcceb051f7410c6202db767ef40771f838cb4bc1b)
 #[derive(Clone, Default)]
 pub struct Physics3DDebugGeometry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub lines: Vec<Physics3DDebugLine>,
     pub line_count: f64,
     pub spheres: Vec<Physics3DDebugSphere>,
@@ -1335,8 +1757,26 @@ impl PartialEq for Physics3DDebugGeometry {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics3DDebugGeometry {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics3D.ts:1204 (sha256:8b70baa48bd7c02576b13e37f4b111d6dc40b03e3f6fcbba6137f8676d9c912f)
+// Source: upstream/packages/types/src/Physics3D.ts:1205 (sha256:8b70baa48bd7c02576b13e37f4b111d6dc40b03e3f6fcbba6137f8676d9c912f)
 #[derive(Clone, Default)]
 pub struct Physics3DDebugGeometryOptions {
     #[doc(hidden)]

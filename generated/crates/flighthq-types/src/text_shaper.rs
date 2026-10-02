@@ -8,7 +8,7 @@
 
 use crate::{FontMetrics, GlyphExtents, ShapedRun, TextDirection, TextFormat, TextMeasureFunction};
 
-// Source: upstream/packages/types/src/TextShaper.ts:21 (sha256:5276a896b0d7cc1055fd89e424f1238e5721d9bbabc642c70f5be6c52e2739b2)
+// Source: upstream/packages/types/src/TextShaper.ts:23 (sha256:5276a896b0d7cc1055fd89e424f1238e5721d9bbabc642c70f5be6c52e2739b2)
 #[derive(Clone, Default)]
 pub struct ShapeRunOptions {
     #[doc(hidden)]
@@ -22,9 +22,9 @@ impl PartialEq for ShapeRunOptions {
     }
 }
 
-// Source: upstream/packages/types/src/TextShaper.ts:26 (sha256:a6d76855c342cc710304eff6c3034f16a3853a751ee704d881de32f764d3c047)
+// Source: upstream/packages/types/src/TextShaper.ts:28 (sha256:6cc5f9c1d556b57c5971f914bcee51e7ae5581f4cca38f40d10ec14a58b67c25)
 #[derive(Clone)]
-pub struct TextShaperBackend {
+pub struct HostTextShaperCapability {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub get_code_point_for_glyph:
@@ -56,8 +56,11 @@ pub struct TextShaperBackend {
         >,
     >,
 }
-impl PartialEq for TextShaperBackend {
+impl PartialEq for HostTextShaperCapability {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+
+// Source: upstream/packages/types/src/TextShaper.ts:55 (sha256:1854f297cbd0f1d55b95c8b2ab7d5f507dfa2c67c0415517c7d9410eddfc6ece)
+pub type TextShaperOperation = HostTextShaperCapability;

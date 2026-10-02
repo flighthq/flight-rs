@@ -6,17 +6,38 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::ShapedRun;
+use crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/TextShaperCache.ts:3 (sha256:5d7a96c46bd25c288ba6c93b68f325d2de58903685861d31f41fb4f82c50fd92)
+// Source: upstream/packages/types/src/TextShaperCache.ts:4 (sha256:87e653ff7c3bff83e51ab39d439f58778314c4ac91fb02f7596f2509d526cff0)
 #[derive(Clone, Default)]
 pub struct TextShaperCache {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub _entries: Vec<(String, ShapedRun)>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
 }
 impl PartialEq for TextShaperCache {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for TextShaperCache {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

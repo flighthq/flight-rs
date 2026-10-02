@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::{is_valid_material_weight, is_valid_pbr_uv_set};
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_types::{
-    Kind, PbrUvSet, Texture,
+    EntityConstruction, Kind, PbrUvSet, Texture,
     WRAPPED_DIFFUSE_PBR_EXTENSION_KIND as wrapped_diffuse_pbr_extension_kind_constant,
     WrappedDiffusePbrExtension,
 };
@@ -71,39 +71,115 @@ impl PartialEq for FlightPartialRecord921319859 {
     }
 }
 
-// Source: upstream/packages/materials/src/wrappedDiffusePbrExtension.ts:8 (sha256:c6e8035da988862d1515d790b67df42698adcfd6267651c922bcaf25d8a37bd3)
+// Source: upstream/packages/materials/src/wrappedDiffusePbrExtension.ts:8 (sha256:9c66b8ff16ce4a5e7e3b3b057633eebf42f72f1f2894eca847b260fe1b391779)
 pub fn create_wrapped_diffuse_pbr_extension(
     opts: Option<FlightPartialRecord921319859>,
 ) -> WrappedDiffusePbrExtension {
-    return create_entity(Some(WrappedDiffusePbrExtension {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        kind: (wrapped_diffuse_pbr_extension_kind_constant).to_owned(),
-        thickness: (opts.as_ref().and_then(|value| value.thickness)).unwrap_or(0.0_f64),
-        thickness_map: opts
-            .as_ref()
+    let mut out = allocate_entity();
+    initialize_wrapped_diffuse_pbr_extension(
+        (out).clone(),
+        ((opts).clone()).as_ref().map(|__flight_value| {
+            let __flight_source = &(__flight_value);
+            FlightPartialRecord921319859 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                kind: (__flight_source.kind).clone(),
+                thickness: __flight_source.thickness,
+                thickness_map: (__flight_source.thickness_map).clone(),
+                thickness_map_uv_set: __flight_source.thickness_map_uv_set,
+                wrapped_diffuse_color: __flight_source.wrapped_diffuse_color,
+                wrapped_diffuse_map: (__flight_source.wrapped_diffuse_map).clone(),
+                wrapped_diffuse_map_uv_set: __flight_source.wrapped_diffuse_map_uv_set,
+                wrapped_diffuse_strength: __flight_source.wrapped_diffuse_strength,
+                attenuation_color: __flight_source.attenuation_color,
+                attenuation_distance: __flight_source.attenuation_distance,
+                ior: __flight_source.ior,
+                transmission: __flight_source.transmission,
+                transmission_map: (__flight_source.transmission_map).clone(),
+                transmission_map_uv_set: __flight_source.transmission_map_uv_set,
+                specular: __flight_source.specular,
+                specular_color: __flight_source.specular_color,
+                specular_color_map: (__flight_source.specular_color_map).clone(),
+                specular_color_map_uv_set: __flight_source.specular_color_map_uv_set,
+                specular_map: (__flight_source.specular_map).clone(),
+                specular_map_uv_set: __flight_source.specular_map_uv_set,
+                sheen_color: __flight_source.sheen_color,
+                sheen_color_map: (__flight_source.sheen_color_map).clone(),
+                sheen_color_map_uv_set: __flight_source.sheen_color_map_uv_set,
+                sheen_roughness: __flight_source.sheen_roughness,
+                sheen_roughness_map: (__flight_source.sheen_roughness_map).clone(),
+                sheen_roughness_map_uv_set: __flight_source.sheen_roughness_map_uv_set,
+                iridescence: __flight_source.iridescence,
+                iridescence_ior: __flight_source.iridescence_ior,
+                iridescence_map: (__flight_source.iridescence_map).clone(),
+                iridescence_map_uv_set: __flight_source.iridescence_map_uv_set,
+                iridescence_thickness_map: (__flight_source.iridescence_thickness_map).clone(),
+                iridescence_thickness_map_uv_set: __flight_source.iridescence_thickness_map_uv_set,
+                iridescence_thickness_max: __flight_source.iridescence_thickness_max,
+                iridescence_thickness_min: __flight_source.iridescence_thickness_min,
+                clearcoat: __flight_source.clearcoat,
+                clearcoat_map: (__flight_source.clearcoat_map).clone(),
+                clearcoat_map_uv_set: __flight_source.clearcoat_map_uv_set,
+                clearcoat_normal_map: (__flight_source.clearcoat_normal_map).clone(),
+                clearcoat_normal_map_uv_set: __flight_source.clearcoat_normal_map_uv_set,
+                clearcoat_normal_scale: __flight_source.clearcoat_normal_scale,
+                clearcoat_roughness: __flight_source.clearcoat_roughness,
+                clearcoat_roughness_map: (__flight_source.clearcoat_roughness_map).clone(),
+                clearcoat_roughness_map_uv_set: __flight_source.clearcoat_roughness_map_uv_set,
+                anisotropy_map: (__flight_source.anisotropy_map).clone(),
+                anisotropy_map_uv_set: __flight_source.anisotropy_map_uv_set,
+                anisotropy_rotation: __flight_source.anisotropy_rotation,
+                anisotropy_strength: __flight_source.anisotropy_strength,
+            }
+        }),
+    );
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/materials/src/wrappedDiffusePbrExtension.ts:16 (sha256:f895b1b50802402e4b2a1bd40cea6f6c246d490e6d9a2280437fc1ca0a4695f2)
+pub fn initialize_wrapped_diffuse_pbr_extension(
+    out: EntityConstruction<WrappedDiffusePbrExtension>,
+    opts: Option<FlightPartialRecord921319859>,
+) -> () {
+    crate::host_set("host.kind", wrapped_diffuse_pbr_extension_kind_constant);
+    crate::host_set(
+        "host.thickness",
+        (opts.as_ref().and_then(|value| value.thickness)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.thicknessMap",
+        opts.as_ref()
             .and_then(|value| (value.thickness_map).clone()),
-        thickness_map_uv_set: (opts.as_ref().and_then(|value| value.thickness_map_uv_set))
-            .unwrap_or(0.0_f64),
-        wrapped_diffuse_color: (opts.as_ref().and_then(|value| value.wrapped_diffuse_color))
-            .unwrap_or(4294967295.0_f64),
-        wrapped_diffuse_map: opts
-            .as_ref()
+    );
+    crate::host_set(
+        "host.thicknessMapUvSet",
+        (opts.as_ref().and_then(|value| value.thickness_map_uv_set)).unwrap_or(0.0_f64),
+    );
+    crate::host_set(
+        "host.wrappedDiffuseColor",
+        (opts.as_ref().and_then(|value| value.wrapped_diffuse_color)).unwrap_or(4294967295.0_f64),
+    );
+    crate::host_set(
+        "host.wrappedDiffuseMap",
+        opts.as_ref()
             .and_then(|value| (value.wrapped_diffuse_map).clone()),
-        wrapped_diffuse_map_uv_set: (opts
+    );
+    crate::host_set(
+        "host.wrappedDiffuseMapUvSet",
+        (opts
             .as_ref()
             .and_then(|value| value.wrapped_diffuse_map_uv_set))
         .unwrap_or(0.0_f64),
-        wrapped_diffuse_strength: (opts
+    );
+    crate::host_set(
+        "host.wrappedDiffuseStrength",
+        (opts
             .as_ref()
             .and_then(|value| value.wrapped_diffuse_strength))
         .unwrap_or(0.0_f64),
-        ..Default::default()
-    }));
+    );
 }
 
-// Source: upstream/packages/materials/src/wrappedDiffusePbrExtension.ts:23 (sha256:e92d7599090873b49b9ef915dc4708c855df1d6276fe81c9e27206e156e3ca13)
+// Source: upstream/packages/materials/src/wrappedDiffusePbrExtension.ts:30 (sha256:e92d7599090873b49b9ef915dc4708c855df1d6276fe81c9e27206e156e3ca13)
 pub fn is_valid_wrapped_diffuse_pbr_extension(value: &WrappedDiffusePbrExtension) -> bool {
     return ((((is_valid_material_weight(value.wrapped_diffuse_strength))
         && ((value.thickness).is_finite()))

@@ -6,13 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{AdjustmentKind, ColorTransformFunction};
+use crate::{AdjustmentKind, ColorTransformFunction, EntityRuntime};
 
 // Source: upstream/packages/types/src/ColorGradeAdjustment.ts:7 (sha256:4d2fcb20eebdaf4b024c5f482ff5a085aa1fb61b67d6864f6de8e538d961e7ac)
 #[derive(Clone)]
 pub struct ColorGradeAdjustment {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: AdjustmentKind,
     pub transform: ColorTransformFunction,
     pub exposure: Option<f64>,
@@ -28,5 +32,23 @@ pub struct ColorGradeAdjustment {
 impl PartialEq for ColorGradeAdjustment {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for ColorGradeAdjustment {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

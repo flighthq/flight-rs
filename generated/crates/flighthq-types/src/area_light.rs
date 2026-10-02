@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::Texture;
-use crate::{EntityRuntime, Kind, Vector3};
+use crate::{EntityRuntime, Kind, LightUnit, Vector3};
 
-// Source: upstream/packages/types/src/AreaLight.ts:10 (sha256:9ea86c550f139c78db1e1e5f74465c7b5551ae23b4269fa6f342fabefe27471a)
+// Source: upstream/packages/types/src/AreaLight.ts:11 (sha256:adc86b7b98f59e94bd1d927a4700655d542ddaa53a072cebcf83a79a541fa41d)
 #[derive(Clone, Default)]
 pub struct AreaLight {
     #[doc(hidden)]
@@ -21,18 +21,30 @@ pub struct AreaLight {
     pub kind: Kind,
     pub casts_shadow: bool,
     pub color: f64,
+    pub decay: f64,
     pub direction: Vector3,
+    pub enabled: bool,
     pub inner_cone_cos: f64,
     pub intensity: f64,
+    pub intensity_unit: LightUnit,
+    pub layer_mask: f64,
+    pub priority: f64,
     pub normal_bias: f64,
     pub outer_cone_cos: f64,
     pub pcf_radius: f64,
     pub position: Vector3,
     pub range: f64,
     pub shadow_bias: f64,
+    pub shadow_far: f64,
+    pub shadow_map_size: f64,
+    pub shadow_near: f64,
+    pub shadow_strength: f64,
+    pub spot_blend: f64,
     pub ground_color: f64,
     pub sky_color: f64,
     pub environment: Option<Texture>,
+    pub cascade_count: f64,
+    pub cascade_splits: Vec<f64>,
     pub right: Vector3,
     pub up: Vector3,
 }
@@ -60,5 +72,5 @@ impl crate::FlightEntity for AreaLight {
     }
 }
 
-// Source: upstream/packages/types/src/AreaLight.ts:26 (sha256:21690015a79821fc4547e0dc9f64d013890ae35719b1ac62b5204730b6e69d00)
+// Source: upstream/packages/types/src/AreaLight.ts:39 (sha256:21690015a79821fc4547e0dc9f64d013890ae35719b1ac62b5204730b6e69d00)
 pub const AREA_LIGHT_KIND: &'static str = "AreaLight";

@@ -6,13 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/HemisphereLightOptions.ts:1 (sha256:f48e11d8bbf94531f6345b7c6fb837bd4692b35a64107828f8df618c7885f7e5)
+use crate::LightUnit;
+
+// Source: upstream/packages/types/src/HemisphereLightOptions.ts:3 (sha256:c90048e96743385186b09ea7502930d693373c6f8c47f74d2a697988f17cf614)
 #[derive(Clone, Default)]
 pub struct HemisphereLightOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub enabled: Option<bool>,
     pub ground_color: Option<f64>,
     pub intensity: Option<f64>,
+    pub intensity_unit: Option<LightUnit>,
     pub sky_color: Option<f64>,
 }
 impl PartialEq for HemisphereLightOptions {

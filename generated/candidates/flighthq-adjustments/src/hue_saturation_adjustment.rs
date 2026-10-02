@@ -6,7 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::{ColorTransformFunction, HueSaturationAdjustment};
+use crate::initialize_color_lut_adjustment;
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{ColorTransformFunction, EntityConstruction, HueSaturationAdjustment};
 
 #[derive(Clone, Default)]
 pub struct FlightOmitRecord2048576670 {
@@ -21,7 +23,7 @@ impl PartialEq for FlightOmitRecord2048576670 {
     }
 }
 
-// Source: upstream/packages/adjustments/src/hueSaturationAdjustment.ts:6 (sha256:dcd80a35c51eb9dbe51668399d612c676ac8470c7d2fc9d62f3d682c2d443f13)
+// Source: upstream/packages/adjustments/src/hueSaturationAdjustment.ts:11 (sha256:5edc0816afb9e2ccce9b9310c6f9f7a3d759b94a80322b1f5fdb6c78fce4e30e)
 #[derive(Clone, Default)]
 struct CreateHueSaturationAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
@@ -35,6 +37,43 @@ impl PartialEq for CreateHueSaturationAdjustmentRecord2 {
 pub fn create_hue_saturation_adjustment(
     options: Option<FlightOmitRecord2048576670>,
 ) -> HueSaturationAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord2048576670 {
+        __flight_identity: std::sync::Arc::new(()),
+        hue: None,
+        saturation: None,
+        lightness: None,
+    });
+    let mut out = allocate_entity();
+    initialize_hue_saturation_adjustment(
+        (out).clone(),
+        Some({
+            let __flight_source = &((options).clone());
+            FlightOmitRecord2048576670 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                hue: __flight_source.hue,
+                saturation: __flight_source.saturation,
+                lightness: __flight_source.lightness,
+            }
+        }),
+    );
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/adjustments/src/hueSaturationAdjustment.ts:22 (sha256:1ea2c4034816d9593ba9b41e0b38a213d55421282a83399cb50e38da184ac942)
+#[derive(Clone, Default)]
+struct InitializeHueSaturationAdjustmentRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for InitializeHueSaturationAdjustmentRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn initialize_hue_saturation_adjustment(
+    out: EntityConstruction<HueSaturationAdjustment>,
+    options: Option<FlightOmitRecord2048576670>,
+) -> () {
     let options = options.unwrap_or(FlightOmitRecord2048576670 {
         __flight_identity: std::sync::Arc::new(()),
         hue: None,
@@ -137,20 +176,17 @@ pub fn create_hue_saturation_adjustment(
             };
         }) as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>,
     ));
-    return {
-        let __flight_spread_1 = (options).clone();
-        HueSaturationAdjustment {
-            __flight_identity: std::sync::Arc::new(()),
-            kind: "HueSaturationAdjustment".to_owned(),
-            transform: (transform).clone(),
-            hue: __flight_spread_1.hue,
-            saturation: __flight_spread_1.saturation,
-            lightness: __flight_spread_1.lightness,
-        }
-    };
+    initialize_color_lut_adjustment(
+        (out).clone(),
+        "HueSaturationAdjustment".to_owned(),
+        (transform).clone(),
+    );
+    crate::host_set("host.hue", (options.hue).unwrap_or(0.0_f64));
+    crate::host_set("host.saturation", (options.saturation).unwrap_or(1.0_f64));
+    crate::host_set("host.lightness", (options.lightness).unwrap_or(0.0_f64));
 }
 
-// Source: upstream/packages/adjustments/src/hueSaturationAdjustment.ts:44 (sha256:92c4452839ded0362c28adef5c15154deeaad9b404aff5129f0596af7fea21ad)
+// Source: upstream/packages/adjustments/src/hueSaturationAdjustment.ts:64 (sha256:92c4452839ded0362c28adef5c15154deeaad9b404aff5129f0596af7fea21ad)
 fn clamp01(v: f64) -> f64 {
     return if (v < 0.0_f64) {
         0.0_f64
@@ -159,12 +195,12 @@ fn clamp01(v: f64) -> f64 {
     };
 }
 
-// Source: upstream/packages/adjustments/src/hueSaturationAdjustment.ts:48 (sha256:ed1a4ba70c5e14d50071a86ebdf4bf7e097b170e2b7e279bea8eafe8e3cd4758)
+// Source: upstream/packages/adjustments/src/hueSaturationAdjustment.ts:68 (sha256:ed1a4ba70c5e14d50071a86ebdf4bf7e097b170e2b7e279bea8eafe8e3cd4758)
 fn fract(v: f64) -> f64 {
     return (v - (v).floor());
 }
 
-// Source: upstream/packages/adjustments/src/hueSaturationAdjustment.ts:52 (sha256:968e7a1d17cf2398f4ebb2dce57eb7aa533e0b7f44c3bb1f5b687b0eaf90c0ee)
+// Source: upstream/packages/adjustments/src/hueSaturationAdjustment.ts:72 (sha256:968e7a1d17cf2398f4ebb2dce57eb7aa533e0b7f44c3bb1f5b687b0eaf90c0ee)
 fn hue2rgb(p: f64, q: f64, t_raw: f64) -> f64 {
     let mut t = t_raw;
     if (t < 0.0_f64) {

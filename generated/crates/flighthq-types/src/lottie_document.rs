@@ -401,7 +401,29 @@ impl PartialEq for LottieTransformShapeItem {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:224 (sha256:3922c3c729e943d2ffb6559f8aa3dbee0474c510061245593dbac3f390518091)
+// Source: upstream/packages/types/src/LottieDocument.ts:224 (sha256:9b6fe0127a56a48a3a9b3c5bd1b987628f369373c4b9d76611e435d87bda4651)
+#[derive(Clone, Default)]
+pub struct LottieRepeaterTransform {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub a: Option<LottieAnimatable<Vec<f64>>>,
+    pub o: Option<LottieAnimatable<f64>>,
+    pub p: Option<LottiePositionProperty>,
+    pub r: Option<LottieAnimatable<f64>>,
+    pub rz: Option<LottieAnimatable<f64>>,
+    pub s: Option<LottieAnimatable<Vec<f64>>>,
+    pub sa: Option<LottieAnimatable<f64>>,
+    pub sk: Option<LottieAnimatable<f64>>,
+    pub eo: Option<LottieAnimatable<f64>>,
+    pub so: Option<LottieAnimatable<f64>>,
+}
+impl PartialEq for LottieRepeaterTransform {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/LottieDocument.ts:230 (sha256:3922c3c729e943d2ffb6559f8aa3dbee0474c510061245593dbac3f390518091)
 #[derive(Clone)]
 pub struct LottieTrimPathShapeItem {
     #[doc(hidden)]
@@ -421,27 +443,7 @@ impl PartialEq for LottieTrimPathShapeItem {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:233 (sha256:b6cf1f9617e0986e5d073fb2c51e37fdb58819c4c48e0327400730ad849bb7b9)
-#[derive(Clone, Default)]
-pub struct LottieRepeaterShapeItemRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub a: Option<LottieAnimatable<Vec<f64>>>,
-    pub o: Option<LottieAnimatable<f64>>,
-    pub p: Option<LottiePositionProperty>,
-    pub r: Option<LottieAnimatable<f64>>,
-    pub rz: Option<LottieAnimatable<f64>>,
-    pub s: Option<LottieAnimatable<Vec<f64>>>,
-    pub sa: Option<LottieAnimatable<f64>>,
-    pub sk: Option<LottieAnimatable<f64>>,
-    pub eo: Option<LottieAnimatable<f64>>,
-    pub so: Option<LottieAnimatable<f64>>,
-}
-impl PartialEq for LottieRepeaterShapeItemRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
+// Source: upstream/packages/types/src/LottieDocument.ts:239 (sha256:e061456714fe01535eff3495d766a84cd8bc9ab913cc17a76c4d80ed79dbb219)
 #[derive(Clone)]
 pub struct LottieRepeaterShapeItem {
     #[doc(hidden)]
@@ -453,7 +455,7 @@ pub struct LottieRepeaterShapeItem {
     pub c: LottieAnimatable<f64>,
     pub m: Option<f64>,
     pub o: LottieAnimatable<f64>,
-    pub tr: LottieRepeaterShapeItemRecord1,
+    pub tr: LottieRepeaterTransform,
 }
 impl PartialEq for LottieRepeaterShapeItem {
     fn eq(&self, other: &Self) -> bool {
@@ -461,7 +463,7 @@ impl PartialEq for LottieRepeaterShapeItem {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:245 (sha256:87399e5a8fcfcd08ef2a6e4835bc855f9ea29135da426c957da9a152f1a4de96)
+// Source: upstream/packages/types/src/LottieDocument.ts:247 (sha256:87399e5a8fcfcd08ef2a6e4835bc855f9ea29135da426c957da9a152f1a4de96)
 #[derive(Clone, Default)]
 pub struct LottieMergePathShapeItem {
     #[doc(hidden)]
@@ -478,7 +480,7 @@ impl PartialEq for LottieMergePathShapeItem {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:251 (sha256:57dab417d27f6c729c06afba587990db58f3099a0a90954758094263647bf49e)
+// Source: upstream/packages/types/src/LottieDocument.ts:253 (sha256:57dab417d27f6c729c06afba587990db58f3099a0a90954758094263647bf49e)
 #[derive(Clone)]
 pub struct LottieRoundedCornersShapeItem {
     #[doc(hidden)]
@@ -495,7 +497,7 @@ impl PartialEq for LottieRoundedCornersShapeItem {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:256 (sha256:78cddb6e340653b2e0b5211ab714fd21f56b9d76a5fae41fd630470ffbd0998b)
+// Source: upstream/packages/types/src/LottieDocument.ts:258 (sha256:78cddb6e340653b2e0b5211ab714fd21f56b9d76a5fae41fd630470ffbd0998b)
 #[derive(Clone, Default)]
 pub struct LottieUnknownShapeItem {
     #[doc(hidden)]
@@ -511,7 +513,7 @@ impl PartialEq for LottieUnknownShapeItem {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:260 (sha256:f6f03449ccfc2fdeb78b099586527a9553ee41832209bd62529c72fd8f2be97e)
+// Source: upstream/packages/types/src/LottieDocument.ts:262 (sha256:f6f03449ccfc2fdeb78b099586527a9553ee41832209bd62529c72fd8f2be97e)
 pub type LottieShapeItem = crate::FlightUnion2<
     LottieEllipseShapeItem,
     crate::FlightUnion2<
@@ -553,7 +555,7 @@ pub type LottieShapeItem = crate::FlightUnion2<
     >,
 >;
 
-// Source: upstream/packages/types/src/LottieDocument.ts:276 (sha256:a76719682a1f78059a61eca5708465e29b73e008f453a34756f735e830fb20d5)
+// Source: upstream/packages/types/src/LottieDocument.ts:278 (sha256:a76719682a1f78059a61eca5708465e29b73e008f453a34756f735e830fb20d5)
 #[derive(Clone)]
 pub struct LottieMask {
     #[doc(hidden)]
@@ -572,7 +574,7 @@ impl PartialEq for LottieMask {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:288 (sha256:6fdb87c8296e70368f5ddd5a6699e7b6e050cb5e2d794d4382bd58fc5e83d4e2)
+// Source: upstream/packages/types/src/LottieDocument.ts:290 (sha256:6fdb87c8296e70368f5ddd5a6699e7b6e050cb5e2d794d4382bd58fc5e83d4e2)
 #[derive(Clone, Default)]
 pub struct LottieTextDocument {
     #[doc(hidden)]
@@ -593,7 +595,7 @@ impl PartialEq for LottieTextDocument {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:307 (sha256:9056f2886f78eb157be430599677f91037327b338e6abdb39fcdbf3c5576dc60)
+// Source: upstream/packages/types/src/LottieDocument.ts:309 (sha256:9056f2886f78eb157be430599677f91037327b338e6abdb39fcdbf3c5576dc60)
 #[derive(Clone, Default)]
 pub struct LottieTextDataRecord1 {
     pub __flight_identity: std::sync::Arc<()>,
@@ -620,7 +622,7 @@ impl PartialEq for LottieTextData {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:317 (sha256:f63fdcc269c7e158b73ba0ef5bb63dbba273608f3586cfcc534e986b9c62e6c7)
+// Source: upstream/packages/types/src/LottieDocument.ts:319 (sha256:f63fdcc269c7e158b73ba0ef5bb63dbba273608f3586cfcc534e986b9c62e6c7)
 #[derive(Clone, Default)]
 pub struct LottieEffect {
     #[doc(hidden)]
@@ -638,7 +640,7 @@ impl PartialEq for LottieEffect {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:326 (sha256:536acfeb8adf5990afe92ebb61f68034b3e9b20bf0c9ea500f398f8d74b0f718)
+// Source: upstream/packages/types/src/LottieDocument.ts:328 (sha256:536acfeb8adf5990afe92ebb61f68034b3e9b20bf0c9ea500f398f8d74b0f718)
 #[derive(Clone, Default)]
 pub struct LottieLayer {
     #[doc(hidden)]
@@ -675,7 +677,7 @@ impl PartialEq for LottieLayer {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:366 (sha256:30634eb0a7a59537f03ae3b33b6e6e8abda530c73ce511e2706162d48b9b3767)
+// Source: upstream/packages/types/src/LottieDocument.ts:368 (sha256:30634eb0a7a59537f03ae3b33b6e6e8abda530c73ce511e2706162d48b9b3767)
 #[derive(Clone, Default)]
 pub struct LottieImageAsset {
     #[doc(hidden)]
@@ -693,7 +695,7 @@ impl PartialEq for LottieImageAsset {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:377 (sha256:f272aaec54f3366e5bd2bc97284d40cd23c4617f89a714cdc5096c25412f3778)
+// Source: upstream/packages/types/src/LottieDocument.ts:379 (sha256:f272aaec54f3366e5bd2bc97284d40cd23c4617f89a714cdc5096c25412f3778)
 #[derive(Clone, Default)]
 pub struct LottiePrecompositionAsset {
     #[doc(hidden)]
@@ -710,10 +712,10 @@ impl PartialEq for LottiePrecompositionAsset {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:385 (sha256:7f7386f17ba55e90cc580d6a0742d7d515852231e3b6c6d1a3cb3b8e506ff355)
+// Source: upstream/packages/types/src/LottieDocument.ts:387 (sha256:7f7386f17ba55e90cc580d6a0742d7d515852231e3b6c6d1a3cb3b8e506ff355)
 pub type LottieAsset = crate::FlightUnion2<LottieImageAsset, LottiePrecompositionAsset>;
 
-// Source: upstream/packages/types/src/LottieDocument.ts:387 (sha256:f463045d641e1351fd59ee42ade43d7dd883c6c1db13f2a3f993fb060d4d125b)
+// Source: upstream/packages/types/src/LottieDocument.ts:389 (sha256:f463045d641e1351fd59ee42ade43d7dd883c6c1db13f2a3f993fb060d4d125b)
 #[derive(Clone, Default)]
 pub struct LottieFont {
     #[doc(hidden)]
@@ -729,7 +731,7 @@ impl PartialEq for LottieFont {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:394 (sha256:c29ff588cd6602d0879a65babfe9532e3f48ce003add4790ad105c4a758956b2)
+// Source: upstream/packages/types/src/LottieDocument.ts:396 (sha256:c29ff588cd6602d0879a65babfe9532e3f48ce003add4790ad105c4a758956b2)
 #[derive(Clone, Default)]
 pub struct LottieMarker {
     #[doc(hidden)]
@@ -744,7 +746,7 @@ impl PartialEq for LottieMarker {
     }
 }
 
-// Source: upstream/packages/types/src/LottieDocument.ts:401 (sha256:bc1bd8fee72d0e49ff3cc90a7cac976377ee624b49519bc78226652352e72d31)
+// Source: upstream/packages/types/src/LottieDocument.ts:403 (sha256:bc1bd8fee72d0e49ff3cc90a7cac976377ee624b49519bc78226652352e72d31)
 #[derive(Clone, Default)]
 pub struct LottieDocumentRecord1 {
     pub __flight_identity: std::sync::Arc<()>,

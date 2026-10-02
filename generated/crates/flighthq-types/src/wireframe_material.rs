@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode};
-use crate::{PbrExtension, StandardPbrMaterialProperties, Texture};
+use crate::{Modifier, PbrExtension, StandardPbrMaterialProperties, Texture};
 
-// Source: upstream/packages/types/src/WireframeMaterial.ts:5 (sha256:99fe447361adb31ff8434deb7f21c124b509a725ca83f0248cfb14280692d699)
+// Source: upstream/packages/types/src/WireframeMaterial.ts:5 (sha256:eacfad3cf2825d6cdbc52a8b476a73dbffa449238edf5c7b3a5959a4cb708611)
 #[derive(Clone, Default)]
 pub struct WireframeMaterial {
     #[doc(hidden)]
@@ -24,13 +24,40 @@ pub struct WireframeMaterial {
     pub alpha_mode: MaterialAlphaMode,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub color: f64,
+    pub thickness: f64,
+    pub tint: f64,
+    pub base_color: f64,
+    pub base_color_map: Option<Texture>,
+    pub ramp: Option<Texture>,
+    pub steps: f64,
+    pub alpha_map: Option<Texture>,
+    pub emissive: f64,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: f64,
+    pub metallic: f64,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: f64,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: f64,
+    pub roughness: f64,
+    pub diffuse: f64,
+    pub diffuse_map: Option<Texture>,
+    pub glossiness: f64,
+    pub specular: f64,
+    pub specular_glossiness_map: Option<Texture>,
+    pub modifiers: Vec<Modifier>,
+    pub shininess: f64,
+    pub specular_map: Option<Texture>,
+    pub matcap: Option<Texture>,
     pub extensions: Vec<PbrExtension>,
     pub standard: StandardPbrMaterialProperties,
+    pub far: f64,
+    pub near: f64,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
-    pub color: f64,
-    pub thickness: f64,
 }
 impl PartialEq for WireframeMaterial {
     fn eq(&self, other: &Self) -> bool {
@@ -56,5 +83,5 @@ impl crate::FlightEntity for WireframeMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/WireframeMaterial.ts:11 (sha256:7dbfd4ee27ef5f4bc7233365411505c7a4663bc33499cd7b4305b8769f71d6e5)
+// Source: upstream/packages/types/src/WireframeMaterial.ts:12 (sha256:7dbfd4ee27ef5f4bc7233365411505c7a4663bc33499cd7b4305b8769f71d6e5)
 pub const WIREFRAME_MATERIAL_KIND: &'static str = "WireframeMaterial";

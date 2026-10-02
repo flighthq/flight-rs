@@ -6,20 +6,30 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::{ColorBlindSimulationAdjustment, ColorBlindType};
+use crate::initialize_color_matrix_adjustment;
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{
+    ColorBlindSimulationAdjustment, ColorBlindType, ColorScaleBiasLike, EntityConstruction,
+};
 
 #[derive(Clone, Default)]
-pub struct FlightOmitRecord3678291459 {
+pub struct FlightOmitRecord2968336371 {
     pub __flight_identity: std::sync::Arc<()>,
+    pub intensity: Option<f64>,
+    pub exposure: Option<f64>,
+    pub color_scale_bias: ColorScaleBiasLike,
     pub type_: Option<ColorBlindType>,
+    pub matrix: Vec<f64>,
+    pub brightness: Option<f64>,
+    pub contrast: Option<f64>,
 }
-impl PartialEq for FlightOmitRecord3678291459 {
+impl PartialEq for FlightOmitRecord2968336371 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/adjustments/src/colorBlindSimulationAdjustment.ts:12 (sha256:4daf685ba89d32e62e8c11e84b0418c2b3c5692c9bdbff175e1be355c92d0765)
+// Source: upstream/packages/adjustments/src/colorBlindSimulationAdjustment.ts:11 (sha256:8e697c2f35509dbe8215f440bb0698902320d3ae79d9a9b27f868abaa5212a17)
 #[derive(Clone, Default)]
 struct CreateColorBlindSimulationAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
@@ -31,11 +41,62 @@ impl PartialEq for CreateColorBlindSimulationAdjustmentRecord2 {
 }
 
 pub fn create_color_blind_simulation_adjustment(
-    options: Option<FlightOmitRecord3678291459>,
+    options: Option<FlightOmitRecord2968336371>,
 ) -> ColorBlindSimulationAdjustment {
-    let options = options.unwrap_or(FlightOmitRecord3678291459 {
+    let options = options.unwrap_or(FlightOmitRecord2968336371 {
         __flight_identity: std::sync::Arc::new(()),
+        intensity: None,
+        exposure: None,
+        color_scale_bias: Default::default(),
         type_: None,
+        matrix: Default::default(),
+        brightness: None,
+        contrast: None,
+    });
+    let mut out = allocate_entity();
+    initialize_color_blind_simulation_adjustment(
+        (out).clone(),
+        Some({
+            let __flight_source = &((options).clone());
+            FlightOmitRecord2968336371 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                intensity: __flight_source.intensity,
+                exposure: __flight_source.exposure,
+                color_scale_bias: (__flight_source.color_scale_bias).clone(),
+                type_: (__flight_source.type_).clone(),
+                matrix: (__flight_source.matrix).clone(),
+                brightness: __flight_source.brightness,
+                contrast: __flight_source.contrast,
+            }
+        }),
+    );
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/adjustments/src/colorBlindSimulationAdjustment.ts:28 (sha256:995bd0526b5955c8e8e9c3e63166fbb31ecfee99171179b08104fc23bf2bc453)
+#[derive(Clone, Default)]
+struct InitializeColorBlindSimulationAdjustmentRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for InitializeColorBlindSimulationAdjustmentRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn initialize_color_blind_simulation_adjustment(
+    out: EntityConstruction<ColorBlindSimulationAdjustment>,
+    options: Option<FlightOmitRecord2968336371>,
+) -> () {
+    let options = options.unwrap_or(FlightOmitRecord2968336371 {
+        __flight_identity: std::sync::Arc::new(()),
+        intensity: None,
+        exposure: None,
+        color_scale_bias: Default::default(),
+        type_: None,
+        matrix: Default::default(),
+        brightness: None,
+        contrast: None,
     });
     let type_: ColorBlindType = ((options.type_).clone()).unwrap_or("deuteranopia".to_owned());
     let m = (COLOR_BLIND_MATRICES
@@ -65,19 +126,15 @@ pub fn create_color_blind_simulation_adjustment(
         1.0_f64,
         0.0_f64,
     ];
-    return {
-        let __flight_spread_1 = (options).clone();
-        ColorBlindSimulationAdjustment {
-            __flight_identity: std::sync::Arc::new(()),
-            kind: "ColorBlindSimulationAdjustment".to_owned(),
-            color_matrix: (color_matrix).clone(),
-            type_: (__flight_spread_1.type_).clone(),
-            ..Default::default()
-        }
-    };
+    initialize_color_matrix_adjustment(
+        (out).clone(),
+        "ColorBlindSimulationAdjustment".to_owned(),
+        &color_matrix,
+    );
+    crate::host_set("host.type", type_);
 }
 
-// Source: upstream/packages/adjustments/src/colorBlindSimulationAdjustment.ts:28 (sha256:614a91fc3257d3208502a48c370680c1ba02007be2d0238596b7243f03b20c3c)
+// Source: upstream/packages/adjustments/src/colorBlindSimulationAdjustment.ts:46 (sha256:614a91fc3257d3208502a48c370680c1ba02007be2d0238596b7243f03b20c3c)
 static COLOR_BLIND_MATRICES: std::sync::LazyLock<Vec<(ColorBlindType, Vec<f64>)>> =
     std::sync::LazyLock::new(|| {
         let mut __flight_record = Vec::new();

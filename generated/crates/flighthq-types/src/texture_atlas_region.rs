@@ -8,8 +8,54 @@
 
 use crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/TextureAtlasRegion.ts:3 (sha256:65a7d001c8ca2defe349f281d226c6c796c8b9e14f2bf8701f6bc6bdc86dcb5d)
-#[derive(Clone, Default)]
+// Source: upstream/packages/types/src/TextureAtlasRegion.ts:3 (sha256:509f146a94fe3a22d6a43cfc510a16f1af89313f1ede489e87600a6866776fea)
+#[derive(Clone, Copy, Debug, Default, Eq, Ord, PartialEq, PartialOrd)]
+#[repr(transparent)]
+pub struct TextureAtlasRotation(pub u32);
+
+impl TextureAtlasRotation {
+    #[allow(non_upper_case_globals)]
+    pub const Counterclockwise90: Self = Self(4294967295_u32);
+
+    #[allow(non_upper_case_globals)]
+    pub const None: Self = Self(0_u32);
+
+    #[allow(non_upper_case_globals)]
+    pub const Clockwise90: Self = Self(1_u32);
+}
+
+impl std::ops::BitAnd for TextureAtlasRotation {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl std::ops::BitOr for TextureAtlasRotation {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl std::ops::BitXor for TextureAtlasRotation {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl std::ops::Not for TextureAtlasRotation {
+    type Output = Self;
+    fn not(self) -> Self {
+        Self(!self.0)
+    }
+}
+impl PartialEq<f64> for TextureAtlasRotation {
+    fn eq(&self, rhs: &f64) -> bool {
+        self.0 as f64 == *rhs
+    }
+}
+
+// Source: upstream/packages/types/src/TextureAtlasRegion.ts:9 (sha256:06ce530291e77c78576f6fd188b5b54e173666175d6ba61d1b301848cbaf9498)
+#[derive(Clone)]
 pub struct TextureAtlasRegion {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -22,9 +68,10 @@ pub struct TextureAtlasRegion {
     pub name: Option<String>,
     pub original_height: Option<f64>,
     pub original_width: Option<f64>,
+    pub page_name: Option<String>,
     pub pivot_x: Option<f64>,
     pub pivot_y: Option<f64>,
-    pub rotated: bool,
+    pub rotation: TextureAtlasRotation,
     pub source_x: f64,
     pub source_y: f64,
     pub trimmed: bool,
@@ -56,5 +103,5 @@ impl crate::FlightEntity for TextureAtlasRegion {
     }
 }
 
-// Source: upstream/packages/types/src/TextureAtlasRegion.ts:20 (sha256:9863842621d051ad75d93d3a933cbd0c0dac801afd48d9f6d7bb6a7094f9e34d)
+// Source: upstream/packages/types/src/TextureAtlasRegion.ts:35 (sha256:9863842621d051ad75d93d3a933cbd0c0dac801afd48d9f6d7bb6a7094f9e34d)
 pub type TextureAtlasRegionLike = TextureAtlasRegion;

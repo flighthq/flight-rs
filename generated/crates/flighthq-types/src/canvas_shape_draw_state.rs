@@ -6,9 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{CanvasTextureResolvers, Matrix};
+use crate::{CanvasTextureResolvers, LineScaleMode, Matrix};
 
-// Source: upstream/packages/types/src/CanvasShapeDrawState.ts:4 (sha256:02c299290855d11a256afa1f89ac05ea04f2bd5c9cfbd95f9b8f313c8291d5dc)
+// Source: upstream/packages/types/src/CanvasShapeDrawState.ts:5 (sha256:2c020a5e63911c5e9dc760bd9d9ee9f671211d47afe2debb824e6f1f49ea5eb5)
 #[derive(Clone)]
 pub struct CanvasShapeDrawState {
     #[doc(hidden)]
@@ -20,10 +20,15 @@ pub struct CanvasShapeDrawState {
     pub fill_matrix: Option<Matrix>,
     pub fill_matrix_inverse: Option<Matrix>,
     pub has_stroke: bool,
+    pub line_scale_mode: LineScaleMode,
     pub stroke_style: crate::FlightUnion2<String, crate::OpaqueHostValue>,
     pub stroke_width: f64,
+    pub current_x: f64,
+    pub current_y: f64,
     pub has_pending_path: bool,
     pub has_current_point: bool,
+    pub subpath_start_x: f64,
+    pub subpath_start_y: f64,
     pub winding_rule: crate::OpaqueHostValue,
     pub bitmap_src: Option<crate::OpaqueHostValue>,
     pub bitmap_w: f64,

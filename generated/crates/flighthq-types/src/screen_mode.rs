@@ -6,11 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/ScreenMode.ts:4 (sha256:349708442009d9ca88cc966d0d145afd0cc7550f64a884cf0cc79436a412f93c)
+use crate::EntityRuntime;
+
+// Source: upstream/packages/types/src/ScreenMode.ts:6 (sha256:5947892032268030c5a03493b8023e256cb2194419fd5274d31cf3ff23f9f51c)
 #[derive(Clone, Default)]
 pub struct ScreenMode {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub width: f64,
     pub height: f64,
     pub refresh_rate: f64,
@@ -20,5 +26,23 @@ pub struct ScreenMode {
 impl PartialEq for ScreenMode {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for ScreenMode {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

@@ -6,12 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{CollisionBuiltInShape2D, SpatialIndexBackend2D};
+use crate::{CollisionBuiltInShape2D, EntityRuntime, SpatialIndexBackend2D};
 
-// Source: upstream/packages/types/src/Physics2D.ts:20 (sha256:56a25100e0e69754e977ebb43bccec1d6fad99d9d7b856c50649af088a0174ab)
+// Source: upstream/packages/types/src/Physics2D.ts:21 (sha256:56a25100e0e69754e977ebb43bccec1d6fad99d9d7b856c50649af088a0174ab)
 pub type Physics2DBodyType = String;
 
-// Source: upstream/packages/types/src/Physics2D.ts:32 (sha256:28fd30f1648e442a5496dba2028bc61e3cf16cd1e7732a4037097077eaf61df9)
+// Source: upstream/packages/types/src/Physics2D.ts:33 (sha256:28fd30f1648e442a5496dba2028bc61e3cf16cd1e7732a4037097077eaf61df9)
 #[derive(Clone, Default)]
 pub struct Physics2DMaterial {
     #[doc(hidden)]
@@ -26,7 +26,7 @@ impl PartialEq for Physics2DMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:42 (sha256:75426e23189c515f9ca0c4b183320489cc0fcb266b98afeecb54710a606110ab)
+// Source: upstream/packages/types/src/Physics2D.ts:43 (sha256:75426e23189c515f9ca0c4b183320489cc0fcb266b98afeecb54710a606110ab)
 #[derive(Clone, Default)]
 pub struct Physics2DCollisionFilter {
     #[doc(hidden)]
@@ -41,11 +41,15 @@ impl PartialEq for Physics2DCollisionFilter {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:65 (sha256:c4157b990247a1cf3e358e8ddae5bef9ee4b2d0acebc1f3630e6e3594369951c)
+// Source: upstream/packages/types/src/Physics2D.ts:66 (sha256:d0186c99555851176022cab14aaa2093cffb83868cf66f67eed39ae0f86e92c6)
 #[derive(Clone)]
 pub struct Physics2DCollider {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub local: CollisionBuiltInShape2D,
     pub world: CollisionBuiltInShape2D,
     pub material: Physics2DMaterial,
@@ -57,8 +61,26 @@ impl PartialEq for Physics2DCollider {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DCollider {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:83 (sha256:4db498c8ac68087d55e1489e845ae6c93c321ef8e63c84e2848d03acd2aca853)
+// Source: upstream/packages/types/src/Physics2D.ts:84 (sha256:4db498c8ac68087d55e1489e845ae6c93c321ef8e63c84e2848d03acd2aca853)
 #[derive(Clone, Default)]
 pub struct Physics2DMassData {
     #[doc(hidden)]
@@ -74,11 +96,15 @@ impl PartialEq for Physics2DMassData {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:103 (sha256:a5206341ac2d9702885db0f9ba9da7d8032b3ea3961e7f34536b715e75b467b7)
+// Source: upstream/packages/types/src/Physics2D.ts:104 (sha256:dec208da851bd23ac3e98ea35ef273fb85e1ee83b162650a310b82d9ffba9597)
 #[derive(Clone, Default)]
 pub struct RigidBody2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub index: f64,
     pub type_: Physics2DBodyType,
     pub x: f64,
@@ -111,8 +137,26 @@ impl PartialEq for RigidBody2D {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for RigidBody2D {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:167 (sha256:c001573502aaf804acac17d7c6b00d0c49e53e5c2134ea34ff3761cdba00072b)
+// Source: upstream/packages/types/src/Physics2D.ts:168 (sha256:c001573502aaf804acac17d7c6b00d0c49e53e5c2134ea34ff3761cdba00072b)
 #[derive(Clone, Default)]
 pub struct Physics2DContactPoint {
     #[doc(hidden)]
@@ -137,7 +181,7 @@ impl PartialEq for Physics2DContactPoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:201 (sha256:3a89f0bc11ff1e68096dbb0499ae192d3abb1cde4962391c47b614b9bc6d616f)
+// Source: upstream/packages/types/src/Physics2D.ts:202 (sha256:3a89f0bc11ff1e68096dbb0499ae192d3abb1cde4962391c47b614b9bc6d616f)
 #[derive(Clone, Default)]
 pub struct Physics2DContact {
     #[doc(hidden)]
@@ -162,12 +206,12 @@ impl PartialEq for Physics2DContact {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:232 (sha256:bfd80cbc8eb537da428b2fbfe476a3d02e86ecedf66ee42850da238aea0f6fe2)
+// Source: upstream/packages/types/src/Physics2D.ts:233 (sha256:bfd80cbc8eb537da428b2fbfe476a3d02e86ecedf66ee42850da238aea0f6fe2)
 pub type Physics2DContactCallback = std::sync::Arc<
     std::sync::Mutex<Box<dyn FnMut(Physics2DWorld, Physics2DContact) -> () + Send + 'static>>,
 >;
 
-// Source: upstream/packages/types/src/Physics2D.ts:234 (sha256:5005685a95c0d38e2864c53d20e121efbaf4b16aedac415200af934f8e1f0d0b)
+// Source: upstream/packages/types/src/Physics2D.ts:235 (sha256:5005685a95c0d38e2864c53d20e121efbaf4b16aedac415200af934f8e1f0d0b)
 #[derive(Clone, Default)]
 pub struct Physics2DContactHooks {
     #[doc(hidden)]
@@ -181,7 +225,7 @@ impl PartialEq for Physics2DContactHooks {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:249 (sha256:29644de2ca268e7003a01a34866533f5279d4bc6da62b2de3f2f702b1a5eaaab)
+// Source: upstream/packages/types/src/Physics2D.ts:250 (sha256:29644de2ca268e7003a01a34866533f5279d4bc6da62b2de3f2f702b1a5eaaab)
 #[derive(Clone, Default)]
 pub struct Physics2DSolverConfig {
     #[doc(hidden)]
@@ -206,7 +250,7 @@ impl PartialEq for Physics2DSolverConfig {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:278 (sha256:bf03f6784633fdf67da2ac96c370093dcf9a1989203e9fc784ba2dbf2e975fa1)
+// Source: upstream/packages/types/src/Physics2D.ts:279 (sha256:bf03f6784633fdf67da2ac96c370093dcf9a1989203e9fc784ba2dbf2e975fa1)
 #[derive(Clone, Default)]
 pub struct Physics2DStepExplanation {
     #[doc(hidden)]
@@ -228,11 +272,15 @@ impl PartialEq for Physics2DStepExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:297 (sha256:55ee81118f0e45a43a3c48b30232417b99732ab1105927547fb55f44cdfe6c00)
+// Source: upstream/packages/types/src/Physics2D.ts:298 (sha256:236b2fd4d6856107a2069c4ff6886ac4cacbb9fb3855f81847cc53c4c60d8848)
 #[derive(Clone)]
 pub struct Physics2DWorld {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub version: f64,
     pub bodies: Vec<RigidBody2D>,
     pub body_by_index: Vec<(f64, RigidBody2D)>,
@@ -269,15 +317,37 @@ impl PartialEq for Physics2DWorld {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DWorld {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:363 (sha256:d9399bc897fd454947f22d5b87a01421946093d4fc4629391a3d6af4e38d0673)
+// Source: upstream/packages/types/src/Physics2D.ts:364 (sha256:d9399bc897fd454947f22d5b87a01421946093d4fc4629391a3d6af4e38d0673)
 pub type Physics2DJointKind = String;
 
-// Source: upstream/packages/types/src/Physics2D.ts:376 (sha256:e20a6f66bbdde9452917d068b35e5e02e5b4412919ff758eeff7128cbb2f48e2)
+// Source: upstream/packages/types/src/Physics2D.ts:377 (sha256:49019df54db98425831ab9e8772c6472dabae6814264902be8b84dc4e61a1cfc)
 #[derive(Clone, Default)]
 pub struct Physics2DJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics2DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -301,8 +371,26 @@ impl PartialEq for Physics2DJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:422 (sha256:4857c6dce98baa356df3216174fce917561e58eb5afc9f8abbaaee663cd64f1f)
+// Source: upstream/packages/types/src/Physics2D.ts:423 (sha256:4857c6dce98baa356df3216174fce917561e58eb5afc9f8abbaaee663cd64f1f)
 #[derive(Clone, Default)]
 pub struct Physics2DBrokenJoint {
     #[doc(hidden)]
@@ -318,7 +406,7 @@ impl PartialEq for Physics2DBrokenJoint {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:432 (sha256:58aeac32fb92a4ffdb57883faf0a2c7ab75710692098cfd87d3b6534c5c0a2c4)
+// Source: upstream/packages/types/src/Physics2D.ts:433 (sha256:58aeac32fb92a4ffdb57883faf0a2c7ab75710692098cfd87d3b6534c5c0a2c4)
 #[derive(Clone, Default)]
 pub struct Physics2DJointEvents {
     #[doc(hidden)]
@@ -331,11 +419,15 @@ impl PartialEq for Physics2DJointEvents {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:439 (sha256:49aef58282491cc209d66ae89145f081fb43a9ae6f7a7abe776a55eba6722255)
+// Source: upstream/packages/types/src/Physics2D.ts:440 (sha256:49aef58282491cc209d66ae89145f081fb43a9ae6f7a7abe776a55eba6722255)
 #[derive(Clone, Default)]
 pub struct Physics2DDistanceJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics2DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -362,12 +454,34 @@ impl PartialEq for Physics2DDistanceJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DDistanceJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:448 (sha256:2e891860961c40694e0204cbd987d650d4f8762a6d3d6ef3bd340e98b44c1af2)
+// Source: upstream/packages/types/src/Physics2D.ts:449 (sha256:2e891860961c40694e0204cbd987d650d4f8762a6d3d6ef3bd340e98b44c1af2)
 #[derive(Clone, Default)]
 pub struct Physics2DRevoluteJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics2DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -402,12 +516,34 @@ impl PartialEq for Physics2DRevoluteJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DRevoluteJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:476 (sha256:3cd1f303c8360981be0e1a34e91acf297a5cc5f7cef9e6cc4a610a397f20a51f)
+// Source: upstream/packages/types/src/Physics2D.ts:477 (sha256:3cd1f303c8360981be0e1a34e91acf297a5cc5f7cef9e6cc4a610a397f20a51f)
 #[derive(Clone, Default)]
 pub struct Physics2DWeldJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics2DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -432,12 +568,34 @@ impl PartialEq for Physics2DWeldJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DWeldJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:483 (sha256:14e73420781716fb117238d19bcdb4f60f2e774649530cfaad6497664f4ec9fd)
+// Source: upstream/packages/types/src/Physics2D.ts:484 (sha256:14e73420781716fb117238d19bcdb4f60f2e774649530cfaad6497664f4ec9fd)
 #[derive(Clone, Default)]
 pub struct Physics2DRopeJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics2DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -462,12 +620,34 @@ impl PartialEq for Physics2DRopeJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DRopeJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:490 (sha256:a169f1f5512b2bf35e7587690e6ef634681878d267026c2ab03a3dafd517ed12)
+// Source: upstream/packages/types/src/Physics2D.ts:491 (sha256:a169f1f5512b2bf35e7587690e6ef634681878d267026c2ab03a3dafd517ed12)
 #[derive(Clone, Default)]
 pub struct Physics2DPulleyJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics2DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -497,15 +677,37 @@ impl PartialEq for Physics2DPulleyJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DPulleyJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:499 (sha256:18764b4f3d144a8ee09a432e0a3778f8843436502107fa5120e453af89cea4d7)
+// Source: upstream/packages/types/src/Physics2D.ts:500 (sha256:18764b4f3d144a8ee09a432e0a3778f8843436502107fa5120e453af89cea4d7)
 pub type Physics2DGearCoordinateKind = String;
 
-// Source: upstream/packages/types/src/Physics2D.ts:506 (sha256:7a2a5c30028a7ebe59854b90338612f99a484da9d05bd71eaaa7de448bbb2b7c)
+// Source: upstream/packages/types/src/Physics2D.ts:507 (sha256:7a2a5c30028a7ebe59854b90338612f99a484da9d05bd71eaaa7de448bbb2b7c)
 #[derive(Clone, Default)]
 pub struct Physics2DGearJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics2DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -537,12 +739,34 @@ impl PartialEq for Physics2DGearJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DGearJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:519 (sha256:2bb0058f4ee30df35910f715952ba564655e18a8f91d5e981212a644478e74e5)
+// Source: upstream/packages/types/src/Physics2D.ts:520 (sha256:2bb0058f4ee30df35910f715952ba564655e18a8f91d5e981212a644478e74e5)
 #[derive(Clone, Default)]
 pub struct Physics2DPrismaticJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics2DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -579,12 +803,34 @@ impl PartialEq for Physics2DPrismaticJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DPrismaticJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:549 (sha256:70b93b46c79fe10b1370af8bf3c98f46e51df7082eb8bc53ed35ae7680de8fd4)
+// Source: upstream/packages/types/src/Physics2D.ts:550 (sha256:70b93b46c79fe10b1370af8bf3c98f46e51df7082eb8bc53ed35ae7680de8fd4)
 #[derive(Clone, Default)]
 pub struct Physics2DWheelJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics2DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -617,12 +863,34 @@ impl PartialEq for Physics2DWheelJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DWheelJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:565 (sha256:664e4ea898a800925784de626419296c5db614ca118bb982780fc280589a5c90)
+// Source: upstream/packages/types/src/Physics2D.ts:566 (sha256:664e4ea898a800925784de626419296c5db614ca118bb982780fc280589a5c90)
 #[derive(Clone, Default)]
 pub struct Physics2DMouseJoint {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: Physics2DJointKind,
     pub body_a: f64,
     pub body_b: f64,
@@ -651,8 +919,26 @@ impl PartialEq for Physics2DMouseJoint {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DMouseJoint {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:576 (sha256:8ca60feec469526136dc96dc3532f33de0799a5307da8bcf7f3f54f1def215a1)
+// Source: upstream/packages/types/src/Physics2D.ts:577 (sha256:8ca60feec469526136dc96dc3532f33de0799a5307da8bcf7f3f54f1def215a1)
 #[derive(Clone, Default)]
 pub struct Physics2DJointOptions {
     #[doc(hidden)]
@@ -673,7 +959,7 @@ impl PartialEq for Physics2DJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:589 (sha256:85755bcc12232b6e020df52315e71d52db17b89510a40769fb2d26fc455357ab)
+// Source: upstream/packages/types/src/Physics2D.ts:590 (sha256:85755bcc12232b6e020df52315e71d52db17b89510a40769fb2d26fc455357ab)
 #[derive(Clone, Default)]
 pub struct Physics2DDistanceJointOptions {
     #[doc(hidden)]
@@ -697,7 +983,7 @@ impl PartialEq for Physics2DDistanceJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:595 (sha256:1f055aa3976d8259c33746c8af33dbf76d069eb62f996589512bfe0e2ac248d4)
+// Source: upstream/packages/types/src/Physics2D.ts:596 (sha256:1f055aa3976d8259c33746c8af33dbf76d069eb62f996589512bfe0e2ac248d4)
 #[derive(Clone, Default)]
 pub struct Physics2DRevoluteJointOptions {
     #[doc(hidden)]
@@ -728,7 +1014,7 @@ impl PartialEq for Physics2DRevoluteJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:608 (sha256:f9fc6035017a8b5e1f85ecffa76f6db48c2b049a506f952cc547e126002c3c9e)
+// Source: upstream/packages/types/src/Physics2D.ts:609 (sha256:f9fc6035017a8b5e1f85ecffa76f6db48c2b049a506f952cc547e126002c3c9e)
 #[derive(Clone, Default)]
 pub struct Physics2DWeldJointOptions {
     #[doc(hidden)]
@@ -750,7 +1036,7 @@ impl PartialEq for Physics2DWeldJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:612 (sha256:aa67ce3449b80ff36751dd1496633651a2bfe8f2c014ac49b8d454a622fde60e)
+// Source: upstream/packages/types/src/Physics2D.ts:613 (sha256:aa67ce3449b80ff36751dd1496633651a2bfe8f2c014ac49b8d454a622fde60e)
 #[derive(Clone, Default)]
 pub struct Physics2DRopeJointOptions {
     #[doc(hidden)]
@@ -772,7 +1058,7 @@ impl PartialEq for Physics2DRopeJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:616 (sha256:8deac03fff883b2e6da269b0b5ba41242add8a73a608d6259e1bffade21e8cdc)
+// Source: upstream/packages/types/src/Physics2D.ts:617 (sha256:8deac03fff883b2e6da269b0b5ba41242add8a73a608d6259e1bffade21e8cdc)
 #[derive(Clone, Default)]
 pub struct Physics2DPulleyJointOptions {
     #[doc(hidden)]
@@ -799,7 +1085,7 @@ impl PartialEq for Physics2DPulleyJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:625 (sha256:78dcb4caa67b151f54c1f2a426c1264d79135c2d29ddbf220e1f930bbd6fdda1)
+// Source: upstream/packages/types/src/Physics2D.ts:626 (sha256:78dcb4caa67b151f54c1f2a426c1264d79135c2d29ddbf220e1f930bbd6fdda1)
 #[derive(Clone, Default)]
 pub struct Physics2DGearJointOptions {
     #[doc(hidden)]
@@ -828,7 +1114,7 @@ impl PartialEq for Physics2DGearJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:636 (sha256:ccf2479b5ae0df31a4a6efc5d386748dc1293079d540a6fc6914cbe8ee777b27)
+// Source: upstream/packages/types/src/Physics2D.ts:637 (sha256:ccf2479b5ae0df31a4a6efc5d386748dc1293079d540a6fc6914cbe8ee777b27)
 #[derive(Clone, Default)]
 pub struct Physics2DPrismaticJointOptions {
     #[doc(hidden)]
@@ -861,7 +1147,7 @@ impl PartialEq for Physics2DPrismaticJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:651 (sha256:9775462cd5ce4402fcc41ff2f91c58cc0fefc7a6b29602a4f44f568e829a5334)
+// Source: upstream/packages/types/src/Physics2D.ts:652 (sha256:9775462cd5ce4402fcc41ff2f91c58cc0fefc7a6b29602a4f44f568e829a5334)
 #[derive(Clone, Default)]
 pub struct Physics2DWheelJointOptions {
     #[doc(hidden)]
@@ -890,7 +1176,7 @@ impl PartialEq for Physics2DWheelJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:664 (sha256:97b067d24a365ba0250d47d2c37194f205a4c5afd97cf32682b63175e05064b7)
+// Source: upstream/packages/types/src/Physics2D.ts:665 (sha256:97b067d24a365ba0250d47d2c37194f205a4c5afd97cf32682b63175e05064b7)
 #[derive(Clone, Default)]
 pub struct Physics2DMouseJointOptions {
     #[doc(hidden)]
@@ -912,7 +1198,7 @@ impl PartialEq for Physics2DMouseJointOptions {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:687 (sha256:a55ac208fe6364b852055c36556dbb00ca715c9f2d5b457f338dfa33636408ed)
+// Source: upstream/packages/types/src/Physics2D.ts:688 (sha256:a55ac208fe6364b852055c36556dbb00ca715c9f2d5b457f338dfa33636408ed)
 #[derive(Clone)]
 pub struct Physics2DJointSolver {
     #[doc(hidden)]
@@ -961,7 +1247,7 @@ impl PartialEq for Physics2DJointSolver {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:748 (sha256:050084dc75e29590d70cf1bc07935d262935cade3baccadcb460c45834a90c6a)
+// Source: upstream/packages/types/src/Physics2D.ts:749 (sha256:050084dc75e29590d70cf1bc07935d262935cade3baccadcb460c45834a90c6a)
 #[derive(Clone, Default)]
 pub struct Physics2DContactEvents {
     #[doc(hidden)]
@@ -975,7 +1261,7 @@ impl PartialEq for Physics2DContactEvents {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:756 (sha256:170b608b1adbe4f5d5adbf9037aae861cd32250fda3110f11bf5dde9eb8b0832)
+// Source: upstream/packages/types/src/Physics2D.ts:757 (sha256:170b608b1adbe4f5d5adbf9037aae861cd32250fda3110f11bf5dde9eb8b0832)
 #[derive(Clone)]
 pub struct Physics2DQueryHit {
     #[doc(hidden)]
@@ -990,11 +1276,15 @@ impl PartialEq for Physics2DQueryHit {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:764 (sha256:70501c86dcdcd798ac02822859ebe0836dac6adc52887c67c95a1848ab9405d4)
+// Source: upstream/packages/types/src/Physics2D.ts:765 (sha256:99d0b0cd297c01ab8a367d75ddd0d370b371b1708a752b6804e54f972c34abbf)
 #[derive(Clone, Default)]
 pub struct Physics2DQueryResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub hits: Vec<Physics2DQueryHit>,
     pub hit_count: f64,
 }
@@ -1003,8 +1293,26 @@ impl PartialEq for Physics2DQueryResult {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DQueryResult {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:772 (sha256:d5fad3e69896ef87b90849b081b585fd0d0ef60cf75dfe8a788516888db17997)
+// Source: upstream/packages/types/src/Physics2D.ts:773 (sha256:d5fad3e69896ef87b90849b081b585fd0d0ef60cf75dfe8a788516888db17997)
 #[derive(Clone, Default)]
 pub struct Physics2DQueryFilter {
     #[doc(hidden)]
@@ -1022,7 +1330,7 @@ impl PartialEq for Physics2DQueryFilter {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:781 (sha256:9094ab4baa041a3973eb2471908827999044b59892109431e6ce46c93436a483)
+// Source: upstream/packages/types/src/Physics2D.ts:782 (sha256:9094ab4baa041a3973eb2471908827999044b59892109431e6ce46c93436a483)
 #[derive(Clone)]
 pub struct Physics2DRayHit {
     #[doc(hidden)]
@@ -1042,11 +1350,15 @@ impl PartialEq for Physics2DRayHit {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:791 (sha256:dcd5f590b1f242ab29d2afd97181bbc6e1cfeb173ca544ef716f2f321130ebd8)
+// Source: upstream/packages/types/src/Physics2D.ts:792 (sha256:b00d0333872cd15ed1cb2e6d719f2d9a14b22a13e052de8b8f422459f73a4501)
 #[derive(Clone, Default)]
 pub struct Physics2DRayResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub hits: Vec<Physics2DRayHit>,
     pub hit_count: f64,
 }
@@ -1055,12 +1367,34 @@ impl PartialEq for Physics2DRayResult {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DRayResult {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:820 (sha256:d5f1f49be47d127ebba0650511ca3ceb0006676cda61b9d61eec4252d7e273df)
+// Source: upstream/packages/types/src/Physics2D.ts:821 (sha256:29e76ae7b81f80b80d59900423d3923d8b34355f793fc336237eeb3158b15392)
 #[derive(Clone, Default)]
 pub struct Physics2DShapeCastResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub body: Option<RigidBody2D>,
     pub collider: Option<Physics2DCollider>,
     pub collider_index: f64,
@@ -1076,8 +1410,26 @@ impl PartialEq for Physics2DShapeCastResult {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DShapeCastResult {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:837 (sha256:6d6d13d5292898320bd6a1581733c7b63a69dd0c46723a3662cd205c0e5bdc03)
+// Source: upstream/packages/types/src/Physics2D.ts:838 (sha256:6d6d13d5292898320bd6a1581733c7b63a69dd0c46723a3662cd205c0e5bdc03)
 #[derive(Clone, Default)]
 pub struct Physics2DCollisionExplanation {
     #[doc(hidden)]
@@ -1091,10 +1443,10 @@ impl PartialEq for Physics2DCollisionExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:842 (sha256:3734762e415651440e9db023f04ab4f01e62c648419c7a598fd048ebea3f6a0e)
+// Source: upstream/packages/types/src/Physics2D.ts:843 (sha256:3734762e415651440e9db023f04ab4f01e62c648419c7a598fd048ebea3f6a0e)
 pub type Physics2DJointResolutionStatus = String;
 
-// Source: upstream/packages/types/src/Physics2D.ts:851 (sha256:66c9b6fd86d8b673b601b333284fa35a8ac7b10390221f667e50d54cfd54e362)
+// Source: upstream/packages/types/src/Physics2D.ts:852 (sha256:66c9b6fd86d8b673b601b333284fa35a8ac7b10390221f667e50d54cfd54e362)
 #[derive(Clone, Default)]
 pub struct Physics2DJointResolution {
     #[doc(hidden)]
@@ -1115,7 +1467,7 @@ impl PartialEq for Physics2DJointResolution {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:863 (sha256:2b53073ddae56946cb5e7ab5666ba8d35426f7c61941745efd3581fe3dcd4fb7)
+// Source: upstream/packages/types/src/Physics2D.ts:864 (sha256:2b53073ddae56946cb5e7ab5666ba8d35426f7c61941745efd3581fe3dcd4fb7)
 #[derive(Clone, Default)]
 pub struct Physics2DJointResolutionExplanation {
     #[doc(hidden)]
@@ -1130,11 +1482,15 @@ impl PartialEq for Physics2DJointResolutionExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:884 (sha256:f7b24f51b36d1e213fac73094004d759ac11eb1adf019ec50cdf55673943bdf7)
+// Source: upstream/packages/types/src/Physics2D.ts:885 (sha256:43333a7febdd67179b693fa530986afdc9280adfeaa13c177f6029ae188a925f)
 #[derive(Clone, Default)]
 pub struct Physics2DJointReaction {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub force_x: f64,
     pub force_y: f64,
     pub torque: f64,
@@ -1144,23 +1500,41 @@ impl PartialEq for Physics2DJointReaction {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DJointReaction {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:893 (sha256:6abbadfdaec91083766ffcbd98bf1db93a2050c33f5d93bee6f5e0973c0e9c58)
+// Source: upstream/packages/types/src/Physics2D.ts:894 (sha256:6abbadfdaec91083766ffcbd98bf1db93a2050c33f5d93bee6f5e0973c0e9c58)
 pub type Physics2DStepGuard =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Physics2DWorld, f64) -> () + Send + 'static>>>;
 
-// Source: upstream/packages/types/src/Physics2D.ts:897 (sha256:02a3fd499a2b91ff953a8c8b9683811bd67b8086f978c1688ec853346027421b)
+// Source: upstream/packages/types/src/Physics2D.ts:898 (sha256:02a3fd499a2b91ff953a8c8b9683811bd67b8086f978c1688ec853346027421b)
 pub type Physics2DContactIntakeGuard =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Physics2DWorld) -> () + Send + 'static>>>;
 
-// Source: upstream/packages/types/src/Physics2D.ts:906 (sha256:ee55727fa248d14e909854bb1fbe925415199bfc4c381246de2262afe1f24acc)
+// Source: upstream/packages/types/src/Physics2D.ts:907 (sha256:ee55727fa248d14e909854bb1fbe925415199bfc4c381246de2262afe1f24acc)
 pub type Physics2DJointResolutionGuard =
     std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Physics2DWorld) -> () + Send + 'static>>>;
 
-// Source: upstream/packages/types/src/Physics2D.ts:908 (sha256:ceb7de12db62d422c92896660358f66ed2573b4344757c2019eac4198c0baae6)
+// Source: upstream/packages/types/src/Physics2D.ts:909 (sha256:ceb7de12db62d422c92896660358f66ed2573b4344757c2019eac4198c0baae6)
 pub type Physics2DDebugFeature = String;
 
-// Source: upstream/packages/types/src/Physics2D.ts:913 (sha256:40cd280d4b3477b864e91ec95bff9c922335f937200478f6f56d4e542bd25754)
+// Source: upstream/packages/types/src/Physics2D.ts:914 (sha256:40cd280d4b3477b864e91ec95bff9c922335f937200478f6f56d4e542bd25754)
 #[derive(Clone, Default)]
 pub struct Physics2DDebugLine {
     #[doc(hidden)]
@@ -1179,7 +1553,7 @@ impl PartialEq for Physics2DDebugLine {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:923 (sha256:ed38b0c33bd7502b53e2a4922de766310a53c290f77ec3676600a8ee9c56d937)
+// Source: upstream/packages/types/src/Physics2D.ts:924 (sha256:ed38b0c33bd7502b53e2a4922de766310a53c290f77ec3676600a8ee9c56d937)
 #[derive(Clone, Default)]
 pub struct Physics2DDebugCircle {
     #[doc(hidden)]
@@ -1197,11 +1571,15 @@ impl PartialEq for Physics2DDebugCircle {
     }
 }
 
-// Source: upstream/packages/types/src/Physics2D.ts:934 (sha256:1f8b276b48280ac169c1a2fd693088116385bea498fd8d80746091ed5a42729a)
+// Source: upstream/packages/types/src/Physics2D.ts:935 (sha256:4b17372a5e6b8994b6dc3bee23221e0ee7e5466ed82fa8fb0087ef9dec634392)
 #[derive(Clone, Default)]
 pub struct Physics2DDebugGeometry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub lines: Vec<Physics2DDebugLine>,
     pub line_count: f64,
     pub circles: Vec<Physics2DDebugCircle>,
@@ -1212,8 +1590,26 @@ impl PartialEq for Physics2DDebugGeometry {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for Physics2DDebugGeometry {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/Physics2D.ts:941 (sha256:47def074a0904f9f25514d36c9de48c415a0d0363de3612860855ad5f0f9f073)
+// Source: upstream/packages/types/src/Physics2D.ts:942 (sha256:47def074a0904f9f25514d36c9de48c415a0d0363de3612860855ad5f0f9f073)
 #[derive(Clone, Default)]
 pub struct Physics2DDebugGeometryOptions {
     #[doc(hidden)]

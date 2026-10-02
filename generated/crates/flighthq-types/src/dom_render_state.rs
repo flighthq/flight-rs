@@ -8,9 +8,10 @@
 
 use crate::{
     Bitmap, BlendMode, CanvasShapeCommand, ColorAdjustmentUnsupportedGuard, DomScene2DRectangle,
-    DomTextureResolver, EntityRuntime, KeyedTable, Matrix, Path, PathMesh, PathWinding,
-    RenderEffectPaddingResolver, RenderProxy, RenderProxy2D, RenderRootGuard, RenderState,
-    Renderer, Scene2DClipHooks, Scene3DGraphSyncPolicy, ShapeRasterizer, SlotTable, StrokeStyle,
+    DomTextureResolver, EffectPaddingResolver, EntityRuntime, HostCanvasCapability,
+    HostImageCapability, Kind, NodeRenderer, PathWinding, RenderProxy, RenderProxy2D,
+    RenderRegistrySignals, RenderRootGuard, RenderState, Scene2DClipHooks, Scene3DGraphSyncPolicy,
+    ShapeRasterizer, StrokeTessellator,
 };
 
 // Source: upstream/packages/types/src/DomRenderState.ts:11 (sha256:7dd771caabb5913c54dc523f2804bfcdff548e84aca709060279660fb26ea9af)
@@ -23,15 +24,13 @@ pub struct DomRenderState {
     #[doc(hidden)]
     pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub allow_smoothing: bool,
-    pub background_color: f64,
-    pub background_color_rgba: Vec<f64>,
-    pub background_color_string: String,
     pub current_clip_depth: f64,
     pub display_object_clip_hooks: Option<Scene2DClipHooks>,
     pub pixel_ratio: f64,
+    pub canvas_host: Option<HostCanvasCapability>,
+    pub image_host: Option<HostImageCapability>,
     pub render_alpha: f64,
     pub render_blend_mode: Option<BlendMode>,
-    pub render_transform2_d: Option<Matrix>,
     pub scene_graph_sync_policy: Scene3DGraphSyncPolicy,
     pub round_pixels: bool,
     pub apply_blend_mode: Option<
@@ -72,38 +71,28 @@ impl crate::FlightEntity for DomRenderState {
     }
 }
 
-// Source: upstream/packages/types/src/DomRenderState.ts:21 (sha256:3b8ef9dbbfa02ffa5cbfa60a7794d052d50f559167276292a2a620425bedb3e0)
+// Source: upstream/packages/types/src/DomRenderState.ts:21 (sha256:65f5d8080379a3c58959933ac788670e1fc92811cd58e3e9df13e6e9f1d6b722)
 #[derive(Clone, Default)]
 pub struct DomRenderRegistries {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub canvas_shape_commands: Option<KeyedTable<CanvasShapeCommand<crate::OpaqueHostValue>>>,
+    pub canvas_shape_commands: Option<Vec<(Kind, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
     pub color_adjustments: Option<
-        SlotTable<
-            std::sync::Arc<
-                std::sync::Mutex<
-                    Box<
-                        dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> ()
-                            + Send
-                            + 'static,
-                    >,
+        std::sync::Arc<
+            std::sync::Mutex<
+                Box<
+                    dyn FnMut(RenderState, RenderProxy, Option<RenderProxy>) -> () + Send + 'static,
                 >,
             >,
         >,
     >,
-    pub color_adjustment_unsupported_guard: Option<SlotTable<ColorAdjustmentUnsupportedGuard>>,
-    pub effect_padding_resolvers: Option<KeyedTable<RenderEffectPaddingResolver>>,
-    pub renderers: KeyedTable<Renderer>,
-    pub render_root_guard: Option<SlotTable<RenderRootGuard>>,
-    pub stroke_tessellator: SlotTable<
-        std::sync::Arc<
-            std::sync::Mutex<
-                Box<dyn FnMut(Path, StrokeStyle, Option<f64>) -> Option<PathMesh> + Send + 'static>,
-            >,
-        >,
-    >,
-    pub shape_rasterizer: SlotTable<ShapeRasterizer>,
-    pub texture_resolvers: KeyedTable<DomTextureResolver>,
+    pub color_adjustment_unsupported_guard: Option<ColorAdjustmentUnsupportedGuard>,
+    pub effect_padding_resolvers: Option<Vec<(Kind, EffectPaddingResolver)>>,
+    pub node_renderers: Vec<(Kind, NodeRenderer)>,
+    pub render_root_guard: Option<RenderRootGuard>,
+    pub stroke_tessellator: Option<StrokeTessellator>,
+    pub shape_rasterizer: Option<ShapeRasterizer>,
+    pub texture_resolvers: Vec<(Kind, DomTextureResolver)>,
 }
 impl PartialEq for DomRenderRegistries {
     fn eq(&self, other: &Self) -> bool {
@@ -112,10 +101,34 @@ impl PartialEq for DomRenderRegistries {
 }
 
 // Source: upstream/packages/types/src/DomRenderState.ts:30 (sha256:0a8d83da2d0248649e6b7200c1cef7462b9438b5ae01577f4efa27d8fb957109)
+#[derive(Clone, Default)]
+pub struct DomRenderStateRuntimeRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub element: crate::OpaqueHostValue,
+    pub version: f64,
+}
+impl PartialEq for DomRenderStateRuntimeRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct DomRenderStateRuntimeRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub clear: std::sync::Arc<std::sync::Mutex<Box<dyn FnMut() -> () + Send + 'static>>>,
+    pub signals: RenderRegistrySignals,
+}
+impl PartialEq for DomRenderStateRuntimeRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 #[doc(hidden)]
 pub struct DomRenderStateRuntimeStorage {
     pub registries: DomRenderRegistries,
-    pub bitmap_element_cache: Option<Vec<(Bitmap, crate::CanvasTextureResolversRecord2)>>,
+    pub bitmap_element_cache: Option<Vec<(Bitmap, DomRenderStateRuntimeRecord1)>>,
 }
 impl Default for DomRenderStateRuntimeStorage {
     fn default() -> Self {

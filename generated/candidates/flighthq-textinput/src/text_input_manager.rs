@@ -11,14 +11,15 @@ use crate::{
     insert_text_input, move_text_input_caret, select_line_at_text_input_index,
     select_word_at_text_input_index,
 };
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_signals::{connect_signal, disconnect_signal};
 use flighthq_text::{get_rich_text_runtime, set_rich_text_scroll_v};
 use flighthq_types::{
-    HandleTextInputKeyboardOptions, InputKeyboardData, InputTextData, KeyboardEventData, RichText,
-    TextInputManager, TextInputSource,
+    EntityConstruction, HandleTextInputKeyboardOptions, InputKeyboardData, InputTextData,
+    KeyboardEventData, RichText, TextInputManager, TextInputSource,
 };
 
-// Source: upstream/packages/textinput/src/textInputManager.ts:21 (sha256:9ab5cbd2cf4707069b7499d4fb910172de2721b5d2aca8db6fa8fe4d8808139f)
+// Source: upstream/packages/textinput/src/textInputManager.ts:23 (sha256:9ab5cbd2cf4707069b7499d4fb910172de2721b5d2aca8db6fa8fe4d8808139f)
 pub fn blur_text_input(manager: &mut TextInputManager) -> () {
     let target = (manager.focused).clone();
     if (target).is_some() {
@@ -27,7 +28,7 @@ pub fn blur_text_input(manager: &mut TextInputManager) -> () {
     manager.focused = None;
 }
 
-// Source: upstream/packages/textinput/src/textInputManager.ts:27 (sha256:9b98672c105dc99b74504105b9e91c0445ddfc70734a9e97f851fa0546490b4e)
+// Source: upstream/packages/textinput/src/textInputManager.ts:29 (sha256:9b98672c105dc99b74504105b9e91c0445ddfc70734a9e97f851fa0546490b4e)
 pub fn connect_input_to_text_input(
     mut input: TextInputSource,
     manager: TextInputManager,
@@ -62,16 +63,14 @@ pub fn connect_input_to_text_input(
         as Box<dyn FnMut() -> () + Send + 'static>));
 }
 
-// Source: upstream/packages/textinput/src/textInputManager.ts:40 (sha256:e9323686b2e65106cc0e08e36a88cf34d90cb0b9da2bc6b5da86c3a9ad49ed2e)
+// Source: upstream/packages/textinput/src/textInputManager.ts:42 (sha256:98f6fc9fc2e971e3346951076b8bed22a383948b51e5c6c9ef4717d822285a09)
 pub fn create_text_input_manager() -> TextInputManager {
-    return TextInputManager {
-        __flight_identity: std::sync::Arc::new(()),
-        enabled: true,
-        focused: None,
-    };
+    let mut out = allocate_entity();
+    initialize_text_input_manager((out).clone());
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/textinput/src/textInputManager.ts:47 (sha256:71866e07667c1624b5639beadcaa833b2deb09241a9cf49147e55c33cdf50948)
+// Source: upstream/packages/textinput/src/textInputManager.ts:48 (sha256:71866e07667c1624b5639beadcaa833b2deb09241a9cf49147e55c33cdf50948)
 pub fn dispatch_text_input(manager: &TextInputManager, text: String) -> bool {
     let __flight_utf16_text: std::sync::Arc<Vec<u16>> =
         std::sync::Arc::new(text.encode_utf16().collect());
@@ -83,7 +82,7 @@ pub fn dispatch_text_input(manager: &TextInputManager, text: String) -> bool {
     return true;
 }
 
-// Source: upstream/packages/textinput/src/textInputManager.ts:54 (sha256:2eccda4007d21a0cd9ff02edcac75e74d04229995733a87a73ed4d3cd05be3f3)
+// Source: upstream/packages/textinput/src/textInputManager.ts:55 (sha256:2eccda4007d21a0cd9ff02edcac75e74d04229995733a87a73ed4d3cd05be3f3)
 pub fn dispatch_text_input_key_down(
     manager: &TextInputManager,
     data: &InputKeyboardData,
@@ -125,7 +124,7 @@ pub fn dispatch_text_input_key_down(
     );
 }
 
-// Source: upstream/packages/textinput/src/textInputManager.ts:66 (sha256:d2bb82836fcfe63014aa591312a50e3b835af4ff32b3e741d0293af0dd142ab2)
+// Source: upstream/packages/textinput/src/textInputManager.ts:67 (sha256:d2bb82836fcfe63014aa591312a50e3b835af4ff32b3e741d0293af0dd142ab2)
 pub fn dispatch_text_input_pointer_down(
     manager: &mut TextInputManager,
     target: &RichText,
@@ -158,7 +157,7 @@ pub fn dispatch_text_input_pointer_down(
     }
 }
 
-// Source: upstream/packages/textinput/src/textInputManager.ts:87 (sha256:b74eb4f68c9f6a4d16075fe1dabd01a0a866e258ad56c0ad8321a310fcb30166)
+// Source: upstream/packages/textinput/src/textInputManager.ts:88 (sha256:b74eb4f68c9f6a4d16075fe1dabd01a0a866e258ad56c0ad8321a310fcb30166)
 pub fn dispatch_text_input_pointer_move(manager: &TextInputManager, x: f64, y: f64) -> () {
     let target = (manager.focused).clone();
     if ((target).is_none()) || (!target.as_ref().unwrap().enabled) {
@@ -182,7 +181,7 @@ pub fn dispatch_text_input_pointer_move(manager: &TextInputManager, x: f64, y: f
     move_text_input_caret(&target.as_ref().unwrap(), index, Some(true));
 }
 
-// Source: upstream/packages/textinput/src/textInputManager.ts:96 (sha256:c437416723ce314df0ff774053b771d0ec3fc81d9105175f60a5e0f75dc14903)
+// Source: upstream/packages/textinput/src/textInputManager.ts:97 (sha256:c437416723ce314df0ff774053b771d0ec3fc81d9105175f60a5e0f75dc14903)
 pub fn dispatch_text_input_wheel(manager: &mut TextInputManager, delta_lines: f64) -> () {
     let mut target = (manager.focused).clone();
     if ((target).is_none()) || (!target.as_mut().unwrap().enabled) {
@@ -196,7 +195,7 @@ pub fn dispatch_text_input_wheel(manager: &mut TextInputManager, delta_lines: f6
     };
 }
 
-// Source: upstream/packages/textinput/src/textInputManager.ts:102 (sha256:c72725f0773ffbea1f408368e39a3fb3fa8938134c1876d1a234045048e8b509)
+// Source: upstream/packages/textinput/src/textInputManager.ts:103 (sha256:c72725f0773ffbea1f408368e39a3fb3fa8938134c1876d1a234045048e8b509)
 pub fn focus_text_input(manager: &mut TextInputManager, target: &RichText) -> () {
     if !(((manager.focused).clone()) == Some((*target).clone())) {
         let previous = (manager.focused).clone();
@@ -208,7 +207,13 @@ pub fn focus_text_input(manager: &mut TextInputManager, target: &RichText) -> ()
     set_text_input_focused(target, true);
 }
 
-// Source: upstream/packages/textinput/src/textInputManager.ts:111 (sha256:3b3b62db95cee44187361455b968c5cc4a750a28916b201be39a8fba81d51160)
+// Source: upstream/packages/textinput/src/textInputManager.ts:112 (sha256:1b87d8bdb4c547c5c3afe0177da4940d5658f9bc33b2b53d5fd640638e331719)
+pub fn initialize_text_input_manager(out: EntityConstruction<TextInputManager>) -> () {
+    crate::host_set("host.enabled", true);
+    crate::host_set("host.focused", None);
+}
+
+// Source: upstream/packages/textinput/src/textInputManager.ts:117 (sha256:3b3b62db95cee44187361455b968c5cc4a750a28916b201be39a8fba81d51160)
 fn get_text_input_focus_target(manager: &TextInputManager) -> Option<RichText> {
     if (!manager.enabled) {
         return None;
@@ -220,7 +225,7 @@ fn get_text_input_focus_target(manager: &TextInputManager) -> Option<RichText> {
     return Some((target.as_ref().unwrap()).clone());
 }
 
-// Source: upstream/packages/textinput/src/textInputManager.ts:120 (sha256:a6fecc46dca2fd97c36843bbfae467ac03bf9b80304811707ba2d4c9bf627789)
+// Source: upstream/packages/textinput/src/textInputManager.ts:126 (sha256:a6fecc46dca2fd97c36843bbfae467ac03bf9b80304811707ba2d4c9bf627789)
 fn set_text_input_focused(target: &RichText, focused: bool) -> () {
     let mut state = get_text_input_state(target);
     if (state).is_some() {

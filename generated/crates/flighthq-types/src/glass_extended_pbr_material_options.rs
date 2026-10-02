@@ -88,7 +88,7 @@ impl PartialEq for FlightPartialRecord2066421274 {
     }
 }
 
-// Source: upstream/packages/types/src/GlassExtendedPbrMaterialOptions.ts:8 (sha256:abb20dbf39b4f964e064e5eac6817d622cf53c5ec689ba86a6569bc02c5dd1db)
+// Source: upstream/packages/types/src/GlassExtendedPbrMaterialOptions.ts:8 (sha256:e9624358d2018fc1d55d1601fe5368c748424c9f59e1d678a9c59803162866bf)
 #[derive(Clone, Default)]
 pub struct GlassExtendedPbrMaterialOptions {
     #[doc(hidden)]

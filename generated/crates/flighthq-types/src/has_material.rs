@@ -6,14 +6,14 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{EntityRuntime, Kind, Material, MaterialData, NodeData};
+use crate::{EntityRuntime, Kind, Material2D, MaterialData, NodeData};
 
-// Source: upstream/packages/types/src/HasMaterial.ts:7 (sha256:50eacbe15271d1df42963302c6bed2ca8c6bd60772e9e4a3f3a0cbdc6896cdc3)
+// Source: upstream/packages/types/src/HasMaterial.ts:8 (sha256:4a2a91b458f4fed4b5ddb978a7439879f1f6d0ed0f4a5dafe2794485f3a2c47b)
 #[derive(Clone, Default)]
 pub struct HasMaterial {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub material: Option<Material>,
+    pub material: Option<Material2D>,
     pub material_data: Option<MaterialData>,
 }
 impl PartialEq for HasMaterial {
@@ -22,7 +22,7 @@ impl PartialEq for HasMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/HasMaterial.ts:12 (sha256:e30a568fec2eeea97adb852cb0aa803330e195caa60677fa862123007e17fad4)
+// Source: upstream/packages/types/src/HasMaterial.ts:15 (sha256:2c0b94d6ae603b5dfd1f3b50bf7d785d985302c0818fe9d0846b13ea2ec1aaa8)
 #[derive(Clone, Default)]
 pub struct MaterialNode {
     #[doc(hidden)]
@@ -35,7 +35,7 @@ pub struct MaterialNode {
     pub enabled: bool,
     pub kind: Kind,
     pub name: Option<String>,
-    pub material: Option<Material>,
+    pub material: Option<Material2D>,
     pub material_data: Option<MaterialData>,
 }
 impl PartialEq for MaterialNode {

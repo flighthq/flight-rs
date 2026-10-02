@@ -6,35 +6,23 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::set_projection_matrix4;
-use flighthq_entity::create_entity;
+use crate::{apply_oblique_near_clip_plane, set_projection_matrix4};
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_geometry::{
     create_matrix4, create_vector2, inverse_matrix4, multiply_matrix4, set_matrix4_look_at,
 };
-use flighthq_types::{Camera3D, Camera3DOptions, Matrix4, Matrix4Like, Projection, Vector3Like};
+use flighthq_types::{
+    Camera3D, Camera3DOptions, EntityConstruction, Matrix4, Matrix4Like, Projection, Vector3Like,
+};
 
-// Source: upstream/packages/camera/src/camera.ts:19 (sha256:f444bf68bb008a5cd44a273e6244eac4add2ab2c35bc99d720c1301d7cc6827d)
+// Source: upstream/packages/camera/src/camera.ts:14 (sha256:1ddb1065752094e8f94fcdb03749251f393b7c6870a52461a1098835f8cf1e4c)
 pub fn create_camera3_d(opts: &Camera3DOptions) -> Camera3D {
-    return create_entity(Some(Camera3D {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        far: opts.far,
-        inverse_view_projection: create_matrix4(
-            None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-            None, None,
-        ),
-        jitter: create_vector2(Some(0.0_f64), Some(0.0_f64)),
-        near: opts.near,
-        projection: (opts.projection).clone(),
-        view: create_matrix4(
-            None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-            None, None,
-        ),
-    }));
+    let mut out = allocate_entity();
+    initialize_camera3_d((out).clone(), opts);
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/camera/src/camera.ts:37 (sha256:b391dbfbff4df4ff85b3d3a6a40b10b13c0b4479a2c2818679d99587a51ba801)
+// Source: upstream/packages/camera/src/camera.ts:27 (sha256:b391dbfbff4df4ff85b3d3a6a40b10b13c0b4479a2c2818679d99587a51ba801)
 pub fn get_camera3_d_inverse_view_projection_matrix4(
     out: &mut Matrix4Like,
     camera: &Camera3D,
@@ -74,6 +62,12 @@ pub fn get_camera3_d_inverse_view_projection_matrix4(
                 * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
                 as f32;
         };
+        if ((camera.near_clip_plane).clone()).is_some() {
+            apply_oblique_near_clip_plane(
+                &mut (*__SCRATCH_PROJECTION.lock().unwrap()),
+                camera.near_clip_plane.as_ref().unwrap(),
+            );
+        }
         multiply_matrix4(
             &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
             &{
@@ -113,7 +107,7 @@ pub fn get_camera3_d_inverse_view_projection_matrix4(
     });
 }
 
-// Source: upstream/packages/camera/src/camera.ts:52 (sha256:7ee87804c11ab798faba13113df8cad7d13e3d24ab7233c6c926d3158f267997)
+// Source: upstream/packages/camera/src/camera.ts:42 (sha256:5646121a0e21a6a35a55f99c158507218223f70f71a6570bab1746b55c9f08cf)
 pub fn get_camera3_d_view_projection_matrix4(
     out: &mut Matrix4Like,
     camera: &Camera3D,
@@ -152,6 +146,12 @@ pub fn get_camera3_d_view_projection_matrix4(
             * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
             as f32;
     };
+    if ((camera.near_clip_plane).clone()).is_some() {
+        apply_oblique_near_clip_plane(
+            &mut (*__SCRATCH_PROJECTION.lock().unwrap()),
+            camera.near_clip_plane.as_ref().unwrap(),
+        );
+    }
     multiply_matrix4(
         out,
         &{
@@ -179,14 +179,49 @@ pub fn get_camera3_d_view_projection_matrix4(
     );
 }
 
-// Source: upstream/packages/camera/src/camera.ts:64 (sha256:fdad39b4d9c8174aac7ab3346322007d2af9edb7fbda13b0eba8b7f6415b73b6)
+// Source: upstream/packages/camera/src/camera.ts:55 (sha256:20ba32082bb1c054cdbad48f13bf791c283bf23d26f20e293a1cf981fddbfcb8)
+pub fn initialize_camera3_d(out: EntityConstruction<Camera3D>, opts: &Camera3DOptions) -> () {
+    crate::host_set("host.far", opts.far);
+    crate::host_set(
+        "host.inverseViewProjection",
+        create_matrix4(
+            None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+            None, None,
+        ),
+    );
+    crate::host_set("host.jitter", create_vector2(Some(0.0_f64), Some(0.0_f64)));
+    crate::host_set("host.near", opts.near);
+    crate::host_set("host.nearClipPlane", (opts.near_clip_plane).clone());
+    crate::host_set("host.projection", (opts.projection).clone());
+    crate::host_set(
+        "host.view",
+        create_matrix4(
+            None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+            None, None,
+        ),
+    );
+}
+
+// Source: upstream/packages/camera/src/camera.ts:71 (sha256:f3d12413ed95bea4cb8d534707ad8e561dcc13d1d36c82b0b278e5d893217732)
 pub fn set_camera3_d_aspect(camera: &mut Camera3D, aspect: f64) -> () {
-    if matches!(&(camera.projection), flighthq_types::Projection::B(_)) {
+    if matches!(
+        &(camera.projection),
+        crate::FlightUnion2::B(crate::FlightUnion2::A(_))
+    ) {
         (match (camera.projection).clone() {
             flighthq_types::Projection::A(_) => panic!("TypeScript union narrowing failed"),
-            flighthq_types::Projection::B(value) => value,
+            flighthq_types::Projection::B(value) => match value {
+                crate::FlightUnion2::A(value) => value,
+                crate::FlightUnion2::B(_) => panic!("TypeScript union narrowing failed"),
+            },
         })
         .aspect = aspect;
+        return;
+    }
+    if matches!(
+        &(camera.projection),
+        crate::FlightUnion2::B(crate::FlightUnion2::B(_))
+    ) {
         return;
     }
     (match (camera.projection).clone() {
@@ -201,13 +236,13 @@ pub fn set_camera3_d_aspect(camera: &mut Camera3D, aspect: f64) -> () {
         * aspect);
 }
 
-// Source: upstream/packages/camera/src/camera.ts:75 (sha256:bfb927850796b081447fa35ebbbb118b6fc5923dfc60f5e2f704422bd1c5534d)
+// Source: upstream/packages/camera/src/camera.ts:83 (sha256:bfb927850796b081447fa35ebbbb118b6fc5923dfc60f5e2f704422bd1c5534d)
 pub fn set_camera3_d_jitter(camera: &mut Camera3D, x: f64, y: f64) -> () {
     camera.jitter.x = x;
     camera.jitter.y = y;
 }
 
-// Source: upstream/packages/camera/src/camera.ts:84 (sha256:2551adfde46b67dbcebbb9af6f8ea7521de1ab26f32b4d6f24782a7e68335501)
+// Source: upstream/packages/camera/src/camera.ts:92 (sha256:2551adfde46b67dbcebbb9af6f8ea7521de1ab26f32b4d6f24782a7e68335501)
 pub fn set_camera3_d_view_guard(
     guard: &Option<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Camera3D) -> () + Send + 'static>>>,
@@ -216,7 +251,7 @@ pub fn set_camera3_d_view_guard(
     (*CAMERA3_D_VIEW_GUARD.lock().unwrap()) = (*guard).clone();
 }
 
-// Source: upstream/packages/camera/src/camera.ts:93 (sha256:ad72d8902dbe544369f6f78a21fed72fbd73f8d20cb6d5b1ff37fc11a03992c8)
+// Source: upstream/packages/camera/src/camera.ts:101 (sha256:ad72d8902dbe544369f6f78a21fed72fbd73f8d20cb6d5b1ff37fc11a03992c8)
 pub fn set_camera3_d_view_matrix4_from_look_at(
     camera: &mut Camera3D,
     eye: &Vector3Like,
@@ -226,7 +261,7 @@ pub fn set_camera3_d_view_matrix4_from_look_at(
     set_matrix4_look_at(&mut camera.view, eye, target, up);
 }
 
-// Source: upstream/packages/camera/src/camera.ts:115 (sha256:bcfe611d5acddd7545bf1e4365077b455b63d2eaba1628635686da35ef3fce38)
+// Source: upstream/packages/camera/src/camera.ts:123 (sha256:bcfe611d5acddd7545bf1e4365077b455b63d2eaba1628635686da35ef3fce38)
 pub fn set_camera3_d_view_matrix4_from_matrix4(camera: &mut Camera3D, view: &Matrix4Like) -> () {
     {
         let __flight_offset = (0.0_f64) as usize;
@@ -245,7 +280,7 @@ pub fn set_camera3_d_view_matrix4_from_matrix4(camera: &mut Camera3D, view: &Mat
     };
 }
 
-// Source: upstream/packages/camera/src/camera.ts:124 (sha256:aba0c8297b05d3db0a1586783d6cd8b5caa3ac4353d3cff7db19632f419cd778)
+// Source: upstream/packages/camera/src/camera.ts:132 (sha256:aba0c8297b05d3db0a1586783d6cd8b5caa3ac4353d3cff7db19632f419cd778)
 pub fn update_camera3_d_inverse_view_projection(camera: &mut Camera3D, aspect: f64) -> bool {
     let ok = (|| -> bool {
         {
@@ -282,6 +317,12 @@ pub fn update_camera3_d_inverse_view_projection(camera: &mut Camera3D, aspect: f
                     * ((*__SCRATCH_PROJECTION.lock().unwrap()).m[15.0_f64 as usize] as f64))
                     as f32;
             };
+            if ((camera.near_clip_plane).clone()).is_some() {
+                apply_oblique_near_clip_plane(
+                    &mut (*__SCRATCH_PROJECTION.lock().unwrap()),
+                    camera.near_clip_plane.as_ref().unwrap(),
+                );
+            }
             multiply_matrix4(
                 &mut (*__SCRATCH_VIEW_PROJECTION.lock().unwrap()),
                 &{
@@ -339,7 +380,7 @@ pub fn update_camera3_d_inverse_view_projection(camera: &mut Camera3D, aspect: f
     return ok;
 }
 
-// Source: upstream/packages/camera/src/camera.ts:133 (sha256:7ec7d78ecc2375afdd5fdace3128662b774baf283c6d578b2e34d225a67cf60b)
+// Source: upstream/packages/camera/src/camera.ts:141 (sha256:7ec7d78ecc2375afdd5fdace3128662b774baf283c6d578b2e34d225a67cf60b)
 fn apply_camera3_d_projection_jitter(out: &mut Matrix4Like, x: f64, y: f64) -> () {
     out.m[0.0_f64 as usize] += (x * (out.m[3.0_f64 as usize] as f64)) as f32;
     out.m[4.0_f64 as usize] += (x * (out.m[7.0_f64 as usize] as f64)) as f32;
@@ -351,7 +392,7 @@ fn apply_camera3_d_projection_jitter(out: &mut Matrix4Like, x: f64, y: f64) -> (
     out.m[13.0_f64 as usize] += (y * (out.m[15.0_f64 as usize] as f64)) as f32;
 }
 
-// Source: upstream/packages/camera/src/camera.ts:146 (sha256:4ad6a35d9104577101cd617015c99a42397b2a539dbed3a36ad1c58c3356133d)
+// Source: upstream/packages/camera/src/camera.ts:154 (sha256:4ad6a35d9104577101cd617015c99a42397b2a539dbed3a36ad1c58c3356133d)
 static __SCRATCH_INVERSE: std::sync::LazyLock<std::sync::Mutex<Matrix4>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(create_matrix4(
@@ -360,7 +401,7 @@ static __SCRATCH_INVERSE: std::sync::LazyLock<std::sync::Mutex<Matrix4>> =
         ))
     });
 
-// Source: upstream/packages/camera/src/camera.ts:147 (sha256:25f0673e0ee20250bdc4881d41975acf1c9d47c88eec611dac8217aedc5ded65)
+// Source: upstream/packages/camera/src/camera.ts:155 (sha256:25f0673e0ee20250bdc4881d41975acf1c9d47c88eec611dac8217aedc5ded65)
 static __SCRATCH_PROJECTION: std::sync::LazyLock<std::sync::Mutex<Matrix4>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(create_matrix4(
@@ -369,7 +410,7 @@ static __SCRATCH_PROJECTION: std::sync::LazyLock<std::sync::Mutex<Matrix4>> =
         ))
     });
 
-// Source: upstream/packages/camera/src/camera.ts:148 (sha256:ea1bce46bff5117486aa66f0bc0c33f5ba239247bd135b339e34f20358b60428)
+// Source: upstream/packages/camera/src/camera.ts:156 (sha256:ea1bce46bff5117486aa66f0bc0c33f5ba239247bd135b339e34f20358b60428)
 static __SCRATCH_VIEW_PROJECTION: std::sync::LazyLock<std::sync::Mutex<Matrix4>> =
     std::sync::LazyLock::new(|| {
         std::sync::Mutex::new(create_matrix4(
@@ -378,7 +419,7 @@ static __SCRATCH_VIEW_PROJECTION: std::sync::LazyLock<std::sync::Mutex<Matrix4>>
         ))
     });
 
-// Source: upstream/packages/camera/src/camera.ts:150 (sha256:da057530e67b2410330af593197368180d7ac9c2f18438132f658fc07f01e231)
+// Source: upstream/packages/camera/src/camera.ts:158 (sha256:da057530e67b2410330af593197368180d7ac9c2f18438132f658fc07f01e231)
 static CAMERA3_D_VIEW_GUARD: std::sync::LazyLock<
     std::sync::Mutex<
         Option<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(Camera3D) -> () + Send + 'static>>>>,

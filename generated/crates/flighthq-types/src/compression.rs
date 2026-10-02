@@ -6,6 +6,30 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+#[derive(Clone)]
+pub struct SharedStructuralRecord1 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub decompress: Decompressor,
+}
+impl PartialEq for SharedStructuralRecord1 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+#[derive(Clone)]
+pub struct SharedStructuralRecord2 {
+    pub __flight_identity: std::sync::Arc<()>,
+    pub compress: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Vec<u8>, CompressionFraming) -> Vec<u8> + Send + 'static>>,
+    >,
+}
+impl PartialEq for SharedStructuralRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
 // Source: upstream/packages/types/src/Compression.ts:8 (sha256:f3a41eb4c968c9a7bb29d8e08d4d1e5cf84a6de9989f1b2d781103aa310b88ab)
 pub type Decompressor = std::sync::Arc<
     std::sync::Mutex<
@@ -62,3 +86,72 @@ pub static COMPRESSION: std::sync::LazyLock<CompressionValues> =
 
 // Source: upstream/packages/types/src/Compression.ts:38 (sha256:4a4cbb08689ef32ef9ed902e3c65e57fa3f9653d018d17766641b43294c759e3)
 pub type Compression = String;
+
+// Source: upstream/packages/types/src/Compression.ts:45 (sha256:d37b9f48212117c0f89fc1a641ddbc565c6cbbb70eeafb0f2048ac7ed647a47b)
+#[derive(Clone)]
+pub struct HostDecompressBrotliCapability {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub decompress: Decompressor,
+}
+impl PartialEq for HostDecompressBrotliCapability {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Compression.ts:49 (sha256:a67e5a6c07cb9305a98e838926e1a394346a82acf22bd1973a2544fb4ddba21a)
+#[derive(Clone)]
+pub struct HostDecompressDeflateCapability {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub decompress: Decompressor,
+}
+impl PartialEq for HostDecompressDeflateCapability {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Compression.ts:53 (sha256:37b4667a132b66ec3adc262e7bc67e725a19d8ae508f0156890e03528e43faf5)
+#[derive(Clone)]
+pub struct HostDecompressLzmaCapability {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub decompress: Decompressor,
+}
+impl PartialEq for HostDecompressLzmaCapability {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Compression.ts:60 (sha256:33e9a97ef98dc847d5be24961c5fee454e3254b3de53da53f6076cb8790f87cb)
+#[derive(Clone)]
+pub struct HostCompressDeflateCapability {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub compress: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Vec<u8>, CompressionFraming) -> Vec<u8> + Send + 'static>>,
+    >,
+}
+impl PartialEq for HostCompressDeflateCapability {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+// Source: upstream/packages/types/src/Compression.ts:64 (sha256:71f5e783a3105b6787c50a50e7462f8d9b352044e6fef17366bf7e9f35a43de7)
+#[derive(Clone)]
+pub struct HostCompressLzmaCapability {
+    #[doc(hidden)]
+    pub __flight_identity: std::sync::Arc<()>,
+    pub compress: std::sync::Arc<
+        std::sync::Mutex<Box<dyn FnMut(Vec<u8>, CompressionFraming) -> Vec<u8> + Send + 'static>>,
+    >,
+}
+impl PartialEq for HostCompressLzmaCapability {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}

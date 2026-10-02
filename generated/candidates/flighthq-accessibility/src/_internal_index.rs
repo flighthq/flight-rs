@@ -7,6 +7,6 @@
 #![allow(unused_parens)]
 
 pub use crate::{
-    announce_accessibility, clear_accessibility_tree, remove_accessibility_node,
-    set_accessibility_focus, set_accessibility_node,
+    announce_accessibility, clear_accessibility_tree, destroy_accessibility,
+    remove_accessibility_node, set_accessibility_focus, set_accessibility_node,
 };

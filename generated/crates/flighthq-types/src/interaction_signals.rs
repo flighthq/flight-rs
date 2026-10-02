@@ -6,13 +6,17 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{FocusEventData, KeyboardEventData, PointerEventData, Signal};
+use crate::{EntityRuntime, FocusEventData, KeyboardEventData, PointerEventData, Signal};
 
-// Source: upstream/packages/types/src/InteractionSignals.ts:6 (sha256:f69ab51c1ad10e742d8cc8e2f3720122c3c28d5f9fa84ec4b855944258e8e2df)
+// Source: upstream/packages/types/src/InteractionSignals.ts:7 (sha256:2e75ed80ab89d58569f72bd47a6f83bbdeab7e87465bbb9b736ca1efdc83b32f)
 #[derive(Clone)]
 pub struct InteractionSignals {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub on_click: Signal<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(PointerEventData) -> () + Send + 'static>>>,
     >,
@@ -35,6 +39,9 @@ pub struct InteractionSignals {
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(KeyboardEventData) -> () + Send + 'static>>>,
     >,
     pub on_pointer_cancel: Signal<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(PointerEventData) -> () + Send + 'static>>>,
+    >,
+    pub on_pointer_double_click: Signal<
         std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(PointerEventData) -> () + Send + 'static>>>,
     >,
     pub on_pointer_down: Signal<
@@ -68,5 +75,23 @@ pub struct InteractionSignals {
 impl PartialEq for InteractionSignals {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for InteractionSignals {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

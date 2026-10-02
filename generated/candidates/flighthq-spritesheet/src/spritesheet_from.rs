@@ -17,10 +17,10 @@ use flighthq_types::{
 
 // Source: upstream/packages/spritesheet/src/spritesheetFrom.ts:13 (sha256:9cc3160e9580a744dda95e4989ab4e490e45fb2d04436697e0d86da273625547)
 #[derive(Clone, Default)]
-struct CreateSpritesheetFromDataRecord7 {
+struct CreateSpritesheetFromDataRecord4 {
     __flight_identity: std::sync::Arc<()>,
 }
-impl PartialEq for CreateSpritesheetFromDataRecord7 {
+impl PartialEq for CreateSpritesheetFromDataRecord4 {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }

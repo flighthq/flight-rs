@@ -7,7 +7,7 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, ClipRegion, EntityRuntime, Kind, Material, MaterialData, TextAutoSize, TextFormat,
+    BlendMode, ClipRegion, EntityRuntime, Kind, Material2D, MaterialData, TextAutoSize, TextFormat,
     TextFormatRange, TextVerticalAlign,
 };
 
@@ -16,6 +16,10 @@ use crate::{
 pub struct RichTextData {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub auto_size: TextAutoSize,
     pub height: f64,
     pub text: String,
@@ -43,11 +47,29 @@ impl PartialEq for RichTextData {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for RichTextData {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/RichText.ts:47 (sha256:8366b22af6581d9b3d860205d8d5245e7bb40398342313332aa3c7da2e420aa1)
+// Source: upstream/packages/types/src/RichText.ts:43 (sha256:8366b22af6581d9b3d860205d8d5245e7bb40398342313332aa3c7da2e420aa1)
 pub type RichTextRuntime = crate::EntityRuntime;
 
-// Source: upstream/packages/types/src/RichText.ts:62 (sha256:ede1beea3240687757ee8455992b246d3497476a47de43d9b8e5d02d8b73abe7)
+// Source: upstream/packages/types/src/RichText.ts:58 (sha256:ede1beea3240687757ee8455992b246d3497476a47de43d9b8e5d02d8b73abe7)
 #[derive(Clone, Default)]
 pub struct RichText {
     #[doc(hidden)]
@@ -64,7 +86,7 @@ pub struct RichText {
     pub visible: bool,
     pub blend_mode: Option<BlendMode>,
     pub clip: Option<ClipRegion>,
-    pub material: Option<Material>,
+    pub material: Option<Material2D>,
     pub material_data: Option<MaterialData>,
     pub pivot_x: f64,
     pub pivot_y: f64,
@@ -100,5 +122,5 @@ impl crate::FlightEntity for RichText {
     }
 }
 
-// Source: upstream/packages/types/src/RichText.ts:66 (sha256:596b8a1b265ecce1ee0865dbb2e71192fc576e385865362468b050f38fe00952)
+// Source: upstream/packages/types/src/RichText.ts:62 (sha256:596b8a1b265ecce1ee0865dbb2e71192fc576e385865362468b050f38fe00952)
 pub const RICH_TEXT_KIND: &'static str = "RichText";

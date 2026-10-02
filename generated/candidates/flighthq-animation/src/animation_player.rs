@@ -6,12 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_signals::{create_signal, emit_signal};
 use flighthq_types::{
     ANIMATION_LOOP_MODE_PING_PONG as animation_loop_mode_ping_pong_constant,
     ANIMATION_LOOP_MODE_REPEAT as animation_loop_mode_repeat_constant, AnimationClip,
-    AnimationLoopMode, AnimationPlayer,
+    AnimationLoopMode, AnimationPlayer, EntityConstruction,
 };
 
 #[derive(Clone, Default)]
@@ -148,53 +148,33 @@ pub fn advance_animation_player(player: &mut AnimationPlayer, dt: f64) -> () {
     }
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:108 (sha256:bc819ce81de8e437940e79c0320db4c750c9e592e16c17bd57f1db615ed0d8d3)
+// Source: upstream/packages/animation/src/animationPlayer.ts:108 (sha256:5c137bdbac38998bda4ad9d25b6bb29b84d074ae2c5d98d195f33db81c582cb8)
 pub fn clone_animation_player(player: &AnimationPlayer) -> AnimationPlayer {
-    return create_entity(Some(AnimationPlayer {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        clip: (player.clip).clone(),
-        loop_: player.loop_,
-        loop_mode: Some(((player.loop_mode).clone()).unwrap()),
-        on_event: None,
-        on_finished: None,
-        on_looped: None,
-        playing: player.playing,
-        repeat_count: Some((player.repeat_count).unwrap()),
-        speed: player.speed,
-        time: player.time,
-    }));
+    let mut out = allocate_entity();
+    crate::host_set("host.clip", (player.clip).clone());
+    crate::host_set("host.loop", player.loop_);
+    crate::host_set("host.loopMode", (player.loop_mode).clone());
+    crate::host_set("host.onEvent", None);
+    crate::host_set("host.onFinished", None);
+    crate::host_set("host.onLooped", None);
+    crate::host_set("host.playing", player.playing);
+    crate::host_set("host.repeatCount", player.repeat_count);
+    crate::host_set("host.speed", player.speed);
+    crate::host_set("host.time", player.time);
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:125 (sha256:012548ff3cf28da8d4957635a575759ed4a0e101c9e4e8f6606e0148c0194988)
+// Source: upstream/packages/animation/src/animationPlayer.ts:123 (sha256:d343e46763620afeedefea60d2297298496574ed5883f9f87ab85d728d856de9)
 pub fn create_animation_player(
     clip: &AnimationClip,
     opts: Option<SharedStructuralRecord1>,
 ) -> AnimationPlayer {
-    return create_entity(Some(AnimationPlayer {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        clip: (*clip).clone(),
-        loop_: (opts.as_ref().and_then(|value| value.loop_)).unwrap_or(true),
-        loop_mode: Some(
-            (opts.as_ref().and_then(|value| (value.loop_mode).clone()))
-                .unwrap_or((animation_loop_mode_repeat_constant).to_owned()),
-        ),
-        on_event: None,
-        on_finished: None,
-        on_looped: None,
-        playing: (opts.as_ref().and_then(|value| value.playing)).unwrap_or(true),
-        repeat_count: Some(
-            (opts.as_ref().and_then(|value| value.repeat_count)).unwrap_or((-1.0_f64)),
-        ),
-        speed: (opts.as_ref().and_then(|value| value.speed)).unwrap_or(1.0_f64),
-        time: (opts.as_ref().and_then(|value| value.time)).unwrap_or(0.0_f64),
-    }));
+    let mut out = allocate_entity();
+    initialize_animation_player((out).clone(), clip, ((opts).clone()).clone());
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:152 (sha256:9147df62ed112dfd7adb9d4f487360108de2bc508064c9a4f70cefcf207d99e9)
+// Source: upstream/packages/animation/src/animationPlayer.ts:141 (sha256:9147df62ed112dfd7adb9d4f487360108de2bc508064c9a4f70cefcf207d99e9)
 pub fn enable_animation_player_signals(player: &mut AnimationPlayer) -> () {
     if ((player.on_event).clone()).is_none() {
         player.on_event = Some(create_signal());
@@ -207,7 +187,7 @@ pub fn enable_animation_player_signals(player: &mut AnimationPlayer) -> () {
     }
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:160 (sha256:8ba6c58c4189d541d23e7d3b8f9e809ea102534e19de0b73febe0af4c1e2899a)
+// Source: upstream/packages/animation/src/animationPlayer.ts:149 (sha256:8ba6c58c4189d541d23e7d3b8f9e809ea102534e19de0b73febe0af4c1e2899a)
 pub fn get_animation_player_normalized_time(player: &AnimationPlayer) -> f64 {
     let duration = player.clip.duration;
     if (duration <= 0.0_f64) {
@@ -221,12 +201,49 @@ pub fn get_animation_player_normalized_time(player: &AnimationPlayer) -> f64 {
     };
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:169 (sha256:f3e6734412fae65da5587ec4af26dbf04235a07d4c08fe11727d84f5c7c37d09)
+// Source: upstream/packages/animation/src/animationPlayer.ts:158 (sha256:63a80898167e0a5cde3594142b915c457b4153fb55b713ef2289b26a2e43f45f)
+pub fn initialize_animation_player(
+    out: EntityConstruction<AnimationPlayer>,
+    clip: &AnimationClip,
+    opts: Option<SharedStructuralRecord1>,
+) -> () {
+    crate::host_set("host.clip", clip);
+    crate::host_set(
+        "host.loop",
+        (opts.as_ref().and_then(|value| value.loop_)).unwrap_or(true),
+    );
+    crate::host_set(
+        "host.loopMode",
+        (opts.as_ref().and_then(|value| (value.loop_mode).clone()))
+            .unwrap_or((animation_loop_mode_repeat_constant).to_owned()),
+    );
+    crate::host_set("host.onEvent", None);
+    crate::host_set("host.onFinished", None);
+    crate::host_set("host.onLooped", None);
+    crate::host_set(
+        "host.playing",
+        (opts.as_ref().and_then(|value| value.playing)).unwrap_or(true),
+    );
+    crate::host_set(
+        "host.repeatCount",
+        (opts.as_ref().and_then(|value| value.repeat_count)).unwrap_or((-1.0_f64)),
+    );
+    crate::host_set(
+        "host.speed",
+        (opts.as_ref().and_then(|value| value.speed)).unwrap_or(1.0_f64),
+    );
+    crate::host_set(
+        "host.time",
+        (opts.as_ref().and_then(|value| value.time)).unwrap_or(0.0_f64),
+    );
+}
+
+// Source: upstream/packages/animation/src/animationPlayer.ts:184 (sha256:f3e6734412fae65da5587ec4af26dbf04235a07d4c08fe11727d84f5c7c37d09)
 pub fn play_animation_player(player: &mut AnimationPlayer) -> () {
     player.playing = true;
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:174 (sha256:59df47baa8ed7a09c3254865530f360662434ec0d6250f0ab2469e04ec823769)
+// Source: upstream/packages/animation/src/animationPlayer.ts:189 (sha256:59df47baa8ed7a09c3254865530f360662434ec0d6250f0ab2469e04ec823769)
 pub fn seek_animation_player(player: &mut AnimationPlayer, time: f64) -> () {
     let duration = player.clip.duration;
     player.time = if (time < 0.0_f64) {
@@ -236,13 +253,13 @@ pub fn seek_animation_player(player: &mut AnimationPlayer, time: f64) -> () {
     };
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:181 (sha256:50846cf19c1abc4aa4160d076ab3089e57774314cf8a2458fa90d4e3d3f41661)
+// Source: upstream/packages/animation/src/animationPlayer.ts:196 (sha256:50846cf19c1abc4aa4160d076ab3089e57774314cf8a2458fa90d4e3d3f41661)
 pub fn stop_animation_player(player: &mut AnimationPlayer) -> () {
     player.playing = false;
     player.time = 0.0_f64;
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:189 (sha256:3bb7406c624dfcc7fe82466034bddb751f041fed55e5dbd6853b7e6177c13f9b)
+// Source: upstream/packages/animation/src/animationPlayer.ts:204 (sha256:3bb7406c624dfcc7fe82466034bddb751f041fed55e5dbd6853b7e6177c13f9b)
 fn consume_animation_player_loop(player: &mut AnimationPlayer) -> bool {
     let rc = player.repeat_count;
     if ((rc).is_none()) || ((rc).as_ref().is_some_and(|value| *value < 0.0_f64)) {
@@ -255,14 +272,14 @@ fn consume_animation_player_loop(player: &mut AnimationPlayer) -> bool {
     return true;
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:197 (sha256:67590c69badc037f03f12d36f960ddbdebad656e8e4722a4932d4c59e1197aad)
+// Source: upstream/packages/animation/src/animationPlayer.ts:212 (sha256:67590c69badc037f03f12d36f960ddbdebad656e8e4722a4932d4c59e1197aad)
 fn emit_animation_player_finished(player: &AnimationPlayer) -> () {
     if ((player.on_finished).clone()).is_some() {
         emit_signal(((player.on_finished).clone()).unwrap(), ());
     }
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:201 (sha256:58036b2d935bc51e2c0ee68a7c6cf626984844a602a96aa9dfdb27180422c7c4)
+// Source: upstream/packages/animation/src/animationPlayer.ts:216 (sha256:58036b2d935bc51e2c0ee68a7c6cf626984844a602a96aa9dfdb27180422c7c4)
 fn emit_animation_player_events(
     player: &AnimationPlayer,
     from_time: f64,
@@ -318,14 +335,14 @@ fn emit_animation_player_events(
     }
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:232 (sha256:5d3aefd9c1350166cf940e68128532741956a9593a5f163c33f0c2959cfb18cf)
+// Source: upstream/packages/animation/src/animationPlayer.ts:247 (sha256:5d3aefd9c1350166cf940e68128532741956a9593a5f163c33f0c2959cfb18cf)
 fn emit_animation_player_looped(player: &AnimationPlayer) -> () {
     if ((player.on_looped).clone()).is_some() {
         emit_signal(((player.on_looped).clone()).unwrap(), ());
     }
 }
 
-// Source: upstream/packages/animation/src/animationPlayer.ts:238 (sha256:800b8395d8580c82855afcc05fb8b6c888a426f77a788e7f5a698cbdcff9ca7b)
+// Source: upstream/packages/animation/src/animationPlayer.ts:253 (sha256:800b8395d8580c82855afcc05fb8b6c888a426f77a788e7f5a698cbdcff9ca7b)
 fn finish_animation_player_at(player: &mut AnimationPlayer, time: f64) -> () {
     player.time = time;
     player.playing = false;

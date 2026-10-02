@@ -6,7 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::{ColorGradeAdjustment, ColorTransformFunction};
+use crate::initialize_color_lut_adjustment;
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{ColorGradeAdjustment, ColorTransformFunction, EntityConstruction};
 
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
@@ -40,7 +42,7 @@ impl PartialEq for FlightOmitRecord1550996253 {
     }
 }
 
-// Source: upstream/packages/adjustments/src/colorGradeAdjustment.ts:9 (sha256:f8e6162f7dd7cca9b62f96e74d3925cc4e1e81bb8e378418ba53b91482587f1b)
+// Source: upstream/packages/adjustments/src/colorGradeAdjustment.ts:11 (sha256:199595052d1e1c36dccf3a3a05f40d348db9803b4b637f99b656e546a28a8cd2)
 #[derive(Clone, Default)]
 struct CreateColorGradeAdjustmentRecord2 {
     __flight_identity: std::sync::Arc<()>,
@@ -54,6 +56,55 @@ impl PartialEq for CreateColorGradeAdjustmentRecord2 {
 pub fn create_color_grade_adjustment(
     options: Option<FlightOmitRecord1550996253>,
 ) -> ColorGradeAdjustment {
+    let options = options.unwrap_or(FlightOmitRecord1550996253 {
+        __flight_identity: std::sync::Arc::new(()),
+        exposure: None,
+        brightness: None,
+        contrast: None,
+        saturation: None,
+        temperature: None,
+        tint: None,
+        lift: None,
+        gamma: None,
+        gain: None,
+    });
+    let mut out = allocate_entity();
+    initialize_color_grade_adjustment(
+        (out).clone(),
+        Some({
+            let __flight_source = &((options).clone());
+            FlightOmitRecord1550996253 {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                exposure: __flight_source.exposure,
+                brightness: __flight_source.brightness,
+                contrast: __flight_source.contrast,
+                saturation: __flight_source.saturation,
+                temperature: __flight_source.temperature,
+                tint: __flight_source.tint,
+                lift: __flight_source.lift,
+                gamma: __flight_source.gamma,
+                gain: __flight_source.gain,
+            }
+        }),
+    );
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/adjustments/src/colorGradeAdjustment.ts:25 (sha256:f929ecb579301c9632087542d4be92c8a71bd194898fafccdbf796c32a49ff5a)
+#[derive(Clone, Default)]
+struct InitializeColorGradeAdjustmentRecord2 {
+    __flight_identity: std::sync::Arc<()>,
+}
+impl PartialEq for InitializeColorGradeAdjustmentRecord2 {
+    fn eq(&self, other: &Self) -> bool {
+        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+
+pub fn initialize_color_grade_adjustment(
+    out: EntityConstruction<ColorGradeAdjustment>,
+    options: Option<FlightOmitRecord1550996253>,
+) -> () {
     let options = options.unwrap_or(FlightOmitRecord1550996253 {
         __flight_identity: std::sync::Arc::new(()),
         exposure: None,
@@ -138,26 +189,23 @@ pub fn create_color_grade_adjustment(
             }
         })
             as Box<dyn FnMut(Vec<f64>, f64, f64, f64) -> () + Send + 'static>));
-    return {
-        let __flight_spread_1 = (options).clone();
-        ColorGradeAdjustment {
-            __flight_identity: std::sync::Arc::new(()),
-            kind: "ColorGradeAdjustment".to_owned(),
-            transform: (transform).clone(),
-            exposure: __flight_spread_1.exposure,
-            brightness: __flight_spread_1.brightness,
-            contrast: __flight_spread_1.contrast,
-            saturation: __flight_spread_1.saturation,
-            temperature: __flight_spread_1.temperature,
-            tint: __flight_spread_1.tint,
-            lift: __flight_spread_1.lift,
-            gamma: __flight_spread_1.gamma,
-            gain: __flight_spread_1.gain,
-        }
-    };
+    initialize_color_lut_adjustment(
+        (out).clone(),
+        "ColorGradeAdjustment".to_owned(),
+        (transform).clone(),
+    );
+    crate::host_set("host.exposure", (options.exposure).unwrap_or(0.0_f64));
+    crate::host_set("host.brightness", (options.brightness).unwrap_or(0.0_f64));
+    crate::host_set("host.contrast", (options.contrast).unwrap_or(1.0_f64));
+    crate::host_set("host.saturation", (options.saturation).unwrap_or(1.0_f64));
+    crate::host_set("host.temperature", (options.temperature).unwrap_or(0.0_f64));
+    crate::host_set("host.tint", (options.tint).unwrap_or(0.0_f64));
+    crate::host_set("host.lift", (options.lift).unwrap_or(255.0_f64));
+    crate::host_set("host.gamma", (options.gamma).unwrap_or(2155905279.0_f64));
+    crate::host_set("host.gain", (options.gain).unwrap_or(4294967295.0_f64));
 }
 
-// Source: upstream/packages/adjustments/src/colorGradeAdjustment.ts:48 (sha256:92c4452839ded0362c28adef5c15154deeaad9b404aff5129f0596af7fea21ad)
+// Source: upstream/packages/adjustments/src/colorGradeAdjustment.ts:74 (sha256:92c4452839ded0362c28adef5c15154deeaad9b404aff5129f0596af7fea21ad)
 fn clamp01(v: f64) -> f64 {
     return if (v < 0.0_f64) {
         0.0_f64
@@ -166,7 +214,7 @@ fn clamp01(v: f64) -> f64 {
     };
 }
 
-// Source: upstream/packages/adjustments/src/colorGradeAdjustment.ts:52 (sha256:28931813b5294ff30eb0603843143223641a413123fb98ae5206353a2ee44bb2)
+// Source: upstream/packages/adjustments/src/colorGradeAdjustment.ts:78 (sha256:28931813b5294ff30eb0603843143223641a413123fb98ae5206353a2ee44bb2)
 fn unpack_rgb(c: f64) -> Vec<f64> {
     return vec![
         ((__flight_js_to_i32((__flight_js_to_u32(c) >> (__flight_js_to_u32(24.0_f64) & 31)) as f64)

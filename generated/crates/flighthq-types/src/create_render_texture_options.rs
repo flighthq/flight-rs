@@ -8,7 +8,7 @@
 
 use crate::{RenderTargetDepth, RenderTargetFormat, SamplerLike, TextureColorSpace, Vector2Like};
 
-// Source: upstream/packages/types/src/CreateRenderTextureOptions.ts:7 (sha256:53fc44a6b4cbdc1dd54aadc12a3aad4c2a60b93fc5c864af2dade3c3b650f72e)
+// Source: upstream/packages/types/src/CreateRenderTextureOptions.ts:7 (sha256:252b6cb5fae179e8469a2e7344ea40a6da88eee33f7fb113769c03220f0e8d31)
 #[derive(Clone, Default)]
 pub struct CreateRenderTextureOptions {
     #[doc(hidden)]
@@ -16,8 +16,6 @@ pub struct CreateRenderTextureOptions {
     pub color_space: Option<TextureColorSpace>,
     pub color_attachments: Option<f64>,
     pub color_formats: Option<Vec<RenderTargetFormat>>,
-    pub clear_colors: Option<Vec<f64>>,
-    pub clear_depth: Option<f64>,
     pub depth: Option<RenderTargetDepth>,
     pub flip_x: Option<bool>,
     pub flip_y: Option<bool>,

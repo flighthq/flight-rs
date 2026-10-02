@@ -6,8 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
-use flighthq_types::AnimationSampleAccumulator;
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{AnimationSampleAccumulator, EntityConstruction};
 
 #[inline]
 fn __flight_js_to_u32(value: f64) -> u32 {
@@ -178,7 +178,7 @@ pub fn blend_animation_samples(
     }
 }
 
-// Source: upstream/packages/animation/src/animationBlend.ts:85 (sha256:54117e1c545acf0251ec3a10ac65eafc0266bfacba88144ea12b21efb20f9ee0)
+// Source: upstream/packages/animation/src/animationBlend.ts:85 (sha256:0d8fcfa6e7a343487ee526ae22f1dd3ef7cb15f1ad6bc4e3aaae5cf95167ba87)
 pub fn create_animation_sample_accumulator(
     components: f64,
     quaternion: Option<bool>,
@@ -186,18 +186,12 @@ pub fn create_animation_sample_accumulator(
     let quaternion = quaternion.unwrap_or(false);
     let width =
         (0.0_f64).max((__flight_js_to_i32(components) | __flight_js_to_i32(0.0_f64)) as f64);
-    return create_entity(Some(AnimationSampleAccumulator {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        components: width,
-        quaternion: quaternion,
-        values: vec![0.0_f32; (width) as usize],
-        weight: 0.0_f64,
-    }));
+    let mut out = allocate_entity();
+    initialize_animation_sample_accumulator((out).clone(), width, quaternion);
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/animation/src/animationBlend.ts:92 (sha256:9d6e25355bfc2c24394f80ec8d9cadb1e947a7d452319454ade7857d1120b6ed)
+// Source: upstream/packages/animation/src/animationBlend.ts:94 (sha256:9d6e25355bfc2c24394f80ec8d9cadb1e947a7d452319454ade7857d1120b6ed)
 pub fn finish_animation_sample(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     accumulator: &AnimationSampleAccumulator,
@@ -247,7 +241,19 @@ pub fn finish_animation_sample(
     return true;
 }
 
-// Source: upstream/packages/animation/src/animationBlend.ts:111 (sha256:301031f070d76c28530f66e4fa9fcd6f8a276f4f66ab3bb0680a5882f0567700)
+// Source: upstream/packages/animation/src/animationBlend.ts:112 (sha256:2c6989961d77dab20c7ad19e35b2efafb8ff677346ecf2a94c598d82e485f05b)
+pub fn initialize_animation_sample_accumulator(
+    out: EntityConstruction<AnimationSampleAccumulator>,
+    width: f64,
+    quaternion: bool,
+) -> () {
+    crate::host_set("host.components", width);
+    crate::host_set("host.quaternion", quaternion);
+    crate::host_set("host.values", vec![0.0_f32; (width) as usize]);
+    crate::host_set("host.weight", 0.0_f64);
+}
+
+// Source: upstream/packages/animation/src/animationBlend.ts:124 (sha256:301031f070d76c28530f66e4fa9fcd6f8a276f4f66ab3bb0680a5882f0567700)
 pub fn reset_animation_sample_accumulator(accumulator: &mut AnimationSampleAccumulator) -> () {
     {
         let __flight_value = (0.0_f64) as f32;
@@ -258,7 +264,7 @@ pub fn reset_animation_sample_accumulator(accumulator: &mut AnimationSampleAccum
     accumulator.weight = 0.0_f64;
 }
 
-// Source: upstream/packages/animation/src/animationBlend.ts:116 (sha256:1513ec2ac24c3c0337ad9074c0405341266697e33e2fc85e67d734ae3461d0e6)
+// Source: upstream/packages/animation/src/animationBlend.ts:129 (sha256:1513ec2ac24c3c0337ad9074c0405341266697e33e2fc85e67d734ae3461d0e6)
 fn slerp_quaternion(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     a: &Vec<f64>,
@@ -301,7 +307,7 @@ fn slerp_quaternion(
     );
 }
 
-// Source: upstream/packages/animation/src/animationBlend.ts:158 (sha256:40fd59a43bb82af7c12482e64dfe11783be23131f6d7dccee17b4c4426798107)
+// Source: upstream/packages/animation/src/animationBlend.ts:171 (sha256:40fd59a43bb82af7c12482e64dfe11783be23131f6d7dccee17b4c4426798107)
 fn write_normalized_quaternion(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     x: f64,
@@ -412,7 +418,7 @@ fn write_normalized_quaternion(
     };
 }
 
-// Source: upstream/packages/animation/src/animationBlend.ts:174 (sha256:f80b5257469870e96f7c4f51b6926ab62e5085bc520f8f566c63bf81eab892cc)
+// Source: upstream/packages/animation/src/animationBlend.ts:187 (sha256:f80b5257469870e96f7c4f51b6926ab62e5085bc520f8f566c63bf81eab892cc)
 fn write_weighted_quaternion(out: &mut Vec<f32>, delta: &Vec<f64>, weight: f64) -> () {
     {
         let mut __flight_argument_0 =
@@ -434,7 +440,7 @@ fn write_weighted_quaternion(out: &mut Vec<f32>, delta: &Vec<f64>, weight: f64) 
     };
 }
 
-// Source: upstream/packages/animation/src/animationBlend.ts:178 (sha256:d4446e824c6a6c52679953e6ac1b93f765a402647f27e9e12d5f5885b9ed1899)
+// Source: upstream/packages/animation/src/animationBlend.ts:191 (sha256:d4446e824c6a6c52679953e6ac1b93f765a402647f27e9e12d5f5885b9ed1899)
 static IDENTITY_QUATERNION: std::sync::LazyLock<Vec<f32>> = std::sync::LazyLock::new(|| {
     (vec![0.0_f64, 0.0_f64, 0.0_f64, 1.0_f64])
         .iter()
@@ -442,6 +448,6 @@ static IDENTITY_QUATERNION: std::sync::LazyLock<Vec<f32>> = std::sync::LazyLock:
         .collect()
 });
 
-// Source: upstream/packages/animation/src/animationBlend.ts:179 (sha256:1c753a3cc9a9dc74d189e43dae74d64281d1448a36ab14ea5acd004e41c82a13)
+// Source: upstream/packages/animation/src/animationBlend.ts:192 (sha256:1c753a3cc9a9dc74d189e43dae74d64281d1448a36ab14ea5acd004e41c82a13)
 static _QUATERNION: std::sync::LazyLock<std::sync::Mutex<Vec<f32>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(vec![0.0_f32; (4.0_f64) as usize]));

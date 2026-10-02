@@ -24,8 +24,5 @@ pub const STARLING_PEX_FORMAT_KIND: &'static str = "StarlingPex";
 // Source: upstream/packages/types/src/ParticleFormatKind.ts:12 (sha256:693325c4f88212ecb0e0c993b3d1312a4c9797572ce655bb8b9b54050fb3fdb4)
 pub const PIXI_PARTICLE_FORMAT_KIND: &'static str = "Pixi";
 
-// Source: upstream/packages/types/src/ParticleFormatKind.ts:14 (sha256:c2c255cb972d4f1ea55d7faea3994e50843900a82b6063b1cd634fdee48fb92c)
-pub const PHASER_PARTICLE_FORMAT_KIND: &'static str = "Phaser";
-
-// Source: upstream/packages/types/src/ParticleFormatKind.ts:17 (sha256:7bf5ca45c48ff82573b7b9a94e0772e9df3b13fce608a79e443d52270e855bcb)
+// Source: upstream/packages/types/src/ParticleFormatKind.ts:15 (sha256:a94aaa168d36b982e793bb29717a8633646904d1ac91ffe5817fb3103f4a38f0)
 pub type ParticleFormatKind = String;

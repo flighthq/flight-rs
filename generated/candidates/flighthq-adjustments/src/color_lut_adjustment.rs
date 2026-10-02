@@ -6,7 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::{AdjustmentKind, ColorTransformFunction};
+use crate::initialize_adjustment;
+use flighthq_types::{AdjustmentKind, ColorTransformFunction, EntityConstruction};
 
 #[derive(Clone, Default)]
 pub struct SharedStructuralRecord1 {
@@ -31,7 +32,7 @@ impl PartialEq for FlightPartialRecord2398472694 {
     }
 }
 
-// Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:10 (sha256:706d5be3108fd619cffdcd0cbd8ced4ac47c2630d4a9b78839c64f3db0f634f2)
+// Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:16 (sha256:706d5be3108fd619cffdcd0cbd8ced4ac47c2630d4a9b78839c64f3db0f634f2)
 pub fn get_adjustment_color_transform(
     operation: &SharedStructuralRecord1,
 ) -> Option<ColorTransformFunction> {
@@ -56,7 +57,17 @@ pub fn get_adjustment_color_transform(
     };
 }
 
-// Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:20 (sha256:a3555604ecbc722928c2d782499cbed67c36de37dd76a702f84c347c44554b3d)
+// Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:23 (sha256:d8a7a00c38d30d28ed09bc881c4c722c019f2a610be59acc80d398d6fc7603cf)
+pub fn initialize_color_lut_adjustment<T: Clone>(
+    out: EntityConstruction<T>,
+    kind: AdjustmentKind,
+    transform: ColorTransformFunction,
+) -> () {
+    initialize_adjustment((out).clone(), (kind).clone());
+    crate::host_set("host.transform", (transform).clone());
+}
+
+// Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:35 (sha256:a3555604ecbc722928c2d782499cbed67c36de37dd76a702f84c347c44554b3d)
 pub fn is_color_lut_adjustment(operation: &SharedStructuralRecord1) -> bool {
     return (((None::<ColorTransformFunction>)
         .as_ref()
@@ -65,7 +76,7 @@ pub fn is_color_lut_adjustment(operation: &SharedStructuralRecord1) -> bool {
         == "function");
 }
 
-// Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:27 (sha256:4b8b6191dcc732ab6f8a638e02033ad876d3297f4590c82beb66539098f98427)
+// Source: upstream/packages/adjustments/src/colorLutAdjustment.ts:42 (sha256:4b8b6191dcc732ab6f8a638e02033ad876d3297f4590c82beb66539098f98427)
 fn color_matrix_transform(m: Vec<f64>) -> ColorTransformFunction {
     return std::sync::Arc::new(std::sync::Mutex::new(Box::new({
         let m = m.clone();

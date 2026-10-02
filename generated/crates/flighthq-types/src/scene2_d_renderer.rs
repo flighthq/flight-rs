@@ -6,9 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{BatchFormat, Node2D, RenderProxy2D, RenderState, Renderable, RendererData};
+use crate::{BatchFormat, Node2D, NodeAny, RenderProxy2D, RenderState, RendererData};
 
-// Source: upstream/packages/types/src/Scene2DRenderer.ts:7 (sha256:756ce2ce73290d6c0026edadad28ad3a8ecef6042387a664243db86408467e03)
+// Source: upstream/packages/types/src/Scene2DRenderer.ts:7 (sha256:16e09062bb9ce74842619928f102bb2cd2a09c405d8c6b824ae005b3526955dd)
 #[derive(Clone)]
 pub struct Scene2DRenderer {
     #[doc(hidden)]
@@ -16,7 +16,7 @@ pub struct Scene2DRenderer {
     pub format: Option<BatchFormat>,
     pub create_data: std::sync::Arc<
         std::sync::Mutex<
-            Box<dyn FnMut(RenderState, Node2D) -> Option<RendererData> + Send + 'static>,
+            Box<dyn FnMut(RenderState, NodeAny) -> Option<RendererData> + Send + 'static>,
         >,
     >,
     pub destroy_data: Option<
@@ -27,11 +27,7 @@ pub struct Scene2DRenderer {
     pub is_dirty: Option<
         std::sync::Arc<
             std::sync::Mutex<
-                Box<
-                    dyn FnMut(RenderState, Renderable, Option<RendererData>) -> bool
-                        + Send
-                        + 'static,
-                >,
+                Box<dyn FnMut(RenderState, NodeAny, Option<RendererData>) -> bool + Send + 'static>,
             >,
         >,
     >,

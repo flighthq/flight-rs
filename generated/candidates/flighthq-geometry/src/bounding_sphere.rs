@@ -7,10 +7,13 @@
 #![allow(unused_parens)]
 
 use crate::create_vector3;
-use flighthq_entity::create_entity;
-use flighthq_types::{AabbLike, BoundingSphere, BoundingSphereLike, Matrix4Like, Vector3Like};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{
+    AabbLike, BoundingSphere, BoundingSphereLike, EntityConstruction, Matrix4Like, Vector3,
+    Vector3Like,
+};
 
-// Source: upstream/packages/geometry/src/boundingSphere.ts:6 (sha256:9b0e7171ecf8907fe84c2cba1a7eb96740a1d5f66523fdc4761762262397447e)
+// Source: upstream/packages/geometry/src/boundingSphere.ts:14 (sha256:9b0e7171ecf8907fe84c2cba1a7eb96740a1d5f66523fdc4761762262397447e)
 pub fn clone_bounding_sphere(source: &BoundingSphereLike) -> BoundingSphere {
     return create_bounding_sphere(
         Some(source.center.x),
@@ -20,7 +23,7 @@ pub fn clone_bounding_sphere(source: &BoundingSphereLike) -> BoundingSphere {
     );
 }
 
-// Source: upstream/packages/geometry/src/boundingSphere.ts:14 (sha256:e177dfd7981c14c2a30199f19c12b3eaff1c1bbb854b7ba271d0feddb4967348)
+// Source: upstream/packages/geometry/src/boundingSphere.ts:22 (sha256:e177dfd7981c14c2a30199f19c12b3eaff1c1bbb854b7ba271d0feddb4967348)
 pub fn contains_bounding_sphere_point(sphere: &BoundingSphereLike, point: &Vector3Like) -> bool {
     if (sphere.radius < 0.0_f64) {
         return false;
@@ -31,7 +34,7 @@ pub fn contains_bounding_sphere_point(sphere: &BoundingSphereLike, point: &Vecto
     return ((((dx * dx) + (dy * dy)) + (dz * dz)) <= (sphere.radius * sphere.radius));
 }
 
-// Source: upstream/packages/geometry/src/boundingSphere.ts:30 (sha256:9868d46c459c0ebbdbec422323d686addeed11d978aee84b2af2fa1dca0d314c)
+// Source: upstream/packages/geometry/src/boundingSphere.ts:38 (sha256:9868d46c459c0ebbdbec422323d686addeed11d978aee84b2af2fa1dca0d314c)
 pub fn copy_bounding_sphere(out: &mut BoundingSphereLike, source: &BoundingSphereLike) -> () {
     out.center.x = source.center.x;
     out.center.y = source.center.y;
@@ -39,7 +42,7 @@ pub fn copy_bounding_sphere(out: &mut BoundingSphereLike, source: &BoundingSpher
     out.radius = source.radius;
 }
 
-// Source: upstream/packages/geometry/src/boundingSphere.ts:41 (sha256:0d9cadd252cf8b2a2626649abd0c1a169aaa91f60377ee30262a4d2a76de8dce)
+// Source: upstream/packages/geometry/src/boundingSphere.ts:49 (sha256:ca01693bd439f9f569d6ac353460204e79996b0fb8aeaf616757a5e758c487fe)
 pub fn create_bounding_sphere(
     center_x: Option<f64>,
     center_y: Option<f64>,
@@ -51,16 +54,12 @@ pub fn create_bounding_sphere(
         Some((center_y).unwrap_or(0.0_f64)),
         Some((center_z).unwrap_or(0.0_f64)),
     );
-    return create_entity(Some(BoundingSphere {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        center: (center).clone(),
-        radius: (radius).unwrap_or((-1.0_f64)),
-    }));
+    let mut out = allocate_entity();
+    initialize_bounding_sphere((out).clone(), &center, (radius).unwrap_or((-1.0_f64)));
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/geometry/src/boundingSphere.ts:60 (sha256:4af5cf704a673c7ef8f6c5ddd8b16a4888ad8e48f1d3f890d457793e6888e80c)
+// Source: upstream/packages/geometry/src/boundingSphere.ts:70 (sha256:4af5cf704a673c7ef8f6c5ddd8b16a4888ad8e48f1d3f890d457793e6888e80c)
 pub fn get_closest_point_on_bounding_sphere(
     out: &mut Vector3Like,
     sphere: &BoundingSphereLike,
@@ -92,7 +91,17 @@ pub fn get_closest_point_on_bounding_sphere(
     out.z = (cz + (dz * scale));
 }
 
-// Source: upstream/packages/geometry/src/boundingSphere.ts:95 (sha256:23f3f7395d0dadcdaed22ca0110d24f0eca8ac98af3ddef54c194f1dcdcbc7ce)
+// Source: upstream/packages/geometry/src/boundingSphere.ts:101 (sha256:d45cf1089cdbee91cad8a5f2bf8d63825b8b236c74f5b5bab3fd6bef47ff488a)
+pub fn initialize_bounding_sphere(
+    out: EntityConstruction<BoundingSphere>,
+    center: &Vector3,
+    radius: f64,
+) -> () {
+    crate::host_set("host.center", center);
+    crate::host_set("host.radius", radius);
+}
+
+// Source: upstream/packages/geometry/src/boundingSphere.ts:114 (sha256:23f3f7395d0dadcdaed22ca0110d24f0eca8ac98af3ddef54c194f1dcdcbc7ce)
 pub fn is_bounding_sphere_intersecting_bounding_sphere(
     a: &BoundingSphereLike,
     b: &BoundingSphereLike,
@@ -108,7 +117,7 @@ pub fn is_bounding_sphere_intersecting_bounding_sphere(
     return (dist_sq <= (sum_r * sum_r));
 }
 
-// Source: upstream/packages/geometry/src/boundingSphere.ts:115 (sha256:f130c37a3f335b6ff3d308102c3362b34980252af1f077b048d26eb4b7d20d2c)
+// Source: upstream/packages/geometry/src/boundingSphere.ts:134 (sha256:f130c37a3f335b6ff3d308102c3362b34980252af1f077b048d26eb4b7d20d2c)
 pub fn merge_bounding_sphere(
     out: &mut BoundingSphereLike,
     a: &BoundingSphereLike,
@@ -162,7 +171,7 @@ pub fn merge_bounding_sphere(
     out.radius = new_radius;
 }
 
-// Source: upstream/packages/geometry/src/boundingSphere.ts:180 (sha256:225c2e92b749fa1613ec82aa73b801152e0ea1dd8e84e5c1a80a3bd9645dd0b6)
+// Source: upstream/packages/geometry/src/boundingSphere.ts:199 (sha256:225c2e92b749fa1613ec82aa73b801152e0ea1dd8e84e5c1a80a3bd9645dd0b6)
 pub fn set_bounding_sphere(
     out: &mut BoundingSphereLike,
     center_x: f64,
@@ -176,7 +185,7 @@ pub fn set_bounding_sphere(
     out.radius = radius;
 }
 
-// Source: upstream/packages/geometry/src/boundingSphere.ts:200 (sha256:7d60129e8d1abbb8cc8b6faf50677dd6ff4b3abe818b827cc5ff1990e98f0a7e)
+// Source: upstream/packages/geometry/src/boundingSphere.ts:219 (sha256:7d60129e8d1abbb8cc8b6faf50677dd6ff4b3abe818b827cc5ff1990e98f0a7e)
 pub fn set_bounding_sphere_from_aabb(out: &mut BoundingSphereLike, aabb: &AabbLike) -> () {
     let min_x = aabb.min.x;
     let min_y = aabb.min.y;
@@ -203,7 +212,7 @@ pub fn set_bounding_sphere_from_aabb(out: &mut BoundingSphereLike, aabb: &AabbLi
     out.radius = (((ex * ex) + (ey * ey)) + (ez * ez)).sqrt();
 }
 
-// Source: upstream/packages/geometry/src/boundingSphere.ts:236 (sha256:da365e9d951cbcdaa8f6cc4057509394a10bdf015f81b6ee61d000bb7a505fad)
+// Source: upstream/packages/geometry/src/boundingSphere.ts:255 (sha256:da365e9d951cbcdaa8f6cc4057509394a10bdf015f81b6ee61d000bb7a505fad)
 pub fn transform_bounding_sphere_by_matrix4(
     out: &mut BoundingSphereLike,
     sphere: &BoundingSphereLike,

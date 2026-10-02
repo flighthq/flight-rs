@@ -6,16 +6,20 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{GlyphEntry, GlyphMetrics, TextureAtlas};
+use crate::{EntityRuntime, GlyphEntry, GlyphMetrics, TextureAtlas};
 
-// Source: upstream/packages/types/src/BitmapFont.ts:8 (sha256:0dbb28c501f1a07781092c05e4991200e0bb5aed88d8b1d6511b3cc484ce22fb)
+// Source: upstream/packages/types/src/BitmapFont.ts:9 (sha256:0dbb28c501f1a07781092c05e4991200e0bb5aed88d8b1d6511b3cc484ce22fb)
 pub type BitmapFontEncoding = String;
 
-// Source: upstream/packages/types/src/BitmapFont.ts:20 (sha256:7623956115ce39a98a8e3b94251f15ed941de49c47aa9cac9d649a4f809f647d)
+// Source: upstream/packages/types/src/BitmapFont.ts:21 (sha256:8ed3e84c04f4136e3374559978552f1c764a4490c205aa32f78e0e43435ae928)
 #[derive(Clone, Default)]
 pub struct BitmapFont {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub encoding: BitmapFontEncoding,
     pub glyphs: Vec<(f64, GlyphEntry)>,
     pub kerning: Vec<(f64, f64)>,
@@ -27,8 +31,26 @@ impl PartialEq for BitmapFont {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for BitmapFont {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/BitmapFont.ts:33 (sha256:6e1a9d1837880bbfd8ef9f8b632301b8a37c4c91fc5990a7106573bb5c27f160)
+// Source: upstream/packages/types/src/BitmapFont.ts:34 (sha256:6e1a9d1837880bbfd8ef9f8b632301b8a37c4c91fc5990a7106573bb5c27f160)
 #[derive(Clone, Default)]
 pub struct BitmapFontData {
     #[doc(hidden)]
@@ -45,7 +67,7 @@ impl PartialEq for BitmapFontData {
     }
 }
 
-// Source: upstream/packages/types/src/BitmapFont.ts:45 (sha256:659c79db7d449865e6cd120c135862dc456243a84ce5adaf6a18eb34a75b3304)
+// Source: upstream/packages/types/src/BitmapFont.ts:46 (sha256:659c79db7d449865e6cd120c135862dc456243a84ce5adaf6a18eb34a75b3304)
 #[derive(Clone, Default)]
 pub struct BitmapFontGlyphData {
     #[doc(hidden)]
@@ -66,7 +88,7 @@ impl PartialEq for BitmapFontGlyphData {
     }
 }
 
-// Source: upstream/packages/types/src/BitmapFont.ts:60 (sha256:9a5991038acb1fc418e69418dd008620eeba8516a1f95edae5ac99aab30aa9b4)
+// Source: upstream/packages/types/src/BitmapFont.ts:61 (sha256:9a5991038acb1fc418e69418dd008620eeba8516a1f95edae5ac99aab30aa9b4)
 #[derive(Clone, Default)]
 pub struct BitmapFontKerningData {
     #[doc(hidden)]
@@ -81,7 +103,7 @@ impl PartialEq for BitmapFontKerningData {
     }
 }
 
-// Source: upstream/packages/types/src/BitmapFont.ts:69 (sha256:ec632b5827729a9f465c3d2233e792e93719216785472ad6454984b557e22ad2)
+// Source: upstream/packages/types/src/BitmapFont.ts:70 (sha256:ec632b5827729a9f465c3d2233e792e93719216785472ad6454984b557e22ad2)
 #[derive(Clone, Default)]
 pub struct BitmapFontKerningPair {
     #[doc(hidden)]
@@ -95,7 +117,7 @@ impl PartialEq for BitmapFontKerningPair {
     }
 }
 
-// Source: upstream/packages/types/src/BitmapFont.ts:83 (sha256:8a834ba012746d7f5fe7cfedc32bfe7fa3b30d2d87036511f915e71222c83f4e)
+// Source: upstream/packages/types/src/BitmapFont.ts:84 (sha256:8a834ba012746d7f5fe7cfedc32bfe7fa3b30d2d87036511f915e71222c83f4e)
 #[derive(Clone, Default)]
 pub struct BitmapFontParseOptions {
     #[doc(hidden)]

@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{EntityRuntime, Kind, NodeData};
+use crate::{EntityRuntime, Kind, NodeData, Rectangle};
 
 // Source: upstream/packages/types/src/HasBoundsRectangle.ts:6 (sha256:0ecfccab9df1edf64e1fa4ad53d28a8ceedc0b71d2ef87d53af34349fd0640b4)
 #[derive(Clone, Default)]
@@ -42,10 +42,33 @@ impl crate::FlightEntity for HasBoundsRectangle {
     }
 }
 
-// Source: upstream/packages/types/src/HasBoundsRectangle.ts:8 (sha256:b56a46f014e81039abc738422a3d6728b3b0c0269d1286a35a21cf1e10a99358)
-pub type HasBoundsRectangleRuntime = crate::EntityRuntime;
+// Source: upstream/packages/types/src/HasBoundsRectangle.ts:12 (sha256:f5c7d0f9b6f334606529636006082a395e7176b5838a2da397ce1bf3f1536769)
+#[doc(hidden)]
+pub struct HasBoundsRectangleRuntimeStorage<Traits> {
+    pub compute_local_bounds_rectangle: Option<
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(Rectangle, BoundsNode) -> () + Send + 'static>>,
+        >,
+    >,
+    pub is_local_bounds_rectangle_valid: Option<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(BoundsNode) -> bool + Send + 'static>>>,
+    >,
+    #[doc(hidden)]
+    pub __flight_marker: std::marker::PhantomData<Traits>,
+}
+impl<Traits> Default for HasBoundsRectangleRuntimeStorage<Traits> {
+    fn default() -> Self {
+        Self {
+            compute_local_bounds_rectangle: Default::default(),
+            is_local_bounds_rectangle_valid: Default::default(),
+            __flight_marker: std::marker::PhantomData,
+        }
+    }
+}
+pub type HasBoundsRectangleRuntime<Traits> =
+    <std::marker::PhantomData<Traits> as crate::FlightEntityRuntimeMarker>::Runtime;
 
-// Source: upstream/packages/types/src/HasBoundsRectangle.ts:19 (sha256:8fddb53399dce104a81ccb3922daaad01147fa43545a5ab9705329b6ee7c44f3)
+// Source: upstream/packages/types/src/HasBoundsRectangle.ts:23 (sha256:a7a6979ffb6ba403c2eb8122531b1aa0e1162ccad5b107484d404ba505b06055)
 #[derive(Clone, Default)]
 pub struct BoundsNode {
     #[doc(hidden)]
@@ -83,7 +106,7 @@ impl crate::FlightEntity for BoundsNode {
     }
 }
 
-// Source: upstream/packages/types/src/HasBoundsRectangle.ts:20 (sha256:d5830d1d56f8a58a70a0fca0439a5f76e222af81496c1a33fa0321d3c45855c6)
+// Source: upstream/packages/types/src/HasBoundsRectangle.ts:24 (sha256:d5830d1d56f8a58a70a0fca0439a5f76e222af81496c1a33fa0321d3c45855c6)
 #[derive(Clone, Default)]
 pub struct BoundsNodeAny {
     #[doc(hidden)]
@@ -121,7 +144,7 @@ impl crate::FlightEntity for BoundsNodeAny {
     }
 }
 
-// Source: upstream/packages/types/src/HasBoundsRectangle.ts:22 (sha256:fd7d412c542ae8c3de6675e94131f1b2b5d5387ab2f73f83b3cb7b4f4fa7affe)
+// Source: upstream/packages/types/src/HasBoundsRectangle.ts:26 (sha256:ff00a5b58fc277953ef8fa710b6450005c6466053ecc3e2c6e427a6ebaecd4a5)
 #[derive(Clone, Default)]
 pub struct Spatial2DNode {
     #[doc(hidden)]

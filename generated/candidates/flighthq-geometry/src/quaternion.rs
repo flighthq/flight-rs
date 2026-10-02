@@ -6,10 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
-use flighthq_types::{EulerOrder, Matrix4Like, Quaternion, QuaternionLike, Vector3Like};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{
+    EntityConstruction, EulerOrder, Matrix4Like, Quaternion, QuaternionLike, Vector3Like,
+};
 
-// Source: upstream/packages/geometry/src/quaternion.ts:4 (sha256:d3e869870aa92cc03b39d5d18610594862eb043d8345f5a2ce03a06f28c542ab)
+// Source: upstream/packages/geometry/src/quaternion.ts:11 (sha256:d3e869870aa92cc03b39d5d18610594862eb043d8345f5a2ce03a06f28c542ab)
 pub fn clone_quaternion(source: &QuaternionLike) -> Quaternion {
     return create_quaternion(
         Some(source.x),
@@ -19,7 +21,7 @@ pub fn clone_quaternion(source: &QuaternionLike) -> Quaternion {
     );
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:15 (sha256:5eefe28f7eaf46a354fe0d7617155c1c05299484671f2a7afcb41eb4cd90ef3c)
+// Source: upstream/packages/geometry/src/quaternion.ts:22 (sha256:5eefe28f7eaf46a354fe0d7617155c1c05299484671f2a7afcb41eb4cd90ef3c)
 pub fn conjugate_quaternion(out: &mut QuaternionLike, source: &QuaternionLike) -> () {
     out.x = (-source.x);
     out.y = (-source.y);
@@ -27,7 +29,7 @@ pub fn conjugate_quaternion(out: &mut QuaternionLike, source: &QuaternionLike) -
     out.w = source.w;
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:27 (sha256:e9018db391c9ab2998401d4c88a69fff7dd328d47e683a909b2feb5493e8f97c)
+// Source: upstream/packages/geometry/src/quaternion.ts:34 (sha256:e9018db391c9ab2998401d4c88a69fff7dd328d47e683a909b2feb5493e8f97c)
 pub fn copy_quaternion(out: &mut QuaternionLike, source: &QuaternionLike) -> () {
     out.x = source.x;
     out.y = source.y;
@@ -35,25 +37,25 @@ pub fn copy_quaternion(out: &mut QuaternionLike, source: &QuaternionLike) -> () 
     out.w = source.w;
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:40 (sha256:f863786f474125298a9d24468ba9f54e6bf22260ec7accd2626bccf97e43ddb3)
+// Source: upstream/packages/geometry/src/quaternion.ts:47 (sha256:90fb0d019adb7e4e8389552ca26215133dcd929e44fcb5d2674146968171c173)
 pub fn create_quaternion(
     x: Option<f64>,
     y: Option<f64>,
     z: Option<f64>,
     w: Option<f64>,
 ) -> Quaternion {
-    return create_entity(Some(Quaternion {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        x: (x).unwrap_or(0.0_f64),
-        y: (y).unwrap_or(0.0_f64),
-        z: (z).unwrap_or(0.0_f64),
-        w: (w).unwrap_or(1.0_f64),
-    }));
+    let mut out = allocate_entity();
+    initialize_quaternion(
+        (out).clone(),
+        (x).unwrap_or(0.0_f64),
+        (y).unwrap_or(0.0_f64),
+        (z).unwrap_or(0.0_f64),
+        (w).unwrap_or(1.0_f64),
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:44 (sha256:b98a3df826eadbf196dda80a21801b3a78d38f69401610e009fe29fde4cfbbe9)
+// Source: upstream/packages/geometry/src/quaternion.ts:53 (sha256:b98a3df826eadbf196dda80a21801b3a78d38f69401610e009fe29fde4cfbbe9)
 pub fn equals_quaternion(a: &Option<QuaternionLike>, b: &Option<QuaternionLike>) -> bool {
     if (a == b) {
         return true;
@@ -67,18 +69,35 @@ pub fn equals_quaternion(a: &Option<QuaternionLike>, b: &Option<QuaternionLike>)
         && (a.as_ref().unwrap().w == b.as_ref().unwrap().w);
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:57 (sha256:41310dda90cd0338123af0975edeffa0004c9593dd0310e6647ed2ad662d5aa6)
+// Source: upstream/packages/geometry/src/quaternion.ts:66 (sha256:41310dda90cd0338123af0975edeffa0004c9593dd0310e6647ed2ad662d5aa6)
 pub fn get_quaternion_angle_between(a: &QuaternionLike, b: &QuaternionLike) -> f64 {
     let dot = (get_quaternion_dot(a, b)).abs();
     return (2.0_f64 * ((1.0_f64).min(dot)).acos());
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:66 (sha256:6a01cc4dd67cd5aaf4301dfd4ca95150b7c598d0df8becc09a5eb2c3b853408a)
+// Source: upstream/packages/geometry/src/quaternion.ts:76 (sha256:418ccb9d42a02d33237bfe99411681a97911e74527047116b97d2fbf81536a8a)
+pub fn get_quaternion_axis_angle(out_axis: &mut Vector3Like, source: &QuaternionLike) -> f64 {
+    let w = source.w;
+    let sin_half_sq = (1.0_f64 - (w * w));
+    if (sin_half_sq <= 0.0_f64) {
+        out_axis.x = 1.0_f64;
+        out_axis.y = 0.0_f64;
+        out_axis.z = 0.0_f64;
+        return 0.0_f64;
+    }
+    let inv_sin_half = (1.0_f64 / (sin_half_sq).sqrt());
+    out_axis.x = (source.x * inv_sin_half);
+    out_axis.y = (source.y * inv_sin_half);
+    out_axis.z = (source.z * inv_sin_half);
+    return (2.0_f64 * ((1.0_f64).min((-1.0_f64).max(w))).acos());
+}
+
+// Source: upstream/packages/geometry/src/quaternion.ts:96 (sha256:6a01cc4dd67cd5aaf4301dfd4ca95150b7c598d0df8becc09a5eb2c3b853408a)
 pub fn get_quaternion_dot(a: &QuaternionLike, b: &QuaternionLike) -> f64 {
     return ((((a.x * b.x) + (a.y * b.y)) + (a.z * b.z)) + (a.w * b.w));
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:78 (sha256:75e4fce0532b1e7a2ac45f93fbf7aab6f78c339481dd3dfed3b54845708dd8be)
+// Source: upstream/packages/geometry/src/quaternion.ts:108 (sha256:75e4fce0532b1e7a2ac45f93fbf7aab6f78c339481dd3dfed3b54845708dd8be)
 pub fn get_quaternion_euler(
     out: &mut Vector3Like,
     source: &QuaternionLike,
@@ -231,7 +250,21 @@ pub fn get_quaternion_euler(
     }
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:188 (sha256:91acadf36afdcd72ed709ebdd465e29828e50a62204061a38f34260d55b432e0)
+// Source: upstream/packages/geometry/src/quaternion.ts:211 (sha256:f758814668528869cb60e4dc4dfd1f52fec2dcb451df145eb7ee391302fc8710)
+pub fn initialize_quaternion(
+    out: EntityConstruction<Quaternion>,
+    x: f64,
+    y: f64,
+    z: f64,
+    w: f64,
+) -> () {
+    crate::host_set("host.x", x);
+    crate::host_set("host.y", y);
+    crate::host_set("host.z", z);
+    crate::host_set("host.w", w);
+}
+
+// Source: upstream/packages/geometry/src/quaternion.ts:231 (sha256:91acadf36afdcd72ed709ebdd465e29828e50a62204061a38f34260d55b432e0)
 pub fn inverse_quaternion(out: &mut QuaternionLike, source: &QuaternionLike) -> () {
     let x = source.x;
     let y = source.y;
@@ -252,7 +285,7 @@ pub fn inverse_quaternion(out: &mut QuaternionLike, source: &QuaternionLike) -> 
     out.w = (w * inv);
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:214 (sha256:4a9a64808819d22b33d0c2ef23da48654e9c9d021b38cc225f549a2c49277023)
+// Source: upstream/packages/geometry/src/quaternion.ts:257 (sha256:4a9a64808819d22b33d0c2ef23da48654e9c9d021b38cc225f549a2c49277023)
 pub fn multiply_quaternion(out: &mut QuaternionLike, a: &QuaternionLike, b: &QuaternionLike) -> () {
     let ax = a.x;
     let ay = a.y;
@@ -268,7 +301,7 @@ pub fn multiply_quaternion(out: &mut QuaternionLike, a: &QuaternionLike, b: &Qua
     out.w = ((((aw * bw) - (ax * bx)) - (ay * by)) - (az * bz));
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:240 (sha256:4980eb547d012fbad501eb83ca1e6ec0ea148d9e785297fb8f7c2a5b5cbf4747)
+// Source: upstream/packages/geometry/src/quaternion.ts:283 (sha256:4980eb547d012fbad501eb83ca1e6ec0ea148d9e785297fb8f7c2a5b5cbf4747)
 pub fn normalize_quaternion(out: &mut QuaternionLike, source: &QuaternionLike) -> f64 {
     let x = source.x;
     let y = source.y;
@@ -290,7 +323,7 @@ pub fn normalize_quaternion(out: &mut QuaternionLike, source: &QuaternionLike) -
     return l;
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:269 (sha256:779dcd90f7508bb3e9fa11a5442ac739a648143ad9a3a7455aafdc8e5e56e758)
+// Source: upstream/packages/geometry/src/quaternion.ts:312 (sha256:779dcd90f7508bb3e9fa11a5442ac739a648143ad9a3a7455aafdc8e5e56e758)
 pub fn rotate_vector3_by_quaternion(
     out: &mut Vector3Like,
     vector: &Vector3Like,
@@ -311,7 +344,7 @@ pub fn rotate_vector3_by_quaternion(
     out.z = ((vz + (qw * tz)) + ((qx * ty) - (qy * tx)));
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:297 (sha256:724e1e2124af215fb9562797196edbb91e14863ea5b2f44299c8f406d9a2768d)
+// Source: upstream/packages/geometry/src/quaternion.ts:340 (sha256:724e1e2124af215fb9562797196edbb91e14863ea5b2f44299c8f406d9a2768d)
 pub fn set_quaternion(out: &mut QuaternionLike, x: f64, y: f64, z: f64, w: f64) -> () {
     out.x = x;
     out.y = y;
@@ -319,7 +352,7 @@ pub fn set_quaternion(out: &mut QuaternionLike, x: f64, y: f64, z: f64, w: f64) 
     out.w = w;
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:310 (sha256:fb289adb432e73f7d2bad263447f99899c3f8e3f7a564f556388ea1d138b4212)
+// Source: upstream/packages/geometry/src/quaternion.ts:353 (sha256:fb289adb432e73f7d2bad263447f99899c3f8e3f7a564f556388ea1d138b4212)
 pub fn set_quaternion_from_axis_angle(
     out: &mut QuaternionLike,
     axis: &Vector3Like,
@@ -333,7 +366,7 @@ pub fn set_quaternion_from_axis_angle(
     out.w = (half).cos();
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:326 (sha256:5116680d0b2e47a7725abcffea7259594abb7f63f02ba75423bd09fe565b6001)
+// Source: upstream/packages/geometry/src/quaternion.ts:369 (sha256:5116680d0b2e47a7725abcffea7259594abb7f63f02ba75423bd09fe565b6001)
 pub fn set_quaternion_from_euler(
     out: &mut QuaternionLike,
     x: f64,
@@ -412,7 +445,7 @@ pub fn set_quaternion_from_euler(
     }
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:384 (sha256:f70e765892b4db3b92cb527a1dcf137180ee16f24f7f9865c4fc57d76de53d06)
+// Source: upstream/packages/geometry/src/quaternion.ts:427 (sha256:f70e765892b4db3b92cb527a1dcf137180ee16f24f7f9865c4fc57d76de53d06)
 pub fn set_quaternion_from_matrix4(out: &mut QuaternionLike, source: &Matrix4Like) -> () {
     let m00 = (source.m[0.0_f64 as usize] as f64);
     let m10 = (source.m[4.0_f64 as usize] as f64);
@@ -455,7 +488,7 @@ pub fn set_quaternion_from_matrix4(out: &mut QuaternionLike, source: &Matrix4Lik
     }
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:434 (sha256:ed0a59109c2d673a6dde40ae653052864e33c4e1c08a0de0051613d7a282514d)
+// Source: upstream/packages/geometry/src/quaternion.ts:477 (sha256:ed0a59109c2d673a6dde40ae653052864e33c4e1c08a0de0051613d7a282514d)
 pub fn set_quaternion_from_unit_vectors(
     out: &mut QuaternionLike,
     from: &Vector3Like,
@@ -509,7 +542,7 @@ pub fn set_quaternion_from_unit_vectors(
     out.w *= inv;
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:499 (sha256:b96649d5293e8a71fc2bfdf6fb7c6c50b492e877990b251425bc17990c7d5a25)
+// Source: upstream/packages/geometry/src/quaternion.ts:542 (sha256:b96649d5293e8a71fc2bfdf6fb7c6c50b492e877990b251425bc17990c7d5a25)
 pub fn set_quaternion_identity(out: &mut QuaternionLike) -> () {
     out.x = 0.0_f64;
     out.y = 0.0_f64;
@@ -517,7 +550,7 @@ pub fn set_quaternion_identity(out: &mut QuaternionLike) -> () {
     out.w = 1.0_f64;
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:519 (sha256:d08a2b5729a716402ff064e0f0eed619a7d28bbeb573ca6fc4a61e82cec8c494)
+// Source: upstream/packages/geometry/src/quaternion.ts:562 (sha256:d08a2b5729a716402ff064e0f0eed619a7d28bbeb573ca6fc4a61e82cec8c494)
 pub fn set_quaternion_look_rotation(
     out: &mut QuaternionLike,
     forward: &Vector3Like,
@@ -597,7 +630,7 @@ pub fn set_quaternion_look_rotation(
     }
 }
 
-// Source: upstream/packages/geometry/src/quaternion.ts:612 (sha256:fa0c91e6eb70912f99ccdb7321c503a9889853bc1722e6045bef8f95c9ce918f)
+// Source: upstream/packages/geometry/src/quaternion.ts:655 (sha256:fa0c91e6eb70912f99ccdb7321c503a9889853bc1722e6045bef8f95c9ce918f)
 pub fn slerp_quaternion(
     out: &mut QuaternionLike,
     a: &QuaternionLike,

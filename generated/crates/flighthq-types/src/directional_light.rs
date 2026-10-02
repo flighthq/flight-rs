@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::Texture;
-use crate::{EntityRuntime, Kind, Vector3};
+use crate::{EntityRuntime, Kind, LightUnit, Vector3};
 
-// Source: upstream/packages/types/src/DirectionalLight.ts:10 (sha256:5aa15d73a4d69dda6f617f278e05d90700a178b45474ec248e36e1a1139373ae)
+// Source: upstream/packages/types/src/DirectionalLight.ts:11 (sha256:958286508ea320b3aa03ef4d94c2abf8a888b01bba9b6f8a7f8278c2a8d948d1)
 #[derive(Clone, Default)]
 pub struct DirectionalLight {
     #[doc(hidden)]
@@ -21,18 +21,30 @@ pub struct DirectionalLight {
     pub kind: Kind,
     pub casts_shadow: bool,
     pub color: f64,
+    pub decay: f64,
     pub direction: Vector3,
+    pub enabled: bool,
     pub inner_cone_cos: f64,
     pub intensity: f64,
+    pub intensity_unit: LightUnit,
+    pub layer_mask: f64,
+    pub priority: f64,
     pub normal_bias: f64,
     pub outer_cone_cos: f64,
     pub pcf_radius: f64,
     pub position: Vector3,
     pub range: f64,
     pub shadow_bias: f64,
+    pub shadow_far: f64,
+    pub shadow_map_size: f64,
+    pub shadow_near: f64,
+    pub shadow_strength: f64,
+    pub spot_blend: f64,
     pub ground_color: f64,
     pub sky_color: f64,
     pub environment: Option<Texture>,
+    pub cascade_count: f64,
+    pub cascade_splits: Vec<f64>,
     pub right: Vector3,
     pub up: Vector3,
 }
@@ -60,11 +72,11 @@ impl crate::FlightEntity for DirectionalLight {
     }
 }
 
-// Source: upstream/packages/types/src/DirectionalLight.ts:28 (sha256:14d67d7a33aa627cd20f5f9d8654dc1da943a0d5920a3d62d8399d764b3550de)
+// Source: upstream/packages/types/src/DirectionalLight.ts:43 (sha256:14d67d7a33aa627cd20f5f9d8654dc1da943a0d5920a3d62d8399d764b3550de)
 pub const DIRECTIONAL_LIGHT_KIND: &'static str = "DirectionalLight";
 
-// Source: upstream/packages/types/src/DirectionalLight.ts:33 (sha256:85457b1393209f4be48e2db03c298d8f3a8ddfe60d529fcdb0f29f1a820f6252)
+// Source: upstream/packages/types/src/DirectionalLight.ts:48 (sha256:85457b1393209f4be48e2db03c298d8f3a8ddfe60d529fcdb0f29f1a820f6252)
 pub const DIRECTIONAL_SHADOW_MAP_SIZE: f64 = 1024.0_f64;
 
-// Source: upstream/packages/types/src/DirectionalLight.ts:38 (sha256:073a5056125967550050c76ee63e58887241d92e4802f61370e9f9a30006ffe7)
+// Source: upstream/packages/types/src/DirectionalLight.ts:53 (sha256:073a5056125967550050c76ee63e58887241d92e4802f61370e9f9a30006ffe7)
 pub const MAX_DIRECTIONAL_SHADOW_PCF_RADIUS: f64 = 2.0_f64;

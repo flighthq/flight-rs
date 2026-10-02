@@ -7,9 +7,9 @@
 #![allow(unused_parens)]
 
 use crate::{BlendMode, EntityRuntime, Kind, MaterialAlphaMode};
-use crate::{PbrExtension, StandardPbrMaterialProperties, Texture};
+use crate::{Modifier, PbrExtension, StandardPbrMaterialProperties, Texture};
 
-// Source: upstream/packages/types/src/DepthMaterial.ts:6 (sha256:2b6e077b6b1679a2d911c05c53b37f74ef4d6522381ff80e683b663407c47559)
+// Source: upstream/packages/types/src/DepthMaterial.ts:6 (sha256:4721bae6ff66d0d16214d5ef4bfac522e5eb27d40190de244e696b6c64e28a76)
 #[derive(Clone, Default)]
 pub struct DepthMaterial {
     #[doc(hidden)]
@@ -24,13 +24,40 @@ pub struct DepthMaterial {
     pub alpha_mode: MaterialAlphaMode,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub color: f64,
+    pub thickness: f64,
+    pub tint: f64,
+    pub base_color: f64,
+    pub base_color_map: Option<Texture>,
+    pub ramp: Option<Texture>,
+    pub steps: f64,
+    pub alpha_map: Option<Texture>,
+    pub emissive: f64,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: f64,
+    pub metallic: f64,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: f64,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: f64,
+    pub roughness: f64,
+    pub diffuse: f64,
+    pub diffuse_map: Option<Texture>,
+    pub glossiness: f64,
+    pub specular: f64,
+    pub specular_glossiness_map: Option<Texture>,
+    pub modifiers: Vec<Modifier>,
+    pub shininess: f64,
+    pub specular_map: Option<Texture>,
+    pub matcap: Option<Texture>,
     pub extensions: Vec<PbrExtension>,
     pub standard: StandardPbrMaterialProperties,
+    pub far: f64,
+    pub near: f64,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,
-    pub far: f64,
-    pub near: f64,
 }
 impl PartialEq for DepthMaterial {
     fn eq(&self, other: &Self) -> bool {
@@ -56,5 +83,5 @@ impl crate::FlightEntity for DepthMaterial {
     }
 }
 
-// Source: upstream/packages/types/src/DepthMaterial.ts:11 (sha256:c1194c7b3c562cb4f9279d00f877fb6fc7a9b4a810295bad4a58f1ef5fe562ce)
+// Source: upstream/packages/types/src/DepthMaterial.ts:12 (sha256:c1194c7b3c562cb4f9279d00f877fb6fc7a9b4a810295bad4a58f1ef5fe562ce)
 pub const DEPTH_MATERIAL_KIND: &'static str = "DepthMaterial";

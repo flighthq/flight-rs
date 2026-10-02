@@ -11,11 +11,11 @@ use crate::{
     blend_animation_samples, sample_animation_blend_tree_channel,
     sample_animation_state_machine_channel,
 };
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_types::{
     AnimationBlendTree, AnimationChannel, AnimationLayer, AnimationLayerOptions,
     AnimationLayerStack, AnimationLayerStackChannel, AnimationLayerStackChannelSource,
-    AnimationStateMachine,
+    AnimationStateMachine, EntityConstruction,
 };
 
 #[derive(Clone, Default)]
@@ -29,7 +29,7 @@ impl PartialEq for SharedStructuralRecord1 {
     }
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:20 (sha256:b37409d10efde744aadfe1477887f7bc3264a1f460ae9e786d81e31ca8034a39)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:21 (sha256:b37409d10efde744aadfe1477887f7bc3264a1f460ae9e786d81e31ca8034a39)
 pub fn advance_animation_layer_stack(stack: &mut AnimationLayerStack, dt: f64) -> () {
     stack.advance_scratch.clear();
     for tree in ((stack.blend_trees).clone()).iter().cloned() {
@@ -40,7 +40,7 @@ pub fn advance_animation_layer_stack(stack: &mut AnimationLayerStack, dt: f64) -
     }
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:28 (sha256:f8c3458499dfb49d6530f24bd9b5e0952ca57f0a50f95a404e7e1f65b430d12b)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:29 (sha256:f8c3458499dfb49d6530f24bd9b5e0952ca57f0a50f95a404e7e1f65b430d12b)
 pub fn create_animation_blend_tree_layer(
     blend_tree: &AnimationBlendTree,
     mut options: Option<AnimationLayerOptions>,
@@ -53,8 +53,31 @@ pub fn create_animation_blend_tree_layer(
     );
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:36 (sha256:5415e5393ea35d790524a47211e7679dee06f897009fab380f6e85f9b08c9549)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:36 (sha256:63b4d7b65b97f0a0e833e062dc74dabc87d25b69350be21ef4061af463f7b253)
 pub fn create_animation_layer_stack(layers: &Vec<AnimationLayer>) -> AnimationLayerStack {
+    let mut out = allocate_entity();
+    initialize_animation_layer_stack((out).clone(), layers);
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/animation/src/animationLayerStack.ts:44 (sha256:9ec26eb060258212879de0dbbc80c9a1ba12f7f7d82001a181767efecfe29da2)
+pub fn create_animation_state_machine_layer(
+    state_machine: &AnimationStateMachine,
+    mut options: Option<AnimationLayerOptions>,
+) -> AnimationLayer {
+    return create_animation_layer(
+        (state_machine.channels.len() as f64),
+        &(None),
+        &(Some((state_machine).clone())),
+        ((options).clone()).clone(),
+    );
+}
+
+// Source: upstream/packages/animation/src/animationLayerStack.ts:52 (sha256:2ef646dc1df7b6b7e2b16cf4a745d187cab65a85437a4e8a78b1dfeeef83b90d)
+pub fn initialize_animation_layer_stack(
+    out: EntityConstruction<AnimationLayerStack>,
+    layers: &Vec<AnimationLayer>,
+) -> () {
     let copied_layers = (layers).clone();
     let mut blend_trees: Vec<AnimationBlendTree> = vec![];
     let mut channels: Vec<AnimationLayerStackChannel> = vec![];
@@ -153,33 +176,15 @@ pub fn create_animation_layer_stack(layers: &Vec<AnimationLayer>) -> AnimationLa
             };
         }
     }
-    return create_entity(Some(AnimationLayerStack {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        advance_scratch: vec![],
-        blend_trees: (blend_trees).clone(),
-        channels: (channels).clone(),
-        layers: (copied_layers).clone(),
-        sample_scratch: vec![0.0_f32; (sample_width) as usize],
-        state_machines: (state_machines).clone(),
-    }));
+    crate::host_set("host.advanceScratch", vec![]);
+    crate::host_set("host.blendTrees", blend_trees);
+    crate::host_set("host.channels", channels);
+    crate::host_set("host.layers", copied_layers);
+    crate::host_set("host.sampleScratch", vec![0.0_f32; (sample_width) as usize]);
+    crate::host_set("host.stateMachines", state_machines);
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:80 (sha256:9ec26eb060258212879de0dbbc80c9a1ba12f7f7d82001a181767efecfe29da2)
-pub fn create_animation_state_machine_layer(
-    state_machine: &AnimationStateMachine,
-    mut options: Option<AnimationLayerOptions>,
-) -> AnimationLayer {
-    return create_animation_layer(
-        (state_machine.channels.len() as f64),
-        &(None),
-        &(Some((state_machine).clone())),
-        ((options).clone()).clone(),
-    );
-}
-
-// Source: upstream/packages/animation/src/animationLayerStack.ts:89 (sha256:5f17af696e2377eee2b6e55d3d6f0cb07c5418dff3bec2f6366078f9cd908aa9)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:95 (sha256:5f17af696e2377eee2b6e55d3d6f0cb07c5418dff3bec2f6366078f9cd908aa9)
 pub fn sample_animation_layer_stack(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     stack: &mut AnimationLayerStack,
@@ -203,7 +208,7 @@ pub fn sample_animation_layer_stack(
     }
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:101 (sha256:92014540a71e9428ff9eb0a6e5c34940a96e719e20778cd76fed21367167a422)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:107 (sha256:92014540a71e9428ff9eb0a6e5c34940a96e719e20778cd76fed21367167a422)
 pub fn sample_animation_layer_stack_channel(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     stack: &mut AnimationLayerStack,
@@ -309,7 +314,7 @@ pub fn sample_animation_layer_stack_channel(
     return has_pose;
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:130 (sha256:27e047874fe8fcd9a7e70ca7e17d77d383ed5fe7cbde562b00e94433d7f8f70e)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:136 (sha256:27e047874fe8fcd9a7e70ca7e17d77d383ed5fe7cbde562b00e94433d7f8f70e)
 pub fn set_animation_layer_weight(
     stack: &mut AnimationLayerStack,
     layer_index: f64,
@@ -323,7 +328,7 @@ pub fn set_animation_layer_weight(
     return true;
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:137 (sha256:1cfe49a7775e25d87d44a59843802a9b2919e7c94e1584a4a940e8cefd0142d6)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:143 (sha256:1cfe49a7775e25d87d44a59843802a9b2919e7c94e1584a4a940e8cefd0142d6)
 fn assert_compatible_animation_layer_channels(
     existing: &AnimationChannel,
     channel: &AnimationChannel,
@@ -335,7 +340,7 @@ fn assert_compatible_animation_layer_channels(
     }
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:149 (sha256:57e0e435a0a2849b654a6a7c6d270e38ec116211894245bd13bc10c583158fc4)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:155 (sha256:57e0e435a0a2849b654a6a7c6d270e38ec116211894245bd13bc10c583158fc4)
 fn copy_animation_layer_sample(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     sample: &Vec<f64>,
@@ -370,29 +375,35 @@ fn copy_animation_layer_sample(
     }
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:154 (sha256:cbec1f935ad56da2263d8443130c9e6881a264c14340bd9e2ea24b0ccd19f354)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:160 (sha256:b41008d76990ea1571efd05f09295ab09005ad2062c54dcd8bb948bbba445d05)
 fn create_animation_layer(
     channel_count: f64,
     blend_tree: &Option<AnimationBlendTree>,
     state_machine: &Option<AnimationStateMachine>,
     mut options: Option<AnimationLayerOptions>,
 ) -> AnimationLayer {
-    return create_entity(Some(AnimationLayer {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        additive: (options.as_ref().and_then(|value| value.additive)).unwrap_or(false),
-        blend_tree: (*blend_tree).clone(),
-        channel_indices: copy_animation_layer_channel_indices(
+    let mut out = allocate_entity();
+    crate::host_set(
+        "host.additive",
+        (options.as_ref().and_then(|value| value.additive)).unwrap_or(false),
+    );
+    crate::host_set("host.blendTree", blend_tree);
+    crate::host_set(
+        "host.channelIndices",
+        copy_animation_layer_channel_indices(
             &mut (options.as_mut().unwrap().channel_indices),
             channel_count,
         ),
-        state_machine: (*state_machine).clone(),
-        weight: (options.as_ref().and_then(|value| value.weight)).unwrap_or(1.0_f64),
-    }));
+    );
+    crate::host_set("host.stateMachine", state_machine);
+    crate::host_set(
+        "host.weight",
+        (options.as_ref().and_then(|value| value.weight)).unwrap_or(1.0_f64),
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:169 (sha256:829473a30a8df8061a7d116529f4dc104e426b4cf7e6e01c9a146755424c3a79)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:175 (sha256:829473a30a8df8061a7d116529f4dc104e426b4cf7e6e01c9a146755424c3a79)
 fn copy_animation_layer_channel_indices(
     channel_indices: &mut Option<Vec<f64>>,
     channel_count: f64,
@@ -432,7 +443,7 @@ fn copy_animation_layer_channel_indices(
     return Some((copied).clone());
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:187 (sha256:3e3d1f4d6d559aa955c6d8ed488b29aa2a08f392b87765defcfbf3c982dc85e3)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:193 (sha256:3e3d1f4d6d559aa955c6d8ed488b29aa2a08f392b87765defcfbf3c982dc85e3)
 fn get_animation_layer_channels(layer: &AnimationLayer) -> Vec<SharedStructuralRecord1> {
     return (layer
         .blend_tree
@@ -441,7 +452,7 @@ fn get_animation_layer_channels(layer: &AnimationLayer) -> Vec<SharedStructuralR
     .unwrap_or((layer.state_machine.as_ref().unwrap().channels).clone());
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:193 (sha256:04696b2e850da43f7f04a3fefcd60a466116ba4c1eb695c6b86655afd6ea34ea)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:199 (sha256:04696b2e850da43f7f04a3fefcd60a466116ba4c1eb695c6b86655afd6ea34ea)
 fn sample_animation_layer(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     layer: &mut AnimationLayer,
@@ -461,7 +472,7 @@ fn sample_animation_layer(
     );
 }
 
-// Source: upstream/packages/animation/src/animationLayerStack.ts:202 (sha256:bed28be4f103ff045979887ac3fcf64052585d3e1df0fdcd7fd86b4b0fbfaaf0)
+// Source: upstream/packages/animation/src/animationLayerStack.ts:208 (sha256:bed28be4f103ff045979887ac3fcf64052585d3e1df0fdcd7fd86b4b0fbfaaf0)
 fn write_animation_layer_identity(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     components: f64,

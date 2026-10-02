@@ -6,15 +6,19 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Image;
+use crate::{ImageResource, SvgClipHandlerEntry, SvgElementHandlerEntry};
 
-// Source: upstream/packages/types/src/SvgDocumentImport.ts:7 (sha256:02c4f707180d138fa944a4fbaa30ca5914362ac8bfbd2b974e7c6fd9be6b4a6f)
+// Source: upstream/packages/types/src/SvgDocumentImport.ts:4 (sha256:2ddf86f39d735cc7f872e5bb23ca30204e74e0b47b0ef1bf30fe48477a4c4b90)
 #[derive(Clone, Default)]
 pub struct SvgDocumentImportOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    pub clip_handlers: Option<Vec<SvgClipHandlerEntry>>,
+    pub element_handlers: Option<Vec<SvgElementHandlerEntry>>,
     pub resolve_image_resource: Option<
-        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(String) -> Option<Image> + Send + 'static>>>,
+        std::sync::Arc<
+            std::sync::Mutex<Box<dyn FnMut(String) -> Option<ImageResource> + Send + 'static>>,
+        >,
     >,
 }
 impl PartialEq for SvgDocumentImportOptions {

@@ -6,9 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_types::Image;
+use flighthq_types::ImageResource;
 
-// Source: upstream/packages/image/src/imageResource.ts:53 (sha256:a1dd955f09013ac5dda80d27885912a9954717f91c639a2ddf419207efdaaeae)
-pub fn is_image_resource_empty(resource: &Image) -> bool {
+// Source: upstream/packages/image/src/imageResource.ts:71 (sha256:495344d8cd929b57d1b73fcfb210c40ae730dc25f3e602c576a99487310013f0)
+pub fn is_image_resource_empty(resource: &ImageResource) -> bool {
     return (resource.width <= 0.0_f64) || (resource.height <= 0.0_f64);
 }

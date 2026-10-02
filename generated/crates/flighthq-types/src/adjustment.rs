@@ -6,17 +6,39 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::AdjustmentKind;
+use crate::{AdjustmentKind, EntityRuntime};
 
-// Source: upstream/packages/types/src/Adjustment.ts:14 (sha256:1673fb67d4c310dc61a8d835bd1142cba40c71b2747eb67b708747860ba8430d)
+// Source: upstream/packages/types/src/Adjustment.ts:15 (sha256:3487a3b51fa432a0b33208127f926d00c7dd6e60cfbe531707e03682770109f0)
 #[derive(Clone, Default)]
 pub struct Adjustment {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub kind: AdjustmentKind,
 }
 impl PartialEq for Adjustment {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for Adjustment {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }

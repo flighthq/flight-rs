@@ -7,14 +7,19 @@
 #![allow(unused_parens)]
 
 use crate::{
-    AdvancedBlendMode, EmbeddedImageResourceReference, Node2D, RenderEffect, Scene2DDocument,
+    AdvancedBlendMode, Effect, EmbeddedImageResourceReference, EntityRuntime, Node2D,
+    Scene2DDocument,
 };
 
-// Source: upstream/packages/types/src/SwfDocumentImport.ts:12 (sha256:a5e80429b2d12890711ae06693fc29fc09675e8b56cdedee4c1da28b555d53c5)
+// Source: upstream/packages/types/src/SwfDocumentImport.ts:13 (sha256:e4e33c9a4c3541301729a15cb430a8f6d78fc50b3e2ad58da09ad170a4583d37)
 #[derive(Clone, Default)]
 pub struct SwfDocumentImport {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub appearances: Vec<SwfNodeAppearance>,
     pub document: Scene2DDocument,
     pub jpeg_alpha_payloads: Vec<SwfJpegAlphaPayload>,
@@ -24,8 +29,26 @@ impl PartialEq for SwfDocumentImport {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
+impl crate::FlightEntity for SwfDocumentImport {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
+    }
+}
 
-// Source: upstream/packages/types/src/SwfDocumentImport.ts:24 (sha256:d1fe2e41c49362dce579804a7d9a43c02b30d00e6d0d3e3575eb3433fd4e3f6d)
+// Source: upstream/packages/types/src/SwfDocumentImport.ts:25 (sha256:d1fe2e41c49362dce579804a7d9a43c02b30d00e6d0d3e3575eb3433fd4e3f6d)
 #[derive(Clone, Default)]
 pub struct SwfJpegAlphaPayload {
     #[doc(hidden)]
@@ -43,13 +66,13 @@ impl PartialEq for SwfJpegAlphaPayload {
     }
 }
 
-// Source: upstream/packages/types/src/SwfDocumentImport.ts:46 (sha256:29d7b6847fd6dc3ce23219c04ed1eb97b80248c7c2185f4caef270d9d52afd98)
+// Source: upstream/packages/types/src/SwfDocumentImport.ts:47 (sha256:e1dbc46d65e6b36793ea9ea6ced9ee7e48676c0184375be01c413d70f3e5b899)
 #[derive(Clone, Default)]
 pub struct SwfNodeAppearance {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub advanced_blend_mode: Option<AdvancedBlendMode>,
-    pub effects: Vec<RenderEffect>,
+    pub effects: Vec<Effect>,
     pub frame: f64,
     pub node: Node2D,
 }

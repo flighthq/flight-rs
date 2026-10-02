@@ -6,10 +6,10 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Vector3;
 use crate::{EntityRuntime, Kind, Texture};
+use crate::{LightUnit, Vector3};
 
-// Source: upstream/packages/types/src/Environment.ts:6 (sha256:f734896a8ad625c226b086f12710cd6b34af41902b729c2c340dc983d3e1ab2e)
+// Source: upstream/packages/types/src/Environment.ts:6 (sha256:aa5fc99686ccd1901bd70d9ddb4327a0477d26906432904c2bf693774669e9c9)
 #[derive(Clone, Default)]
 pub struct Environment {
     #[doc(hidden)]
@@ -21,18 +21,30 @@ pub struct Environment {
     pub kind: Kind,
     pub casts_shadow: bool,
     pub color: f64,
+    pub decay: f64,
     pub direction: Vector3,
+    pub enabled: bool,
     pub inner_cone_cos: f64,
     pub intensity: f64,
+    pub intensity_unit: LightUnit,
+    pub layer_mask: f64,
+    pub priority: f64,
     pub normal_bias: f64,
     pub outer_cone_cos: f64,
     pub pcf_radius: f64,
     pub position: Vector3,
     pub range: f64,
     pub shadow_bias: f64,
+    pub shadow_far: f64,
+    pub shadow_map_size: f64,
+    pub shadow_near: f64,
+    pub shadow_strength: f64,
+    pub spot_blend: f64,
     pub ground_color: f64,
     pub sky_color: f64,
     pub environment: Option<Texture>,
+    pub cascade_count: f64,
+    pub cascade_splits: Vec<f64>,
     pub right: Vector3,
     pub up: Vector3,
 }
@@ -60,5 +72,5 @@ impl crate::FlightEntity for Environment {
     }
 }
 
-// Source: upstream/packages/types/src/Environment.ts:12 (sha256:65722e8f1a29f53e8a8e974096ff0f2e8d794d9f898fcbc9e8cea99357346190)
+// Source: upstream/packages/types/src/Environment.ts:13 (sha256:65722e8f1a29f53e8a8e974096ff0f2e8d794d9f898fcbc9e8cea99357346190)
 pub const ENVIRONMENT_KIND: &'static str = "Environment";

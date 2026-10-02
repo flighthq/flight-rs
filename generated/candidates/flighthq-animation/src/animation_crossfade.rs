@@ -7,13 +7,13 @@
 #![allow(unused_parens)]
 
 use crate::{advance_animation_player, blend_animation_samples, sample_animation_track};
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_types::{
     AnimationChannel, AnimationCrossfade, AnimationCrossfadeChannel, AnimationCrossfadeOptions,
-    AnimationPlayer,
+    AnimationPlayer, EntityConstruction,
 };
 
-// Source: upstream/packages/animation/src/animationCrossfade.ts:16 (sha256:5f5b265f65fb2ef4d948d2d15945403823ad37bf76dfcc30936e0075653c927d)
+// Source: upstream/packages/animation/src/animationCrossfade.ts:17 (sha256:5f5b265f65fb2ef4d948d2d15945403823ad37bf76dfcc30936e0075653c927d)
 pub fn advance_animation_crossfade(state: &mut AnimationCrossfade, dt: f64) -> () {
     advance_animation_player(&mut state.from, dt);
     advance_animation_player(&mut state.to, dt);
@@ -27,13 +27,26 @@ pub fn advance_animation_crossfade(state: &mut AnimationCrossfade, dt: f64) -> (
     };
 }
 
-// Source: upstream/packages/animation/src/animationCrossfade.ts:26 (sha256:0090cffe255bc65a325c8ee03fba93aa6efac2a86d326a70fd05c2f0e7aadbf0)
+// Source: upstream/packages/animation/src/animationCrossfade.ts:24 (sha256:98e763efff0fd1fea6855c2931e218d74f00e524f7710be043d062ed51d5d800)
 pub fn create_animation_crossfade(
     from: &AnimationPlayer,
     to: &AnimationPlayer,
     duration: f64,
     opts: Option<AnimationCrossfadeOptions>,
 ) -> AnimationCrossfade {
+    let mut out = allocate_entity();
+    initialize_animation_crossfade((out).clone(), from, to, duration, ((opts).clone()).clone());
+    return finish_entity((out).clone());
+}
+
+// Source: upstream/packages/animation/src/animationCrossfade.ts:38 (sha256:c0ca941c35a138dc434140714a6985f9e1ffb6e23853549d86ad9d9ed55a6456)
+pub fn initialize_animation_crossfade(
+    out: EntityConstruction<AnimationCrossfade>,
+    from: &AnimationPlayer,
+    to: &AnimationPlayer,
+    duration: f64,
+    opts: Option<AnimationCrossfadeOptions>,
+) -> () {
     let resolved_duration = (0.0_f64).max(duration);
     let curve = (opts.as_ref().and_then(|value| (value.curve).clone())).unwrap_or(
         std::sync::Arc::new(std::sync::Mutex::new(
@@ -47,34 +60,29 @@ pub fn create_animation_crossfade(
     for entry in (channels).iter().cloned() {
         sample_width = (sample_width).max(entry.channel.track.components);
     }
-    return create_entity(Some(AnimationCrossfade {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        channels: (channels).clone(),
-        curve: (curve).clone(),
-        duration: resolved_duration,
-        elapsed: 0.0_f64,
-        from: (*from).clone(),
-        from_sample: vec![0.0_f32; (sample_width) as usize],
-        to: (*to).clone(),
-        to_sample: vec![0.0_f32; (sample_width) as usize],
-        weight: {
-            let __flight_callback = (curve).clone();
-            let __flight_result = __flight_callback.lock().unwrap()(
-                get_linear_animation_crossfade_weight(0.0_f64, resolved_duration),
-            );
-            __flight_result
-        },
-    }));
+    crate::host_set("host.channels", channels);
+    crate::host_set("host.curve", (curve).clone());
+    crate::host_set("host.duration", resolved_duration);
+    crate::host_set("host.elapsed", 0.0_f64);
+    crate::host_set("host.from", from);
+    crate::host_set("host.fromSample", vec![0.0_f32; (sample_width) as usize]);
+    crate::host_set("host.to", to);
+    crate::host_set("host.toSample", vec![0.0_f32; (sample_width) as usize]);
+    crate::host_set("host.weight", {
+        let __flight_callback = (curve).clone();
+        let __flight_result = __flight_callback.lock().unwrap()(
+            get_linear_animation_crossfade_weight(0.0_f64, resolved_duration),
+        );
+        __flight_result
+    });
 }
 
-// Source: upstream/packages/animation/src/animationCrossfade.ts:53 (sha256:1cc6c3a8e7af7eb03fb2c50bc073dba3cb7caef4f59066034d45ba59983a63ae)
+// Source: upstream/packages/animation/src/animationCrossfade.ts:64 (sha256:1cc6c3a8e7af7eb03fb2c50bc073dba3cb7caef4f59066034d45ba59983a63ae)
 pub fn is_animation_crossfade_complete(state: &AnimationCrossfade) -> bool {
     return (state.duration <= 0.0_f64) || (state.elapsed >= state.duration);
 }
 
-// Source: upstream/packages/animation/src/animationCrossfade.ts:61 (sha256:b80e57755dbcd922f3c0b01373b050909b75eb013bc4b2090181075d545adde4)
+// Source: upstream/packages/animation/src/animationCrossfade.ts:72 (sha256:b80e57755dbcd922f3c0b01373b050909b75eb013bc4b2090181075d545adde4)
 pub fn sample_animation_crossfade(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     state: &mut AnimationCrossfade,
@@ -162,7 +170,7 @@ pub fn sample_animation_crossfade(
     }
 }
 
-// Source: upstream/packages/animation/src/animationCrossfade.ts:85 (sha256:09d6eda0048c2584bcddb4211e8d2528df171bd885b87918b6ddd38bbe6af0e3)
+// Source: upstream/packages/animation/src/animationCrossfade.ts:96 (sha256:09d6eda0048c2584bcddb4211e8d2528df171bd885b87918b6ddd38bbe6af0e3)
 fn create_animation_crossfade_channels(
     from: &AnimationPlayer,
     to: &AnimationPlayer,
@@ -263,7 +271,7 @@ fn create_animation_crossfade_channels(
     return channels;
 }
 
-// Source: upstream/packages/animation/src/animationCrossfade.ts:127 (sha256:8a85dc44f5ef218e53c39773f4859c524e4583a272c8ea3cf9dd947b27203b80)
+// Source: upstream/packages/animation/src/animationCrossfade.ts:138 (sha256:8a85dc44f5ef218e53c39773f4859c524e4583a272c8ea3cf9dd947b27203b80)
 fn assert_unique_animation_crossfade_targets(
     channels: &Vec<AnimationChannel>,
     clip_label: String,
@@ -285,7 +293,7 @@ fn assert_unique_animation_crossfade_targets(
     }
 }
 
-// Source: upstream/packages/animation/src/animationCrossfade.ts:140 (sha256:cc21114d1daf99a9141591bcfbf2bd545e76599e4260fb7c34e0f72c48132810)
+// Source: upstream/packages/animation/src/animationCrossfade.ts:151 (sha256:cc21114d1daf99a9141591bcfbf2bd545e76599e4260fb7c34e0f72c48132810)
 fn get_linear_animation_crossfade_weight(elapsed: f64, duration: f64) -> f64 {
     if (duration <= 0.0_f64) {
         return 1.0_f64;
@@ -302,7 +310,7 @@ fn get_linear_animation_crossfade_weight(elapsed: f64, duration: f64) -> f64 {
     };
 }
 
-// Source: upstream/packages/animation/src/animationCrossfade.ts:146 (sha256:b95a87f91beebcc0f89d0cb4fcc969cb7474c8f60c9a3d3306a9efe7a79a6de0)
+// Source: upstream/packages/animation/src/animationCrossfade.ts:157 (sha256:b95a87f91beebcc0f89d0cb4fcc969cb7474c8f60c9a3d3306a9efe7a79a6de0)
 fn linear_animation_crossfade_curve(t: f64) -> f64 {
     return t;
 }

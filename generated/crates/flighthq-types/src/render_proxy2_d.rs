@@ -7,12 +7,12 @@
 #![allow(unused_parens)]
 
 use crate::{
-    BlendMode, ColorScaleBias, EntityRuntime, Kind, Material, MaterialData, Matrix, RenderProxy,
-    Renderable, Renderer, RendererData,
+    BlendMode, ColorScaleBias, EntityRuntime, Kind, Material2D, MaterialData, Matrix, NodeAny,
+    NodeRenderer, RenderProxy, RendererData,
 };
 
-// Source: upstream/packages/types/src/RenderProxy2D.ts:7 (sha256:272ac35d464e6e3a9ff7ab35c445b3fd389a16e2ffc6b301a47f16b3b2d11dcc)
-#[derive(Clone)]
+// Source: upstream/packages/types/src/RenderProxy2D.ts:9 (sha256:c2ef65061e58181af0d5f9d73e8edab77842954d096698bea57c2ee668286590)
+#[derive(Clone, Default)]
 pub struct RenderProxy2D {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
@@ -20,7 +20,7 @@ pub struct RenderProxy2D {
     pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
     #[doc(hidden)]
     pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
-    pub source: Renderable,
+    pub source: NodeAny,
     pub kind: Kind,
     pub next: Option<RenderProxy>,
     pub alpha: f64,
@@ -28,7 +28,7 @@ pub struct RenderProxy2D {
     pub blend_mode: Option<BlendMode>,
     pub color_scale_bias: Option<ColorScaleBias>,
     pub color_matrix: Option<Vec<f64>>,
-    pub material: Option<Material>,
+    pub material: Option<Material2D>,
     pub material_data: Option<MaterialData>,
     pub last_appearance_id: f64,
     pub last_children_id: f64,
@@ -36,9 +36,9 @@ pub struct RenderProxy2D {
     pub last_local_transform_id: f64,
     pub last_parent_reference_id: f64,
     pub name: Option<String>,
-    pub renderer: Option<Renderer>,
+    pub renderer: Option<NodeRenderer>,
     pub renderer_data: Option<RendererData>,
-    pub renderer_data_source: Option<Renderable>,
+    pub renderer_data_source: Option<NodeAny>,
     pub renderer_map_id: f64,
     pub transform_frame_id: f64,
     pub visible: bool,

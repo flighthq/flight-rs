@@ -7,27 +7,28 @@
 #![allow(unused_parens)]
 
 use crate::create_plane;
-use flighthq_entity::create_entity;
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_types::{
-    AabbLike, BoundingSphereLike, Frustum, FrustumLike, Matrix4Like, PlaneLike, Vector3Like,
+    AabbLike, BoundingSphereLike, EntityConstruction, Frustum, FrustumLike, Matrix4Like, ObbLike,
+    Plane, PlaneLike, Vector3Like,
 };
 
-// Source: upstream/packages/geometry/src/frustum.ts:18 (sha256:0c8df1bb31e8186f69c63a35e90c9cc80368e8b85661ddaffeea6917300f98f8)
+// Source: upstream/packages/geometry/src/frustum.ts:21 (sha256:306b186e24f2fc16196f7663ddd249f7780d91e89a41843aac321e3eb855cb78)
 pub fn create_frustum() -> Frustum {
-    return create_entity(Some(Frustum {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        bottom: create_plane(None, None, None, None),
-        far: create_plane(None, None, None, None),
-        left: create_plane(None, None, None, None),
-        near: create_plane(None, None, None, None),
-        right: create_plane(None, None, None, None),
-        top: create_plane(None, None, None, None),
-    }));
+    let mut out = allocate_entity();
+    initialize_frustum(
+        (out).clone(),
+        &create_plane(None, None, None, None),
+        &create_plane(None, None, None, None),
+        &create_plane(None, None, None, None),
+        &create_plane(None, None, None, None),
+        &create_plane(None, None, None, None),
+        &create_plane(None, None, None, None),
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/geometry/src/frustum.ts:42 (sha256:33fc5962453387aea599632f46dbe747a643ddfedf9a5f27d5964bd9dcb50c40)
+// Source: upstream/packages/geometry/src/frustum.ts:40 (sha256:33fc5962453387aea599632f46dbe747a643ddfedf9a5f27d5964bd9dcb50c40)
 pub fn get_frustum_corners(
     out: &mut Vec<Vector3Like>,
     inverse_view_projection: &Matrix4Like,
@@ -83,7 +84,25 @@ pub fn get_frustum_corners(
     }
 }
 
-// Source: upstream/packages/geometry/src/frustum.ts:74 (sha256:ec07b7e6fe2aa96684e0cf438b8c475d66b0d510a8ef3f7d33a9e9ab5d970b10)
+// Source: upstream/packages/geometry/src/frustum.ts:68 (sha256:79a91e5102298b09440a5a7614d75ed93255a666a106620a3bf8ad7e8277b9b0)
+pub fn initialize_frustum(
+    out: EntityConstruction<Frustum>,
+    bottom: &Plane,
+    far: &Plane,
+    left: &Plane,
+    near: &Plane,
+    right: &Plane,
+    top: &Plane,
+) -> () {
+    crate::host_set("host.bottom", bottom);
+    crate::host_set("host.far", far);
+    crate::host_set("host.left", left);
+    crate::host_set("host.near", near);
+    crate::host_set("host.right", right);
+    crate::host_set("host.top", top);
+}
+
+// Source: upstream/packages/geometry/src/frustum.ts:89 (sha256:ec07b7e6fe2aa96684e0cf438b8c475d66b0d510a8ef3f7d33a9e9ab5d970b10)
 pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -> bool {
     return (((((__plane_signed_distance(
         &{
@@ -189,7 +208,7 @@ pub fn is_frustum_containing_point(frustum: &FrustumLike, point: &Vector3Like) -
         ) >= 0.0_f64);
 }
 
-// Source: upstream/packages/geometry/src/frustum.ts:92 (sha256:1419008c5c366055c511f06ec52538229ca2b233cb4f67c96029e9fee14bc449)
+// Source: upstream/packages/geometry/src/frustum.ts:107 (sha256:1419008c5c366055c511f06ec52538229ca2b233cb4f67c96029e9fee14bc449)
 pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> bool {
     if ((aabb.min.x > aabb.max.x) || (aabb.min.y > aabb.max.y)) || (aabb.min.z > aabb.max.z) {
         return false;
@@ -293,7 +312,184 @@ pub fn is_frustum_intersecting_aabb(frustum: &FrustumLike, aabb: &AabbLike) -> b
     ));
 }
 
-// Source: upstream/packages/geometry/src/frustum.ts:112 (sha256:37e3a47ead4503ee5b56c8e7115d29c8190d9dda40ea335196d468f0e10ec9d1)
+// Source: upstream/packages/geometry/src/frustum.ts:127 (sha256:8bdede2a1c02de3ddd902a9779186804845d99325e5df2d10f291dae0671b7c5)
+pub fn is_frustum_intersecting_obb(frustum: &FrustumLike, obb: &ObbLike) -> bool {
+    let qx = obb.orientation_x;
+    let qy = obb.orientation_y;
+    let qz = obb.orientation_z;
+    let qw = obb.orientation_w;
+    let xx = (qx * qx);
+    let yy = (qy * qy);
+    let zz = (qz * qz);
+    let xy = (qx * qy);
+    let xz = (qx * qz);
+    let yz = (qy * qz);
+    let wx = (qw * qx);
+    let wy = (qw * qy);
+    let wz = (qw * qz);
+    let ax0 = (1.0_f64 - (2.0_f64 * (yy + zz)));
+    let ay0 = (2.0_f64 * (xy + wz));
+    let az0 = (2.0_f64 * (xz - wy));
+    let ax1 = (2.0_f64 * (xy - wz));
+    let ay1 = (1.0_f64 - (2.0_f64 * (xx + zz)));
+    let az1 = (2.0_f64 * (yz + wx));
+    let ax2 = (2.0_f64 * (xz + wy));
+    let ay2 = (2.0_f64 * (yz - wx));
+    let az2 = (1.0_f64 - (2.0_f64 * (xx + yy)));
+    return (((((__plane_intersects_obb(
+        &{
+            let __flight_source = &(frustum.left);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        obb,
+        ax0,
+        ay0,
+        az0,
+        ax1,
+        ay1,
+        az1,
+        ax2,
+        ay2,
+        az2,
+    )) && (__plane_intersects_obb(
+        &{
+            let __flight_source = &(frustum.right);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        obb,
+        ax0,
+        ay0,
+        az0,
+        ax1,
+        ay1,
+        az1,
+        ax2,
+        ay2,
+        az2,
+    ))) && (__plane_intersects_obb(
+        &{
+            let __flight_source = &(frustum.bottom);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        obb,
+        ax0,
+        ay0,
+        az0,
+        ax1,
+        ay1,
+        az1,
+        ax2,
+        ay2,
+        az2,
+    ))) && (__plane_intersects_obb(
+        &{
+            let __flight_source = &(frustum.top);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        obb,
+        ax0,
+        ay0,
+        az0,
+        ax1,
+        ay1,
+        az1,
+        ax2,
+        ay2,
+        az2,
+    ))) && (__plane_intersects_obb(
+        &{
+            let __flight_source = &(frustum.near);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        obb,
+        ax0,
+        ay0,
+        az0,
+        ax1,
+        ay1,
+        az1,
+        ax2,
+        ay2,
+        az2,
+    ))) && (__plane_intersects_obb(
+        &{
+            let __flight_source = &(frustum.far);
+            PlaneLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
+                a: __flight_source.a,
+                b: __flight_source.b,
+                c: __flight_source.c,
+                d: __flight_source.d,
+            }
+        },
+        obb,
+        ax0,
+        ay0,
+        az0,
+        ax1,
+        ay1,
+        az1,
+        ax2,
+        ay2,
+        az2,
+    ));
+}
+
+// Source: upstream/packages/geometry/src/frustum.ts:168 (sha256:37e3a47ead4503ee5b56c8e7115d29c8190d9dda40ea335196d468f0e10ec9d1)
 pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSphereLike) -> bool {
     if (sphere.radius < 0.0_f64) {
         return false;
@@ -475,7 +671,7 @@ pub fn is_frustum_intersecting_sphere(frustum: &FrustumLike, sphere: &BoundingSp
         ) >= (-r));
 }
 
-// Source: upstream/packages/geometry/src/frustum.ts:135 (sha256:12022dda18811bc664c3270aa393982f7ebf4b4cedf0d83f12da271ce472f0e7)
+// Source: upstream/packages/geometry/src/frustum.ts:191 (sha256:12022dda18811bc664c3270aa393982f7ebf4b4cedf0d83f12da271ce472f0e7)
 pub fn set_frustum_from_matrix4(out: &mut FrustumLike, view_projection: &Matrix4Like) -> () {
     let r00 = (view_projection.m[0.0_f64 as usize] as f64);
     let r01 = (view_projection.m[4.0_f64 as usize] as f64);
@@ -597,7 +793,7 @@ pub fn set_frustum_from_matrix4(out: &mut FrustumLike, view_projection: &Matrix4
     };
 }
 
-// Source: upstream/packages/geometry/src/frustum.ts:165 (sha256:ef03575556c4decc84d17785e2278df853cd02a8d00e53b1ecc96286a498666c)
+// Source: upstream/packages/geometry/src/frustum.ts:221 (sha256:ef03575556c4decc84d17785e2278df853cd02a8d00e53b1ecc96286a498666c)
 fn __plane_intersects_aabb(plane: &PlaneLike, aabb: &AabbLike) -> bool {
     let px = if (plane.a >= 0.0_f64) {
         aabb.max.x
@@ -617,12 +813,34 @@ fn __plane_intersects_aabb(plane: &PlaneLike, aabb: &AabbLike) -> bool {
     return (((((plane.a * px) + (plane.b * py)) + (plane.c * pz)) + plane.d) >= 0.0_f64);
 }
 
-// Source: upstream/packages/geometry/src/frustum.ts:172 (sha256:c5d16650ccdc58df242ee4e50604f25f55c47c481a2faff14c9c1d96cef7f0ce)
+// Source: upstream/packages/geometry/src/frustum.ts:228 (sha256:58bf7b9ace3d2d12d4ba3ec8f1eabd9acec6a577acf8509fb35be9cc199d6a79)
+fn __plane_intersects_obb(
+    plane: &PlaneLike,
+    obb: &ObbLike,
+    ax0: f64,
+    ay0: f64,
+    az0: f64,
+    ax1: f64,
+    ay1: f64,
+    az1: f64,
+    ax2: f64,
+    ay2: f64,
+    az2: f64,
+) -> bool {
+    let dist = ((((plane.a * obb.center_x) + (plane.b * obb.center_y)) + (plane.c * obb.center_z))
+        + plane.d);
+    let r = (((obb.half_extent_x * (((plane.a * ax0) + (plane.b * ay0)) + (plane.c * az0)).abs())
+        + (obb.half_extent_y * (((plane.a * ax1) + (plane.b * ay1)) + (plane.c * az1)).abs()))
+        + (obb.half_extent_z * (((plane.a * ax2) + (plane.b * ay2)) + (plane.c * az2)).abs()));
+    return (dist >= (-r));
+}
+
+// Source: upstream/packages/geometry/src/frustum.ts:249 (sha256:c5d16650ccdc58df242ee4e50604f25f55c47c481a2faff14c9c1d96cef7f0ce)
 fn __plane_signed_distance(plane: &PlaneLike, point: &Vector3Like) -> f64 {
     return ((((plane.a * point.x) + (plane.b * point.y)) + (plane.c * point.z)) + plane.d);
 }
 
-// Source: upstream/packages/geometry/src/frustum.ts:176 (sha256:2f4df7cdc6f240cba6d68326d6a62e7bdf13e635d3eab4ee1ea75dc03704bdda)
+// Source: upstream/packages/geometry/src/frustum.ts:253 (sha256:2f4df7cdc6f240cba6d68326d6a62e7bdf13e635d3eab4ee1ea75dc03704bdda)
 fn __set_plane(out: &mut PlaneLike, a: f64, b: f64, c: f64, d: f64) -> () {
     let l = (((a * a) + (b * b)) + (c * c)).sqrt();
     if (l != 0.0_f64) {

@@ -284,22 +284,25 @@ impl PartialEq for UnityParseOptions {
     }
 }
 
-// Source: upstream/packages/types/src/UnitySchema.ts:141 (sha256:08a8784afc31699d9ffd2082f30c2d51a652119f672b73e608eeada425531f13)
+// Source: upstream/packages/types/src/UnitySchema.ts:141 (sha256:8a9ddcf46b691d592f23150edc93f40e4372bce23b5b395d8b1a6ee6b058dc4d)
 #[derive(Clone, Default)]
-pub struct UnityParsed {
+pub struct UnityParseResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub config: ParticleEmitterConfig,
     pub document: UnityParticleDocument,
     pub diagnostics: Vec<ImportDiagnostic>,
 }
-impl PartialEq for UnityParsed {
+impl PartialEq for UnityParseResult {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
 }
 
-// Source: upstream/packages/types/src/UnitySchema.ts:149 (sha256:20bd3e0ccb60e42d6dfd5380b8444598829ee9fbc9dc2bc870b356c82c0d51db)
+// Source: upstream/packages/types/src/UnitySchema.ts:150 (sha256:6f3b459b0e3f454c46ad09fd1f56284024407c369651295f06844fecdee978bc)
+pub type UnityParsed = UnityParseResult;
+
+// Source: upstream/packages/types/src/UnitySchema.ts:152 (sha256:20bd3e0ccb60e42d6dfd5380b8444598829ee9fbc9dc2bc870b356c82c0d51db)
 #[derive(Clone, Default)]
 pub struct UnitySerializeOptions {
     #[doc(hidden)]

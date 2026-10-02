@@ -6,13 +6,14 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/GlToonProgram.ts:8 (sha256:c6b315718ecec2b181e33f0eac91428424a4b592837007264c7287f6786786f9)
+// Source: upstream/packages/types/src/GlToonProgram.ts:8 (sha256:b3c71f2ea7c0944c696a30db6367d424e6c60293befcc0313ecdd3331dc2f873)
 #[derive(Clone, Default)]
 pub struct GlToonDefineKey {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub alpha_mask_enabled: bool,
     pub has_base_color_map: bool,
+    pub has_instances: Option<bool>,
     pub has_ramp: bool,
     pub has_skin: Option<bool>,
     pub has_uv_transform: bool,
@@ -23,7 +24,7 @@ impl PartialEq for GlToonDefineKey {
     }
 }
 
-// Source: upstream/packages/types/src/GlToonProgram.ts:24 (sha256:246dc6c529144431c519bf28ad1b7b38a1b7d40a7d85e35ea777ffeaebb1748c)
+// Source: upstream/packages/types/src/GlToonProgram.ts:25 (sha256:246dc6c529144431c519bf28ad1b7b38a1b7d40a7d85e35ea777ffeaebb1748c)
 #[derive(Clone, Default)]
 pub struct GlToonProgram {
     #[doc(hidden)]
@@ -38,6 +39,8 @@ pub struct GlToonProgram {
     pub loc_object_alpha: Option<crate::OpaqueHostValue>,
     pub loc_alpha_is_coverage: Option<crate::OpaqueHostValue>,
     pub loc_joint_texture: Option<crate::OpaqueHostValue>,
+    pub loc_instance_palette: Option<crate::OpaqueHostValue>,
+    pub loc_instance_color_palette: Option<crate::OpaqueHostValue>,
     pub loc_joint_normal_texture: Option<crate::OpaqueHostValue>,
     pub loc_model: Option<crate::OpaqueHostValue>,
     pub loc_normal_matrix: Option<crate::OpaqueHostValue>,

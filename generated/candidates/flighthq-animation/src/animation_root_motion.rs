@@ -7,61 +7,20 @@
 #![allow(unused_parens)]
 
 use crate::sample_animation_track;
-use flighthq_entity::create_entity;
-use flighthq_types::{AnimationClip, AnimationRootMotionExtractor};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{AnimationClip, AnimationRootMotionExtractor, EntityConstruction};
 
-// Source: upstream/packages/animation/src/animationRootMotion.ts:8 (sha256:c3bcd3d0589d9217e3e52cf3b44c278ee1b9e565afc3f03150493bfe73bcfc17)
+// Source: upstream/packages/animation/src/animationRootMotion.ts:6 (sha256:34061a75eaae4350e2db591637abe2df470365d7a2d48f02bd1fc2bb72414f7a)
 pub fn create_animation_root_motion_extractor(
     clip: &AnimationClip,
     channel_index: f64,
 ) -> AnimationRootMotionExtractor {
-    if ((!(channel_index).is_finite() && (channel_index).fract() == 0.0_f64)
-        || (channel_index < 0.0_f64))
-        || (channel_index >= (clip.channels.len() as f64))
-    {
-        panic!("{}", "generated Flight function threw");
-    }
-    let channel = clip.channels[channel_index as usize].clone();
-    let width = channel.track.components;
-    if (channel.track.quaternion) && (width != 4.0_f64) {
-        panic!("{}", "generated Flight function threw");
-    }
-    let mut extractor = create_entity(Some(AnimationRootMotionExtractor {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        channel: (channel).clone(),
-        channel_index: channel_index,
-        clip: (*clip).clone(),
-        cycle_delta: vec![0.0_f32; (width) as usize],
-        from_motion: vec![0.0_f32; (width) as usize],
-        from_sample: vec![0.0_f32; (width) as usize],
-        power_scratch: vec![0.0_f32; (width) as usize],
-        start_sample: vec![0.0_f32; (width) as usize],
-        to_motion: vec![0.0_f32; (width) as usize],
-        to_sample: vec![0.0_f32; (width) as usize],
-    }));
-    sample_animation_track(&((extractor.start_sample).clone()), &channel.track, 0.0_f64);
-    sample_animation_track(
-        &((extractor.to_sample).clone()),
-        &channel.track,
-        clip.duration,
-    );
-    {
-        let __flight_argument_1 = (extractor.start_sample).clone();
-        let __flight_argument_2 = (extractor.to_sample).clone();
-        let __flight_result = write_animation_root_motion_delta(
-            &((extractor.cycle_delta).clone()),
-            &__flight_argument_1,
-            &__flight_argument_2,
-            channel.track.quaternion,
-        );
-        __flight_result
-    };
-    return extractor;
+    let mut extractor = allocate_entity();
+    initialize_animation_root_motion_extractor((extractor).clone(), clip, channel_index);
+    return finish_entity((extractor).clone());
 }
 
-// Source: upstream/packages/animation/src/animationRootMotion.ts:46 (sha256:1218a5d8bf544e15c0180df66ae1cb7db451d01c4a77d443f1bf91b07841c86a)
+// Source: upstream/packages/animation/src/animationRootMotion.ts:18 (sha256:1218a5d8bf544e15c0180df66ae1cb7db451d01c4a77d443f1bf91b07841c86a)
 pub fn extract_animation_root_motion(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     extractor: &mut AnimationRootMotionExtractor,
@@ -120,7 +79,57 @@ pub fn extract_animation_root_motion(
     return true;
 }
 
-// Source: upstream/packages/animation/src/animationRootMotion.ts:63 (sha256:f521fb68f66cbfe6a36629e8c1fae8c73be455438304686823cb95ba964d1028)
+// Source: upstream/packages/animation/src/animationRootMotion.ts:37 (sha256:de6aa5632a9d1e02c3a4c6c2637826d697bbb983d49b11292d9d760ff518fdfc)
+pub fn initialize_animation_root_motion_extractor(
+    extractor: EntityConstruction<AnimationRootMotionExtractor>,
+    clip: &AnimationClip,
+    channel_index: f64,
+) -> () {
+    if ((!(channel_index).is_finite() && (channel_index).fract() == 0.0_f64)
+        || (channel_index < 0.0_f64))
+        || (channel_index >= (clip.channels.len() as f64))
+    {
+        panic!("{}", "generated Flight function threw");
+    }
+    let channel = clip.channels[channel_index as usize].clone();
+    let width = channel.track.components;
+    if (channel.track.quaternion) && (width != 4.0_f64) {
+        panic!("{}", "generated Flight function threw");
+    }
+    crate::host_set("host.channel", (channel).clone());
+    crate::host_set("host.channelIndex", channel_index);
+    crate::host_set("host.clip", clip);
+    crate::host_set("host.cycleDelta", vec![0.0_f32; (width) as usize]);
+    crate::host_set("host.fromMotion", vec![0.0_f32; (width) as usize]);
+    crate::host_set("host.fromSample", vec![0.0_f32; (width) as usize]);
+    crate::host_set("host.powerScratch", vec![0.0_f32; (width) as usize]);
+    crate::host_set("host.startSample", vec![0.0_f32; (width) as usize]);
+    crate::host_set("host.toMotion", vec![0.0_f32; (width) as usize]);
+    crate::host_set("host.toSample", vec![0.0_f32; (width) as usize]);
+    sample_animation_track(
+        &(crate::host_value::<crate::FlightUnion2<Vec<f64>, Vec<f32>>>("host.startSample")),
+        &channel.track,
+        0.0_f64,
+    );
+    sample_animation_track(
+        &(crate::host_value::<crate::FlightUnion2<Vec<f64>, Vec<f32>>>("host.toSample")),
+        &channel.track,
+        clip.duration,
+    );
+    {
+        let __flight_argument_1 = (extractor.start_sample).clone();
+        let __flight_argument_2 = (extractor.to_sample).clone();
+        let __flight_result = write_animation_root_motion_delta(
+            &(crate::host_value::<crate::FlightUnion2<Vec<f64>, Vec<f32>>>("host.cycleDelta")),
+            &__flight_argument_1,
+            &__flight_argument_2,
+            channel.track.quaternion,
+        );
+        __flight_result
+    };
+}
+
+// Source: upstream/packages/animation/src/animationRootMotion.ts:70 (sha256:f521fb68f66cbfe6a36629e8c1fae8c73be455438304686823cb95ba964d1028)
 fn multiply_animation_root_motion_quaternion(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     a: &Vec<f64>,
@@ -143,7 +152,7 @@ fn multiply_animation_root_motion_quaternion(
     );
 }
 
-// Source: upstream/packages/animation/src/animationRootMotion.ts:85 (sha256:6674e183e37ef0890bc5dd92522bbbd173017f5f1224d689ab2bc17c31725333)
+// Source: upstream/packages/animation/src/animationRootMotion.ts:92 (sha256:6674e183e37ef0890bc5dd92522bbbd173017f5f1224d689ab2bc17c31725333)
 fn write_animation_root_motion_at(
     out: &mut Vec<f32>,
     extractor: &mut AnimationRootMotionExtractor,
@@ -247,7 +256,7 @@ fn write_animation_root_motion_at(
     }
 }
 
-// Source: upstream/packages/animation/src/animationRootMotion.ts:111 (sha256:9934eaef8e234e3d0964a1750c9065e925b405865f145796e425d7ad7c2990f3)
+// Source: upstream/packages/animation/src/animationRootMotion.ts:118 (sha256:9934eaef8e234e3d0964a1750c9065e925b405865f145796e425d7ad7c2990f3)
 fn write_animation_root_motion_delta(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     from: &Vec<f64>,
@@ -306,7 +315,7 @@ fn write_animation_root_motion_delta(
     );
 }
 
-// Source: upstream/packages/animation/src/animationRootMotion.ts:131 (sha256:2aad6639886573a4a3db81d4d023cc7f9e026113a367957fb49e32958bb9087c)
+// Source: upstream/packages/animation/src/animationRootMotion.ts:138 (sha256:2aad6639886573a4a3db81d4d023cc7f9e026113a367957fb49e32958bb9087c)
 fn write_animation_root_motion_identity(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     components: f64,
@@ -354,7 +363,7 @@ fn write_animation_root_motion_identity(
     }
 }
 
-// Source: upstream/packages/animation/src/animationRootMotion.ts:137 (sha256:f3b81ae55cd5a666e05f040741622ee2c6afd19924010079ee85b21abd3d2cc3)
+// Source: upstream/packages/animation/src/animationRootMotion.ts:144 (sha256:f3b81ae55cd5a666e05f040741622ee2c6afd19924010079ee85b21abd3d2cc3)
 fn write_animation_root_motion_quaternion_power(
     out: &mut Vec<f32>,
     extractor: &mut AnimationRootMotionExtractor,
@@ -448,7 +457,7 @@ fn write_animation_root_motion_quaternion_power(
     }
 }
 
-// Source: upstream/packages/animation/src/animationRootMotion.ts:161 (sha256:467e029d5ab2aaf9b1298a4a0ed621db2ce4a365dda3aa722bef99bdc29aa5c6)
+// Source: upstream/packages/animation/src/animationRootMotion.ts:168 (sha256:467e029d5ab2aaf9b1298a4a0ed621db2ce4a365dda3aa722bef99bdc29aa5c6)
 fn write_normalized_animation_root_motion_quaternion(
     out: &mut crate::FlightUnion2<Vec<f64>, Vec<f32>>,
     x: f64,

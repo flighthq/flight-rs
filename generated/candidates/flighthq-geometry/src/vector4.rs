@@ -6,8 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
-use flighthq_types::{Vector3Like, Vector4, Vector4Like};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{EntityConstruction, Vector3Like, Vector4, Vector4Like};
 
 // Source: upstream/packages/geometry/src/vector4.ts:8 (sha256:1474299a981bfae4269804752a33d5b086de31fb4828bffa2f73c7a74309ebf0)
 pub fn add_vector4(out: &mut Vector4Like, a: &Vector4Like, b: &Vector4Like) -> () {
@@ -88,20 +88,20 @@ pub fn copy_vector4(out: &mut Vector4Like, source: &Vector4Like) -> () {
     out.w = w;
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:88 (sha256:4554d1e32d87ac5c7123542b7586521e102d50134059acbaf14b3979886898d5)
+// Source: upstream/packages/geometry/src/vector4.ts:88 (sha256:16c88ba93c7c59ac44f3b2735becea89229b59dac65c9e3c09f17c1b8a06f2f2)
 pub fn create_vector4(x: Option<f64>, y: Option<f64>, z: Option<f64>, w: Option<f64>) -> Vector4 {
-    return create_entity(Some(Vector4 {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        x: (x).unwrap_or(0.0_f64),
-        y: (y).unwrap_or(0.0_f64),
-        z: (z).unwrap_or(0.0_f64),
-        w: (w).unwrap_or(0.0_f64),
-    }));
+    let mut out = allocate_entity();
+    initialize_vector4(
+        (out).clone(),
+        (x).unwrap_or(0.0_f64),
+        (y).unwrap_or(0.0_f64),
+        (z).unwrap_or(0.0_f64),
+        (w).unwrap_or(0.0_f64),
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:99 (sha256:721ed30dee364ce92e1dad368c8044ba72ab73784aa925f365b5486b91edfed8)
+// Source: upstream/packages/geometry/src/vector4.ts:101 (sha256:721ed30dee364ce92e1dad368c8044ba72ab73784aa925f365b5486b91edfed8)
 pub fn divide_vector4(out: &mut Vector4Like, source: &Vector4Like, divisor: &Vector4Like) -> () {
     let sx = source.x;
     let sy = source.y;
@@ -117,7 +117,7 @@ pub fn divide_vector4(out: &mut Vector4Like, source: &Vector4Like, divisor: &Vec
     out.w = if (dw != 0.0_f64) { (sw / dw) } else { 0.0_f64 };
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:114 (sha256:951809f69c2b7365e6e41f9006c58849de58dc9cf77b174b1f47d731d0f87433)
+// Source: upstream/packages/geometry/src/vector4.ts:116 (sha256:951809f69c2b7365e6e41f9006c58849de58dc9cf77b174b1f47d731d0f87433)
 pub fn equals_vector4(a: &Option<Vector4Like>, b: &Option<Vector4Like>) -> bool {
     if ((a).is_none()) || ((b).is_none()) {
         return false;
@@ -129,7 +129,7 @@ pub fn equals_vector4(a: &Option<Vector4Like>, b: &Option<Vector4Like>) -> bool 
             && (a.as_ref().unwrap().w == b.as_ref().unwrap().w));
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:129 (sha256:4e1c2aa604d686cc5e2d5adc7055472c26fed3d9547cd06c7ee786d7203d2638)
+// Source: upstream/packages/geometry/src/vector4.ts:131 (sha256:4e1c2aa604d686cc5e2d5adc7055472c26fed3d9547cd06c7ee786d7203d2638)
 pub fn get_vector4_angle_between(a: &Vector4Like, b: &Vector4Like) -> f64 {
     let la = get_vector4_length(a);
     let lb = get_vector4_length(b);
@@ -140,7 +140,7 @@ pub fn get_vector4_angle_between(a: &Vector4Like, b: &Vector4Like) -> f64 {
     return ((1.0_f64).min((-1.0_f64).max(_dot))).acos();
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:143 (sha256:247b51f2a5edbed19118f76c4798d319c6d72783f5b5235427f3c865b2ed3c1f)
+// Source: upstream/packages/geometry/src/vector4.ts:145 (sha256:247b51f2a5edbed19118f76c4798d319c6d72783f5b5235427f3c865b2ed3c1f)
 pub fn get_vector4_distance(a: &Vector4Like, b: &Vector4Like) -> f64 {
     let x: f64 = (b.x - a.x);
     let y: f64 = (b.y - a.y);
@@ -150,7 +150,7 @@ pub fn get_vector4_distance(a: &Vector4Like, b: &Vector4Like) -> f64 {
         .sqrt();
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:157 (sha256:0c4d408656595a2f4e0476d5ff5656560a0ea9398459d6e2584dc0230f5836fe)
+// Source: upstream/packages/geometry/src/vector4.ts:159 (sha256:0c4d408656595a2f4e0476d5ff5656560a0ea9398459d6e2584dc0230f5836fe)
 pub fn get_vector4_distance_squared(a: &Vector4Like, b: &Vector4Like) -> f64 {
     let x: f64 = (b.x - a.x);
     let y: f64 = (b.y - a.y);
@@ -159,25 +159,33 @@ pub fn get_vector4_distance_squared(a: &Vector4Like, b: &Vector4Like) -> f64 {
     return ((((x).powf(2.0_f64) + (y).powf(2.0_f64)) + (z).powf(2.0_f64)) + (w).powf(2.0_f64));
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:173 (sha256:f9aa63ae1755096c9b73b1663643a66e0205096e09b64ac8e6f950a2a87f068d)
+// Source: upstream/packages/geometry/src/vector4.ts:175 (sha256:f9aa63ae1755096c9b73b1663643a66e0205096e09b64ac8e6f950a2a87f068d)
 pub fn get_vector4_dot(a: &Vector4Like, b: &Vector4Like) -> f64 {
     return ((((a.x * b.x) + (a.y * b.y)) + (a.z * b.z)) + (a.w * b.w));
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:182 (sha256:cab79e96e8290f394689cfc06d8ab8e0fc2498bd3febd3b9e2ac00fb7a76aeaf)
+// Source: upstream/packages/geometry/src/vector4.ts:184 (sha256:cab79e96e8290f394689cfc06d8ab8e0fc2498bd3febd3b9e2ac00fb7a76aeaf)
 pub fn get_vector4_length(source: &Vector4Like) -> f64 {
     return ((((source.x).powf(2.0_f64) + (source.y).powf(2.0_f64)) + (source.z).powf(2.0_f64))
         + (source.w).powf(2.0_f64))
     .sqrt();
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:192 (sha256:d50dff8ac0933c340edaed60a2f25cb9fae48ea06b9d275f324f6b83a37a16da)
+// Source: upstream/packages/geometry/src/vector4.ts:194 (sha256:d50dff8ac0933c340edaed60a2f25cb9fae48ea06b9d275f324f6b83a37a16da)
 pub fn get_vector4_length_squared(source: &Vector4Like) -> f64 {
     return ((((source.x).powf(2.0_f64) + (source.y).powf(2.0_f64)) + (source.z).powf(2.0_f64))
         + (source.w).powf(2.0_f64));
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:202 (sha256:739ab591ca9f83aec2e951826dcedcf9f1316e0e0716902b4c1a8dbef66d44ea)
+// Source: upstream/packages/geometry/src/vector4.ts:198 (sha256:4bf6a8e17c4483b03b57997e486a39e93a715597d7ed95df055e86f880a65eec)
+pub fn initialize_vector4(out: EntityConstruction<Vector4>, x: f64, y: f64, z: f64, w: f64) -> () {
+    crate::host_set("host.x", x);
+    crate::host_set("host.y", y);
+    crate::host_set("host.z", z);
+    crate::host_set("host.w", w);
+}
+
+// Source: upstream/packages/geometry/src/vector4.ts:211 (sha256:739ab591ca9f83aec2e951826dcedcf9f1316e0e0716902b4c1a8dbef66d44ea)
 pub fn interpolate_vector4(out: &mut Vector4Like, a: &Vector4Like, b: &Vector4Like, t: f64) -> () {
     let ax = a.x;
     let ay = a.y;
@@ -193,7 +201,7 @@ pub fn interpolate_vector4(out: &mut Vector4Like, a: &Vector4Like, b: &Vector4Li
     out.w = (aw + (t * (bw - aw)));
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:227 (sha256:a424e82a47e2bd575767822a383dccf1135264c4f7da6b6d7f46a25db0cad3f2)
+// Source: upstream/packages/geometry/src/vector4.ts:236 (sha256:a424e82a47e2bd575767822a383dccf1135264c4f7da6b6d7f46a25db0cad3f2)
 pub fn max_vector4(out: &mut Vector4Like, a: &Vector4Like, b: &Vector4Like) -> () {
     let ax = a.x;
     let ay = a.y;
@@ -209,7 +217,7 @@ pub fn max_vector4(out: &mut Vector4Like, a: &Vector4Like, b: &Vector4Like) -> (
     out.w = if (aw > bw) { aw } else { bw };
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:247 (sha256:a2ca40dba789edd3fa029b00f7632d0e151cff5d05902d79f40a828feb34907d)
+// Source: upstream/packages/geometry/src/vector4.ts:256 (sha256:a2ca40dba789edd3fa029b00f7632d0e151cff5d05902d79f40a828feb34907d)
 pub fn min_vector4(out: &mut Vector4Like, a: &Vector4Like, b: &Vector4Like) -> () {
     let ax = a.x;
     let ay = a.y;
@@ -225,7 +233,7 @@ pub fn min_vector4(out: &mut Vector4Like, a: &Vector4Like, b: &Vector4Like) -> (
     out.w = if (aw < bw) { aw } else { bw };
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:267 (sha256:10ff150f6ca5af983781596c1afbd4c7a0aef11fbdea36d648f13286f658f724)
+// Source: upstream/packages/geometry/src/vector4.ts:276 (sha256:10ff150f6ca5af983781596c1afbd4c7a0aef11fbdea36d648f13286f658f724)
 pub fn multiply_vector4(out: &mut Vector4Like, a: &Vector4Like, b: &Vector4Like) -> () {
     let ax = a.x;
     let ay = a.y;
@@ -241,7 +249,7 @@ pub fn multiply_vector4(out: &mut Vector4Like, a: &Vector4Like, b: &Vector4Like)
     out.w = (aw * bw);
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:289 (sha256:63f5d9d5746929775ccff51ec9c00bd6a698275c5d0898fbddd8ef497bc0c21d)
+// Source: upstream/packages/geometry/src/vector4.ts:298 (sha256:63f5d9d5746929775ccff51ec9c00bd6a698275c5d0898fbddd8ef497bc0c21d)
 pub fn near_equals_vector4(a: &Vector4Like, b: &Vector4Like, tolerance: Option<f64>) -> bool {
     let tolerance = tolerance.unwrap_or(0.000001_f64);
     return ((((a.x - b.x).abs() < tolerance) && ((a.y - b.y).abs() < tolerance))
@@ -249,7 +257,7 @@ pub fn near_equals_vector4(a: &Vector4Like, b: &Vector4Like, tolerance: Option<f
         && ((a.w - b.w).abs() < tolerance);
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:307 (sha256:61a3d628d4405e9fe98cc63ff92b9d9defee9782da1d1cdee99e487b77ccec21)
+// Source: upstream/packages/geometry/src/vector4.ts:316 (sha256:61a3d628d4405e9fe98cc63ff92b9d9defee9782da1d1cdee99e487b77ccec21)
 pub fn negate_vector4(out: &mut Vector4Like, source: &Vector4Like) -> () {
     let x = source.x;
     let y = source.y;
@@ -261,7 +269,7 @@ pub fn negate_vector4(out: &mut Vector4Like, source: &Vector4Like) -> () {
     out.w = (w * (-1.0_f64));
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:324 (sha256:82f933182f895437a4935669691d0884c0db6d2a77fc1dcbed69b6d00b36823d)
+// Source: upstream/packages/geometry/src/vector4.ts:333 (sha256:82f933182f895437a4935669691d0884c0db6d2a77fc1dcbed69b6d00b36823d)
 pub fn normalize_vector4(out: &mut Vector4Like, source: &Vector4Like) -> f64 {
     let x = source.x;
     let y = source.y;
@@ -283,7 +291,7 @@ pub fn normalize_vector4(out: &mut Vector4Like, source: &Vector4Like) -> f64 {
     return l;
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:349 (sha256:caa77337f8644477d113ef85c52cc21e3af95eb1397313fca059571a436aa480)
+// Source: upstream/packages/geometry/src/vector4.ts:358 (sha256:caa77337f8644477d113ef85c52cc21e3af95eb1397313fca059571a436aa480)
 pub fn offset_vector4(
     out: &mut Vector4Like,
     source: &Vector4Like,
@@ -302,14 +310,14 @@ pub fn offset_vector4(
     out.w = (w + dw);
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:371 (sha256:a15413833f6f891d3f809da7e4fd5f0945829f03e5392eec342d039b4469793c)
+// Source: upstream/packages/geometry/src/vector4.ts:380 (sha256:a15413833f6f891d3f809da7e4fd5f0945829f03e5392eec342d039b4469793c)
 pub fn project_vector4(out: &mut Vector3Like, source: &Vector4Like) -> () {
     out.x = (source.x / source.w);
     out.y = (source.y / source.w);
     out.z = (source.z / source.w);
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:385 (sha256:95297422af18f8121c9877607958b634b18e431bbd1a9f3b9df8915ab677d485)
+// Source: upstream/packages/geometry/src/vector4.ts:394 (sha256:95297422af18f8121c9877607958b634b18e431bbd1a9f3b9df8915ab677d485)
 pub fn reflect_vector4(out: &mut Vector4Like, incident: &Vector4Like, normal: &Vector4Like) -> () {
     let ix = incident.x;
     let iy = incident.y;
@@ -326,7 +334,7 @@ pub fn reflect_vector4(out: &mut Vector4Like, incident: &Vector4Like, normal: &V
     out.w = (iw - (two_dot * nw));
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:405 (sha256:492dda6089998d9741cd53e934fd93a3ed12b8912a9d1ad785d725f967ee1cb4)
+// Source: upstream/packages/geometry/src/vector4.ts:414 (sha256:492dda6089998d9741cd53e934fd93a3ed12b8912a9d1ad785d725f967ee1cb4)
 pub fn scale_vector4(out: &mut Vector4Like, source: &Vector4Like, scalar: f64) -> () {
     let x = source.x;
     let y = source.y;
@@ -338,7 +346,7 @@ pub fn scale_vector4(out: &mut Vector4Like, source: &Vector4Like, scalar: f64) -
     out.w = (w * scalar);
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:419 (sha256:e38065fe68ccf0b701233e7de13a055122028dd4f9c434568a7c0ae05fdddb78)
+// Source: upstream/packages/geometry/src/vector4.ts:428 (sha256:e38065fe68ccf0b701233e7de13a055122028dd4f9c434568a7c0ae05fdddb78)
 pub fn set_vector4(out: &mut Vector4Like, x: f64, y: f64, z: f64, w: f64) -> () {
     out.x = x;
     out.y = y;
@@ -346,7 +354,7 @@ pub fn set_vector4(out: &mut Vector4Like, x: f64, y: f64, z: f64, w: f64) -> () 
     out.w = w;
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:429 (sha256:03d2237981389f311e26fdcec4911d4f48c7df006c65da7919afddd4db308b7d)
+// Source: upstream/packages/geometry/src/vector4.ts:438 (sha256:03d2237981389f311e26fdcec4911d4f48c7df006c65da7919afddd4db308b7d)
 pub fn set_vector4_from_float32_array(out: &mut Vector4Like, offset: f64, source: &Vec<f32>) -> () {
     out.x = (source[offset as usize] as f64);
     out.y = (source[(offset + 1.0_f64) as usize] as f64);
@@ -354,7 +362,7 @@ pub fn set_vector4_from_float32_array(out: &mut Vector4Like, offset: f64, source
     out.w = (source[(offset + 3.0_f64) as usize] as f64);
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:442 (sha256:09e4240d19aa68631d6d137401289afbe4625b2bec6042350aab00442450ceec)
+// Source: upstream/packages/geometry/src/vector4.ts:451 (sha256:09e4240d19aa68631d6d137401289afbe4625b2bec6042350aab00442450ceec)
 pub fn set_vector4_from_vector3(out: &mut Vector4Like, source: &Vector3Like, w: Option<f64>) -> () {
     let w = w.unwrap_or(0.0_f64);
     let x = source.x;
@@ -366,7 +374,7 @@ pub fn set_vector4_from_vector3(out: &mut Vector4Like, source: &Vector3Like, w: 
     out.w = w;
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:456 (sha256:b659ccee859f8f2ca5380785d28ed80bf9eb2064659606685c73f5f86faa3690)
+// Source: upstream/packages/geometry/src/vector4.ts:465 (sha256:b659ccee859f8f2ca5380785d28ed80bf9eb2064659606685c73f5f86faa3690)
 pub fn subtract_vector4(out: &mut Vector4Like, source: &Vector4Like, other: &Vector4Like) -> () {
     let sx = source.x;
     let sy = source.y;
@@ -382,7 +390,7 @@ pub fn subtract_vector4(out: &mut Vector4Like, source: &Vector4Like, other: &Vec
     out.w = (sw - ow);
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:474 (sha256:ed031d0bc33b9eadb32524a3a80ee1090cdb697ee3fcc733b58d784ca79fabb9)
+// Source: upstream/packages/geometry/src/vector4.ts:483 (sha256:ed031d0bc33b9eadb32524a3a80ee1090cdb697ee3fcc733b58d784ca79fabb9)
 pub fn write_vector4_to_float32_array(out: &mut Vec<f32>, offset: f64, source: &Vector4Like) -> () {
     out[offset as usize] = (source.x) as f32;
     out[(offset + 1.0_f64) as usize] = (source.y) as f32;
@@ -390,22 +398,22 @@ pub fn write_vector4_to_float32_array(out: &mut Vec<f32>, offset: f64, source: &
     out[(offset + 3.0_f64) as usize] = (source.w) as f32;
 }
 
-// Source: upstream/packages/geometry/src/vector4.ts:481 (sha256:7d47ae771aab8ba8ebecca7cdf91637f2dbc04c7d45f53ffb0ce608cf72b2a0e)
+// Source: upstream/packages/geometry/src/vector4.ts:490 (sha256:7d47ae771aab8ba8ebecca7cdf91637f2dbc04c7d45f53ffb0ce608cf72b2a0e)
 pub static VECTOR4_W_UNIT: std::sync::LazyLock<Vector4> = std::sync::LazyLock::new(|| {
     create_vector4(Some(0.0_f64), Some(0.0_f64), Some(0.0_f64), Some(1.0_f64))
 });
 
-// Source: upstream/packages/geometry/src/vector4.ts:482 (sha256:b0a3f725d0a69a81bf597931d8e2aae3327d6ecd694e95ae0f83b21bf07366fa)
+// Source: upstream/packages/geometry/src/vector4.ts:491 (sha256:b0a3f725d0a69a81bf597931d8e2aae3327d6ecd694e95ae0f83b21bf07366fa)
 pub static VECTOR4_X_AXIS: std::sync::LazyLock<Vector4> = std::sync::LazyLock::new(|| {
     create_vector4(Some(1.0_f64), Some(0.0_f64), Some(0.0_f64), Some(0.0_f64))
 });
 
-// Source: upstream/packages/geometry/src/vector4.ts:483 (sha256:1fa7153cdfdd18887c04f47972048f1cfd74e9cff2b6cb9da3f3ad23dd25e5b4)
+// Source: upstream/packages/geometry/src/vector4.ts:492 (sha256:1fa7153cdfdd18887c04f47972048f1cfd74e9cff2b6cb9da3f3ad23dd25e5b4)
 pub static VECTOR4_Y_AXIS: std::sync::LazyLock<Vector4> = std::sync::LazyLock::new(|| {
     create_vector4(Some(0.0_f64), Some(1.0_f64), Some(0.0_f64), Some(0.0_f64))
 });
 
-// Source: upstream/packages/geometry/src/vector4.ts:484 (sha256:819c425cd78a8204d9780ef745d5bce4dc0982c706a1ed7cd1fd7f022fb1acde)
+// Source: upstream/packages/geometry/src/vector4.ts:493 (sha256:819c425cd78a8204d9780ef745d5bce4dc0982c706a1ed7cd1fd7f022fb1acde)
 pub static VECTOR4_Z_AXIS: std::sync::LazyLock<Vector4> = std::sync::LazyLock::new(|| {
     create_vector4(Some(0.0_f64), Some(0.0_f64), Some(1.0_f64), Some(0.0_f64))
 });

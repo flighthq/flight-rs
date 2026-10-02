@@ -6,7 +6,9 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{RenderTexture, WgpuRenderState, WgpuRenderTarget, WgpuRenderTargetPool};
+use crate::{
+    EntityRuntime, RenderTexture, WgpuRenderState, WgpuRenderTargetPool, WgpuTextureRenderTarget,
+};
 
 // Source: upstream/packages/types/src/WgpuRenderTexture.ts:6 (sha256:2ec2ec6678145349a96ebcf33e25545566d1fcffc5017c52d13d89ac8178b393)
 pub type WgpuRenderTextureStatus = String;
@@ -26,13 +28,13 @@ impl PartialEq for WgpuRenderTextureExplanation {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderTexture.ts:15 (sha256:a5243909363d6d37ff704867c3df7bbceae877b0eac612d58b88af423e746572)
+// Source: upstream/packages/types/src/WgpuRenderTexture.ts:15 (sha256:9279e143a2a35ca874d388be64c48bf31ded469a886383bee2521b8aa4438bd6)
 #[derive(Clone, Default)]
 pub struct WgpuRenderTextureEntry {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub status: WgpuRenderTextureStatus,
-    pub target: WgpuRenderTarget,
+    pub target: WgpuTextureRenderTarget,
 }
 impl PartialEq for WgpuRenderTextureEntry {
     fn eq(&self, other: &Self) -> bool {
@@ -40,11 +42,15 @@ impl PartialEq for WgpuRenderTextureEntry {
     }
 }
 
-// Source: upstream/packages/types/src/WgpuRenderTexture.ts:22 (sha256:8a2e66fa93ab54d34cd36ee7491780879d7f4f726c841200a9a168247ce7152c)
+// Source: upstream/packages/types/src/WgpuRenderTexture.ts:22 (sha256:01a9fdb104258e3f918c030e9129a4c3fdaa07a6dac0d7072e6c735ad483cedc)
 #[derive(Clone, Default)]
 pub struct WgpuRenderTexturePool {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub device: Option<crate::OpaqueHostValue>,
     pub destroyed: bool,
     pub effect_targets: WgpuRenderTargetPool,
@@ -54,6 +60,24 @@ pub struct WgpuRenderTexturePool {
 impl PartialEq for WgpuRenderTexturePool {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for WgpuRenderTexturePool {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }
 

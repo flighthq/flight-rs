@@ -6,10 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::{BlendMode, MaterialAlphaMode, PbrExtension, StandardPbrMaterialProperties, Texture};
+use crate::{
+    BlendMode, MaterialAlphaMode, Modifier, PbrExtension, StandardPbrMaterialProperties, Texture,
+};
 use crate::{EntityRuntime, Kind};
 
-// Source: upstream/packages/types/src/StandardMaterial.ts:6 (sha256:0858067e7a3bd9e65383d2aebaeec1e0bd188d0050a34613b912d577700c411d)
+// Source: upstream/packages/types/src/StandardMaterial.ts:6 (sha256:4dbed64a2d11f5658cde46cf9e979c39da179b0a968c1c42fa2ef2edd588a890)
 #[derive(Clone, Default)]
 pub struct StandardMaterial {
     #[doc(hidden)]
@@ -24,8 +26,37 @@ pub struct StandardMaterial {
     pub alpha_mode: MaterialAlphaMode,
     pub blend_mode: BlendMode,
     pub double_sided: bool,
+    pub color: f64,
+    pub thickness: f64,
+    pub tint: f64,
+    pub base_color: f64,
+    pub base_color_map: Option<Texture>,
+    pub ramp: Option<Texture>,
+    pub steps: f64,
+    pub alpha_map: Option<Texture>,
+    pub emissive: f64,
+    pub emissive_map: Option<Texture>,
+    pub emissive_strength: f64,
+    pub metallic: f64,
+    pub metallic_roughness_map: Option<Texture>,
+    pub normal_map: Option<Texture>,
+    pub normal_scale: f64,
+    pub occlusion_map: Option<Texture>,
+    pub occlusion_strength: f64,
+    pub roughness: f64,
+    pub diffuse: f64,
+    pub diffuse_map: Option<Texture>,
+    pub glossiness: f64,
+    pub specular: f64,
+    pub specular_glossiness_map: Option<Texture>,
+    pub modifiers: Vec<Modifier>,
+    pub shininess: f64,
+    pub specular_map: Option<Texture>,
+    pub matcap: Option<Texture>,
     pub extensions: Vec<PbrExtension>,
     pub standard: StandardPbrMaterialProperties,
+    pub far: f64,
+    pub near: f64,
     pub shader_key: String,
     pub textures: Option<Vec<(String, Texture)>>,
     pub uniforms: Option<Vec<(String, crate::FlightUnion2<f64, Vec<f64>>)>>,

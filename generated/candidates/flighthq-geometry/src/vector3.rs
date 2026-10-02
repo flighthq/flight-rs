@@ -6,21 +6,12 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use flighthq_entity::create_entity;
-use flighthq_types::{Vector2Like, Vector3, Vector3Like, Vector4Like};
+use flighthq_entity::{allocate_entity, finish_entity};
+use flighthq_types::{
+    EntityConstruction, Matrix3Like, Vector2Like, Vector3, Vector3Like, Vector4Like,
+};
 
-#[derive(Clone, Default)]
-pub struct SharedStructuralRecord1 {
-    pub __flight_identity: std::sync::Arc<()>,
-    pub m: Vec<f32>,
-}
-impl PartialEq for SharedStructuralRecord1 {
-    fn eq(&self, other: &Self) -> bool {
-        std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
-    }
-}
-
-// Source: upstream/packages/geometry/src/vector3.ts:8 (sha256:5fe62d00246b7c49e5617fa7cc5be133a71fc32cc6d3e7b054dd4582f8066a53)
+// Source: upstream/packages/geometry/src/vector3.ts:15 (sha256:5fe62d00246b7c49e5617fa7cc5be133a71fc32cc6d3e7b054dd4582f8066a53)
 pub fn add_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Like) -> () {
     let ax = a.x;
     let ay = a.y;
@@ -33,7 +24,7 @@ pub fn add_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Like) -> (
     out.z = (az + bz);
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:25 (sha256:bf4d96491c8418f65a6411a14ec8d0d1aa31690ea2b0e34635ef232562b1c0e7)
+// Source: upstream/packages/geometry/src/vector3.ts:32 (sha256:bf4d96491c8418f65a6411a14ec8d0d1aa31690ea2b0e34635ef232562b1c0e7)
 pub fn clamp_vector3(
     out: &mut Vector3Like,
     value: &Vector3Like,
@@ -66,12 +57,12 @@ pub fn clamp_vector3(
     };
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:45 (sha256:939c4a3639ba2af60dba17ce32017319d6081f4b9df15c62d8a551acc5ce6792)
+// Source: upstream/packages/geometry/src/vector3.ts:52 (sha256:939c4a3639ba2af60dba17ce32017319d6081f4b9df15c62d8a551acc5ce6792)
 pub fn clone_vector3(source: &Vector3Like) -> Vector3 {
     return create_vector3(Some(source.x), Some(source.y), Some(source.z));
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:52 (sha256:8963ea3ab5209f818f1f3db1c13cdacdb07db298e93509066fd7c6639ac095ed)
+// Source: upstream/packages/geometry/src/vector3.ts:59 (sha256:8963ea3ab5209f818f1f3db1c13cdacdb07db298e93509066fd7c6639ac095ed)
 pub fn copy_vector3(out: &mut Vector3Like, source: &Vector3Like) -> () {
     let x = source.x;
     let y = source.y;
@@ -81,19 +72,19 @@ pub fn copy_vector3(out: &mut Vector3Like, source: &Vector3Like) -> () {
     out.z = z;
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:82 (sha256:8223d8aa5ec4379f054e164afeac9007b95daae916b591cd6b7a17f0a683f243)
+// Source: upstream/packages/geometry/src/vector3.ts:89 (sha256:228048b0c3e2c1c88498560630331dba82e2a8d6f7ec08e893acfa1f94505fbe)
 pub fn create_vector3(x: Option<f64>, y: Option<f64>, z: Option<f64>) -> Vector3 {
-    return create_entity(Some(Vector3 {
-        __flight_identity: std::sync::Arc::new(()),
-        __flight_entity_snapshot: Default::default(),
-        __flight_entity_runtime: Default::default(),
-        x: (x).unwrap_or(0.0_f64),
-        y: (y).unwrap_or(0.0_f64),
-        z: (z).unwrap_or(0.0_f64),
-    }));
+    let mut out = allocate_entity();
+    initialize_vector3(
+        (out).clone(),
+        (x).unwrap_or(0.0_f64),
+        (y).unwrap_or(0.0_f64),
+        (z).unwrap_or(0.0_f64),
+    );
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:93 (sha256:0693b3d9077e187d51772f4871aaf17cf69c85560d6ac66c73320d3e834c4894)
+// Source: upstream/packages/geometry/src/vector3.ts:102 (sha256:0693b3d9077e187d51772f4871aaf17cf69c85560d6ac66c73320d3e834c4894)
 pub fn create_vector3_from_spherical(radius: f64, theta: f64, phi: f64) -> Vector3 {
     let mut out = create_vector3(None, None, None);
     {
@@ -105,7 +96,7 @@ pub fn create_vector3_from_spherical(radius: f64, theta: f64, phi: f64) -> Vecto
     return out;
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:104 (sha256:6d0843add672a56ea17f712227f5da6ed773302c18e2c02b01f644e033b0890f)
+// Source: upstream/packages/geometry/src/vector3.ts:113 (sha256:6d0843add672a56ea17f712227f5da6ed773302c18e2c02b01f644e033b0890f)
 pub fn cross_vector3(out: &mut Vector3Like, source: &Vector3Like, other: &Vector3Like) -> () {
     let x = ((source.y * other.z) - (source.z * other.y));
     let y = ((source.z * other.x) - (source.x * other.z));
@@ -115,7 +106,7 @@ pub fn cross_vector3(out: &mut Vector3Like, source: &Vector3Like, other: &Vector
     out.z = z;
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:120 (sha256:b3bcfc1e705823613d7850a956318fe9553349e29cce236462ee298c2d7850ac)
+// Source: upstream/packages/geometry/src/vector3.ts:129 (sha256:b3bcfc1e705823613d7850a956318fe9553349e29cce236462ee298c2d7850ac)
 pub fn divide_vector3(out: &mut Vector3Like, source: &Vector3Like, divisor: &Vector3Like) -> () {
     let sx = source.x;
     let sy = source.y;
@@ -128,7 +119,7 @@ pub fn divide_vector3(out: &mut Vector3Like, source: &Vector3Like, divisor: &Vec
     out.z = if (dz != 0.0_f64) { (sz / dz) } else { 0.0_f64 };
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:132 (sha256:8e9612204055fe8e93d34e0628b717213384c56cebd528b2a43de5848832ab0a)
+// Source: upstream/packages/geometry/src/vector3.ts:141 (sha256:8e9612204055fe8e93d34e0628b717213384c56cebd528b2a43de5848832ab0a)
 pub fn equals_vector3(a: &Option<Vector3Like>, b: &Option<Vector3Like>) -> bool {
     if ((a).is_none()) || ((b).is_none()) {
         return false;
@@ -139,7 +130,7 @@ pub fn equals_vector3(a: &Option<Vector3Like>, b: &Option<Vector3Like>) -> bool 
             && (a.as_ref().unwrap().z == b.as_ref().unwrap().z));
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:147 (sha256:1ccdc2a834984cecd4db6ae9862e0440e99e9a3eebb5f0e5541c44bcf7ce2130)
+// Source: upstream/packages/geometry/src/vector3.ts:156 (sha256:1ccdc2a834984cecd4db6ae9862e0440e99e9a3eebb5f0e5541c44bcf7ce2130)
 pub fn get_vector3_angle_between(a: &Vector3Like, b: &Vector3Like) -> f64 {
     let la = get_vector3_length(a);
     let lb = get_vector3_length(b);
@@ -150,7 +141,7 @@ pub fn get_vector3_angle_between(a: &Vector3Like, b: &Vector3Like) -> f64 {
     return ((1.0_f64).min((-1.0_f64).max(_dot))).acos();
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:161 (sha256:b19b75a68d9d8153567980a9f68d11b9327d437829628275c7b9cde9fb4ca9a6)
+// Source: upstream/packages/geometry/src/vector3.ts:170 (sha256:b19b75a68d9d8153567980a9f68d11b9327d437829628275c7b9cde9fb4ca9a6)
 pub fn get_vector3_distance(a: &Vector3Like, b: &Vector3Like) -> f64 {
     let x: f64 = (b.x - a.x);
     let y: f64 = (b.y - a.y);
@@ -158,7 +149,7 @@ pub fn get_vector3_distance(a: &Vector3Like, b: &Vector3Like) -> f64 {
     return (((x).powf(2.0_f64) + (y).powf(2.0_f64)) + (z).powf(2.0_f64)).sqrt();
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:174 (sha256:1978e7fd9d447217db792ad29d5458a73aba0cce87854cd2cdc410b7312c62d6)
+// Source: upstream/packages/geometry/src/vector3.ts:183 (sha256:1978e7fd9d447217db792ad29d5458a73aba0cce87854cd2cdc410b7312c62d6)
 pub fn get_vector3_distance_squared(a: &Vector3Like, b: &Vector3Like) -> f64 {
     let x: f64 = (b.x - a.x);
     let y: f64 = (b.y - a.y);
@@ -166,23 +157,23 @@ pub fn get_vector3_distance_squared(a: &Vector3Like, b: &Vector3Like) -> f64 {
     return (((x).powf(2.0_f64) + (y).powf(2.0_f64)) + (z).powf(2.0_f64));
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:189 (sha256:6a948fafca3f83cb254f3eee87de6ad8764b23b4c4f50e456f54938cb12524f5)
+// Source: upstream/packages/geometry/src/vector3.ts:198 (sha256:6a948fafca3f83cb254f3eee87de6ad8764b23b4c4f50e456f54938cb12524f5)
 pub fn get_vector3_dot(a: &Vector3Like, b: &Vector3Like) -> f64 {
     return (((a.x * b.x) + (a.y * b.y)) + (a.z * b.z));
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:198 (sha256:b9807669c3ed486c269c818c5ae150f82f5adb4908ed74e8c715a4be612c0525)
+// Source: upstream/packages/geometry/src/vector3.ts:207 (sha256:b9807669c3ed486c269c818c5ae150f82f5adb4908ed74e8c715a4be612c0525)
 pub fn get_vector3_length(source: &Vector3Like) -> f64 {
     return (((source.x).powf(2.0_f64) + (source.y).powf(2.0_f64)) + (source.z).powf(2.0_f64))
         .sqrt();
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:208 (sha256:32cb6a673ac4dc436a693cf68bd4d8090ff40b3f95492524f65fd9ca2d7bbb63)
+// Source: upstream/packages/geometry/src/vector3.ts:217 (sha256:32cb6a673ac4dc436a693cf68bd4d8090ff40b3f95492524f65fd9ca2d7bbb63)
 pub fn get_vector3_length_squared(source: &Vector3Like) -> f64 {
     return (((source.x).powf(2.0_f64) + (source.y).powf(2.0_f64)) + (source.z).powf(2.0_f64));
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:220 (sha256:7f3c81893b6ad5a81d00e34d33f5b997b882d5b533d5a09ab2c4f15a571f247f)
+// Source: upstream/packages/geometry/src/vector3.ts:229 (sha256:7f3c81893b6ad5a81d00e34d33f5b997b882d5b533d5a09ab2c4f15a571f247f)
 pub fn get_vector3_spherical(out: &mut Vector3Like, source: &Vector3Like) -> () {
     let x = source.x;
     let y = source.y;
@@ -199,7 +190,14 @@ pub fn get_vector3_spherical(out: &mut Vector3Like, source: &Vector3Like) -> () 
     out.z = (z).atan2(x);
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:242 (sha256:b0685a1295ac5863cd07fec590b305f9f95c57f336c9cc3bc2482c2d78e6d5c7)
+// Source: upstream/packages/geometry/src/vector3.ts:245 (sha256:bc6a80b938a087e6bd31046efa2f26e2ef75696e544b9a881b5c4131597a22d0)
+pub fn initialize_vector3(out: EntityConstruction<Vector3>, x: f64, y: f64, z: f64) -> () {
+    crate::host_set("host.x", x);
+    crate::host_set("host.y", y);
+    crate::host_set("host.z", z);
+}
+
+// Source: upstream/packages/geometry/src/vector3.ts:257 (sha256:b0685a1295ac5863cd07fec590b305f9f95c57f336c9cc3bc2482c2d78e6d5c7)
 pub fn interpolate_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Like, t: f64) -> () {
     let ax = a.x;
     let ay = a.y;
@@ -212,7 +210,7 @@ pub fn interpolate_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Li
     out.z = (az + (t * (bz - az)));
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:264 (sha256:9eb1fd9162f3c7e664ef515ea56456983a8ec3e1490b36afda67035a9b2e7fe0)
+// Source: upstream/packages/geometry/src/vector3.ts:279 (sha256:9eb1fd9162f3c7e664ef515ea56456983a8ec3e1490b36afda67035a9b2e7fe0)
 pub fn max_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Like) -> () {
     let ax = a.x;
     let ay = a.y;
@@ -225,7 +223,7 @@ pub fn max_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Like) -> (
     out.z = if (az > bz) { az } else { bz };
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:281 (sha256:d0c45eb37108881913e1bb45504ea9b056ccd23c56e446bfaf5cc435f7523501)
+// Source: upstream/packages/geometry/src/vector3.ts:296 (sha256:d0c45eb37108881913e1bb45504ea9b056ccd23c56e446bfaf5cc435f7523501)
 pub fn min_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Like) -> () {
     let ax = a.x;
     let ay = a.y;
@@ -238,7 +236,7 @@ pub fn min_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Like) -> (
     out.z = if (az < bz) { az } else { bz };
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:298 (sha256:d41ed8ac42d882c4e5e6f56b8e289ae333be5a699ad82fbe6aad3fa4f554f509)
+// Source: upstream/packages/geometry/src/vector3.ts:313 (sha256:d41ed8ac42d882c4e5e6f56b8e289ae333be5a699ad82fbe6aad3fa4f554f509)
 pub fn multiply_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Like) -> () {
     let ax = a.x;
     let ay = a.y;
@@ -251,14 +249,14 @@ pub fn multiply_vector3(out: &mut Vector3Like, a: &Vector3Like, b: &Vector3Like)
     out.z = (az * bz);
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:317 (sha256:aba72e090a837a6ea12bbe18871b17e610c285c023b0df53d930eefe7ebc7cf4)
+// Source: upstream/packages/geometry/src/vector3.ts:332 (sha256:aba72e090a837a6ea12bbe18871b17e610c285c023b0df53d930eefe7ebc7cf4)
 pub fn near_equals_vector3(a: &Vector3Like, b: &Vector3Like, tolerance: Option<f64>) -> bool {
     let tolerance = tolerance.unwrap_or(0.000001_f64);
     return (((a.x - b.x).abs() < tolerance) && ((a.y - b.y).abs() < tolerance))
         && ((a.z - b.z).abs() < tolerance);
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:330 (sha256:0833032826a81644834fe49617c8f71056293fe91b5ff9a56c346401117e964f)
+// Source: upstream/packages/geometry/src/vector3.ts:345 (sha256:0833032826a81644834fe49617c8f71056293fe91b5ff9a56c346401117e964f)
 pub fn negate_vector3(out: &mut Vector3Like, source: &Vector3Like) -> () {
     let x = source.x;
     let y = source.y;
@@ -268,7 +266,7 @@ pub fn negate_vector3(out: &mut Vector3Like, source: &Vector3Like) -> () {
     out.z = (z * (-1.0_f64));
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:345 (sha256:c74ad2d35f5312bcad00637485ad57ad4803c9039ee79c55421aff9bdde8d1bc)
+// Source: upstream/packages/geometry/src/vector3.ts:360 (sha256:c74ad2d35f5312bcad00637485ad57ad4803c9039ee79c55421aff9bdde8d1bc)
 pub fn normalize_vector3(out: &mut Vector3Like, source: &Vector3Like) -> f64 {
     let x = source.x;
     let y = source.y;
@@ -286,7 +284,7 @@ pub fn normalize_vector3(out: &mut Vector3Like, source: &Vector3Like) -> f64 {
     return l;
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:367 (sha256:e52cfc014ed3c98fcb9dbb03fda3d3b063c3624d4c9a5a642a70bd93c643961b)
+// Source: upstream/packages/geometry/src/vector3.ts:382 (sha256:e52cfc014ed3c98fcb9dbb03fda3d3b063c3624d4c9a5a642a70bd93c643961b)
 pub fn offset_vector3(
     out: &mut Vector3Like,
     source: &Vector3Like,
@@ -302,13 +300,13 @@ pub fn offset_vector3(
     out.z = (z + dz);
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:386 (sha256:0204923bff962a4a208e01a80a418aeae0ff2badfb1ddcee50fa1dfc2de5854c)
+// Source: upstream/packages/geometry/src/vector3.ts:401 (sha256:0204923bff962a4a208e01a80a418aeae0ff2badfb1ddcee50fa1dfc2de5854c)
 pub fn project_vector3(out: &mut Vector2Like, source: &Vector3Like) -> () {
     out.x = (source.x / source.z);
     out.y = (source.y / source.z);
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:399 (sha256:adea76822f132986d6c88e4e5b9835a326a781e3a5727a28b366ebbb95155391)
+// Source: upstream/packages/geometry/src/vector3.ts:414 (sha256:adea76822f132986d6c88e4e5b9835a326a781e3a5727a28b366ebbb95155391)
 pub fn reflect_vector3(out: &mut Vector3Like, incident: &Vector3Like, normal: &Vector3Like) -> () {
     let ix = incident.x;
     let iy = incident.y;
@@ -322,7 +320,7 @@ pub fn reflect_vector3(out: &mut Vector3Like, incident: &Vector3Like, normal: &V
     out.z = (iz - (two_dot * nz));
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:416 (sha256:0bdb0be4cb115a6d51db4bcf644427d2af85f22f083f78a9bd4e7a56a006437a)
+// Source: upstream/packages/geometry/src/vector3.ts:431 (sha256:0bdb0be4cb115a6d51db4bcf644427d2af85f22f083f78a9bd4e7a56a006437a)
 pub fn scale_vector3(out: &mut Vector3Like, source: &Vector3Like, scalar: f64) -> () {
     let x = source.x;
     let y = source.y;
@@ -332,21 +330,21 @@ pub fn scale_vector3(out: &mut Vector3Like, source: &Vector3Like, scalar: f64) -
     out.z = (z * scalar);
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:428 (sha256:f80a68021d6ca5a57ec8a7e4bab5f0464946aa3ee18b4734823731f72204d30f)
+// Source: upstream/packages/geometry/src/vector3.ts:443 (sha256:f80a68021d6ca5a57ec8a7e4bab5f0464946aa3ee18b4734823731f72204d30f)
 pub fn set_vector3(out: &mut Vector3Like, x: f64, y: f64, z: f64) -> () {
     out.x = x;
     out.y = y;
     out.z = z;
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:437 (sha256:cee3f379b1f03b7a671eef54d39f11474d3c7ec2d015b2b11425a3f56b1bdd47)
+// Source: upstream/packages/geometry/src/vector3.ts:452 (sha256:cee3f379b1f03b7a671eef54d39f11474d3c7ec2d015b2b11425a3f56b1bdd47)
 pub fn set_vector3_from_float32_array(out: &mut Vector3Like, offset: f64, source: &Vec<f32>) -> () {
     out.x = (source[offset as usize] as f64);
     out.y = (source[(offset + 1.0_f64) as usize] as f64);
     out.z = (source[(offset + 2.0_f64) as usize] as f64);
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:447 (sha256:94e8f81d0cc311a17786d44b95923eb528a3a93eee66779a4f2ebad7a61e3e8a)
+// Source: upstream/packages/geometry/src/vector3.ts:462 (sha256:94e8f81d0cc311a17786d44b95923eb528a3a93eee66779a4f2ebad7a61e3e8a)
 pub fn set_vector3_from_spherical(out: &mut Vector3Like, radius: f64, theta: f64, phi: f64) -> () {
     let sin_theta = (theta).sin();
     out.x = ((radius * sin_theta) * (phi).cos());
@@ -354,7 +352,7 @@ pub fn set_vector3_from_spherical(out: &mut Vector3Like, radius: f64, theta: f64
     out.z = ((radius * sin_theta) * (phi).sin());
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:461 (sha256:5c3f5a6bb34add3c8590043bc41490e298c744933384a0382fe0437b21f82003)
+// Source: upstream/packages/geometry/src/vector3.ts:476 (sha256:5c3f5a6bb34add3c8590043bc41490e298c744933384a0382fe0437b21f82003)
 pub fn set_vector3_from_vector4(out: &mut Vector3Like, source: &Vector4Like) -> () {
     let x = source.x;
     let y = source.y;
@@ -364,7 +362,7 @@ pub fn set_vector3_from_vector4(out: &mut Vector3Like, source: &Vector4Like) -> 
     out.z = z;
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:474 (sha256:4040ccadb442b00e624f5d3a6a9f577f9e9478320b87a6fd9c694e5b6ec412f1)
+// Source: upstream/packages/geometry/src/vector3.ts:489 (sha256:4040ccadb442b00e624f5d3a6a9f577f9e9478320b87a6fd9c694e5b6ec412f1)
 pub fn subtract_vector3(out: &mut Vector3Like, source: &Vector3Like, other: &Vector3Like) -> () {
     let sx = source.x;
     let sy = source.y;
@@ -377,11 +375,11 @@ pub fn subtract_vector3(out: &mut Vector3Like, source: &Vector3Like, other: &Vec
     out.z = (sz - oz);
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:492 (sha256:f50576dcfa1a61bb5656385e925c57f235594b69e15866cf37f65adbd8fd88df)
+// Source: upstream/packages/geometry/src/vector3.ts:507 (sha256:d5a8bb36a8693057d0210088db49651dba1e69622d86f448a3a9e499ad688d26)
 pub fn transform_vector3_by_matrix3(
     out: &mut Vector3Like,
     source: &Vector3Like,
-    matrix: &SharedStructuralRecord1,
+    matrix: &Matrix3Like,
 ) -> () {
     let x = source.x;
     let y = source.y;
@@ -397,21 +395,21 @@ pub fn transform_vector3_by_matrix3(
         + ((matrix.m[8.0_f64 as usize] as f64) * z));
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:509 (sha256:fa4be79da40a17d3e76854a8a5b940f925e50ee9e815762b3b6d1a7b8126d6a3)
+// Source: upstream/packages/geometry/src/vector3.ts:524 (sha256:fa4be79da40a17d3e76854a8a5b940f925e50ee9e815762b3b6d1a7b8126d6a3)
 pub fn write_vector3_to_float32_array(out: &mut Vec<f32>, offset: f64, source: &Vector3Like) -> () {
     out[offset as usize] = (source.x) as f32;
     out[(offset + 1.0_f64) as usize] = (source.y) as f32;
     out[(offset + 2.0_f64) as usize] = (source.z) as f32;
 }
 
-// Source: upstream/packages/geometry/src/vector3.ts:515 (sha256:e3c15b39d55a065fed8f1e1d6a0adb07d8d414d0363170b61e3f7e167f21ca8e)
+// Source: upstream/packages/geometry/src/vector3.ts:530 (sha256:e3c15b39d55a065fed8f1e1d6a0adb07d8d414d0363170b61e3f7e167f21ca8e)
 pub static VECTOR3_X_AXIS: std::sync::LazyLock<Vector3> =
     std::sync::LazyLock::new(|| create_vector3(Some(1.0_f64), Some(0.0_f64), Some(0.0_f64)));
 
-// Source: upstream/packages/geometry/src/vector3.ts:516 (sha256:e780be74616bd91e25953cb3df5522d158958ad2cb728d1eb75f2e3ac89900d2)
+// Source: upstream/packages/geometry/src/vector3.ts:531 (sha256:e780be74616bd91e25953cb3df5522d158958ad2cb728d1eb75f2e3ac89900d2)
 pub static VECTOR3_Y_AXIS: std::sync::LazyLock<Vector3> =
     std::sync::LazyLock::new(|| create_vector3(Some(0.0_f64), Some(1.0_f64), Some(0.0_f64)));
 
-// Source: upstream/packages/geometry/src/vector3.ts:517 (sha256:668bf65a765394262a10a59681f1cd79fc84dfa3741547bdddc82f7b6335c59f)
+// Source: upstream/packages/geometry/src/vector3.ts:532 (sha256:668bf65a765394262a10a59681f1cd79fc84dfa3741547bdddc82f7b6335c59f)
 pub static VECTOR3_Z_AXIS: std::sync::LazyLock<Vector3> =
     std::sync::LazyLock::new(|| create_vector3(Some(0.0_f64), Some(0.0_f64), Some(1.0_f64)));

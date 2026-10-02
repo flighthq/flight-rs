@@ -9,7 +9,7 @@
 // Source: upstream/packages/types/src/GlClassicProgram.ts:6 (sha256:da8c86a67466de62e68689a19c47b1ae7903c06c2335c6065e75d25da995a406)
 pub type GlClassicLightingModel = String;
 
-// Source: upstream/packages/types/src/GlClassicProgram.ts:13 (sha256:7b94d617f1c9a7a03d46263f6678d58640d4118d76692005ef73db1a217582f4)
+// Source: upstream/packages/types/src/GlClassicProgram.ts:13 (sha256:1f6f347f93e512e38d05e9e3f7093adc2102f46319c4f8156a2ecf73ba8a1b0b)
 #[derive(Clone, Default)]
 pub struct GlClassicDefineKey {
     #[doc(hidden)]
@@ -19,6 +19,7 @@ pub struct GlClassicDefineKey {
     pub has_color_matrix: Option<bool>,
     pub has_alpha_map: bool,
     pub has_diffuse_map: bool,
+    pub has_instances: Option<bool>,
     pub has_normal_map: bool,
     pub has_skin: Option<bool>,
     pub has_specular_map: bool,
@@ -31,7 +32,7 @@ impl PartialEq for GlClassicDefineKey {
     }
 }
 
-// Source: upstream/packages/types/src/GlClassicProgram.ts:38 (sha256:b20947fd9184317c7f029c89d578561437626fa7ec03965c083784006319e1ec)
+// Source: upstream/packages/types/src/GlClassicProgram.ts:39 (sha256:b20947fd9184317c7f029c89d578561437626fa7ec03965c083784006319e1ec)
 #[derive(Clone, Default)]
 pub struct GlClassicProgram {
     #[doc(hidden)]
@@ -46,6 +47,8 @@ pub struct GlClassicProgram {
     pub loc_object_alpha: Option<crate::OpaqueHostValue>,
     pub loc_alpha_is_coverage: Option<crate::OpaqueHostValue>,
     pub loc_joint_texture: Option<crate::OpaqueHostValue>,
+    pub loc_instance_palette: Option<crate::OpaqueHostValue>,
+    pub loc_instance_color_palette: Option<crate::OpaqueHostValue>,
     pub loc_joint_normal_texture: Option<crate::OpaqueHostValue>,
     pub loc_model: Option<crate::OpaqueHostValue>,
     pub loc_normal_matrix: Option<crate::OpaqueHostValue>,

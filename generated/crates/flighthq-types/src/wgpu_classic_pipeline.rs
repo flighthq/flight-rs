@@ -6,6 +6,8 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use crate::EntityRuntime;
+
 // Source: upstream/packages/types/src/WgpuClassicPipeline.ts:6 (sha256:af5eb146a079d945bf08d07c1bd3a5e32598423ed6bdac412f5af9cd9031e60c)
 pub type WgpuClassicLightingModel = String;
 
@@ -14,6 +16,10 @@ pub type WgpuClassicLightingModel = String;
 pub struct WgpuClassicPipeline {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
+    #[doc(hidden)]
+    pub __flight_entity_runtime: std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>>,
+    #[doc(hidden)]
+    pub __flight_entity_snapshot: Option<std::sync::Arc<dyn std::any::Any + Send + Sync>>,
     pub has_ibl_group: bool,
     pub has_pbr_sample_group: bool,
     pub has_shadow_group: bool,
@@ -24,6 +30,24 @@ pub struct WgpuClassicPipeline {
 impl PartialEq for WgpuClassicPipeline {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
+    }
+}
+impl crate::FlightEntity for WgpuClassicPipeline {
+    fn __flight_entity_runtime(
+        &self,
+    ) -> &std::sync::Arc<std::sync::Mutex<Option<crate::EntityRuntime>>> {
+        &self.__flight_entity_runtime
+    }
+    fn __flight_entity_snapshot(&self) -> &Option<std::sync::Arc<dyn std::any::Any + Send + Sync>> {
+        &self.__flight_entity_snapshot
+    }
+    fn __flight_fresh_clone(&self) -> Self {
+        let mut cloned = self.clone();
+        cloned.__flight_identity = std::sync::Arc::new(());
+        cloned.__flight_entity_runtime = std::sync::Arc::new(std::sync::Mutex::new(
+            self.__flight_entity_runtime.lock().unwrap().clone(),
+        ));
+        cloned
     }
 }
 

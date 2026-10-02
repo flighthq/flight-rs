@@ -6,17 +6,19 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::GlRenderState;
+use crate::{GlRenderState, Signal};
 
-// Source: upstream/packages/types/src/GlContextLoss.ts:2 (sha256:b2fb6a5b0a8d1a5b9676900f192c81d468570c3bc80cf710456d8644d925220e)
-#[derive(Clone, Default)]
+// Source: upstream/packages/types/src/GlContextLoss.ts:4 (sha256:9451346ef1929d148aaca5590727f86ae727dbc235328d573e2dd88d5808bf86)
+#[derive(Clone)]
 pub struct GlContextLossSignals {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub on_gl_context_lost:
-        Vec<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>>,
-    pub on_gl_context_restored:
-        Vec<std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>>,
+    pub on_gl_context_lost: Signal<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>,
+    >,
+    pub on_gl_context_restored: Signal<
+        std::sync::Arc<std::sync::Mutex<Box<dyn FnMut(GlRenderState) -> () + Send + 'static>>>,
+    >,
 }
 impl PartialEq for GlContextLossSignals {
     fn eq(&self, other: &Self) -> bool {

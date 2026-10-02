@@ -6,7 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-// Source: upstream/packages/types/src/AppearanceFlags.ts:1 (sha256:226f103f8f6aff1c6397b44cfc346c3492eca4b7458c9a0739d4ded39022217c)
+// Source: upstream/packages/types/src/AppearanceFlags.ts:1 (sha256:bf7a8a24a9c26b746bdb36d1cd981cd68c9408c0266e76f6c3467e943ccc0d44)
 #[derive(Clone, Copy, Debug, Default, Eq, Ord, PartialEq, PartialOrd)]
 #[repr(transparent)]
 pub struct AppearanceFlags(pub u32);
@@ -26,9 +26,6 @@ impl AppearanceFlags {
 
     #[allow(non_upper_case_globals)]
     pub const Clip: Self = Self(8_u32);
-
-    #[allow(non_upper_case_globals)]
-    pub const Scale9Grid: Self = Self(16_u32);
 
     #[allow(non_upper_case_globals)]
     pub const Any: Self = Self(2147483648_u32);

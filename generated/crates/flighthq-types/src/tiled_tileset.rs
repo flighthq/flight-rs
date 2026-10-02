@@ -40,7 +40,10 @@ impl PartialEq for TiledTilesetTile {
     }
 }
 
-// Source: upstream/packages/types/src/TiledTileset.ts:29 (sha256:f7f49b1c5693d038732edcc23550418414f1b7bca0501669372a4e0d11f212eb)
+// Source: upstream/packages/types/src/TiledTileset.ts:32 (sha256:2c0992b4d79c6ffe0bd0f9bc8bc77abe0b00e8ae42e425f3d6e299d7f9a00649)
+pub type TiledObjectAlignment = String;
+
+// Source: upstream/packages/types/src/TiledTileset.ts:44 (sha256:6367f6638f98bc63f3ca4933b500bcb375a789a030e2c22aeba97f1c44e51dcf)
 #[derive(Clone, Default)]
 pub struct TiledTileset {
     #[doc(hidden)]
@@ -55,6 +58,9 @@ pub struct TiledTileset {
     pub image_height: f64,
     pub margin: f64,
     pub spacing: f64,
+    pub tile_offset_x: f64,
+    pub tile_offset_y: f64,
+    pub object_alignment: TiledObjectAlignment,
     pub tiles: Vec<TiledTilesetTile>,
     pub properties: Vec<TiledProperty>,
 }
@@ -64,7 +70,7 @@ impl PartialEq for TiledTileset {
     }
 }
 
-// Source: upstream/packages/types/src/TiledTileset.ts:48 (sha256:240a78b98b30601002a1f3bfa62be8394bd11f25ff22d798f7c1ac216d01ba3b)
+// Source: upstream/packages/types/src/TiledTileset.ts:70 (sha256:240a78b98b30601002a1f3bfa62be8394bd11f25ff22d798f7c1ac216d01ba3b)
 #[derive(Clone, Default)]
 pub struct TiledTilesetRef {
     #[doc(hidden)]

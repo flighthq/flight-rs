@@ -6,14 +6,22 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
-use crate::Scene3DGraphSyncPolicy;
+use crate::{
+    CanvasShapeCommand, DomTextureResolver, EffectPaddingResolver, Kind, NodeRenderer,
+    Scene3DGraphSyncPolicy, ShapeRasterizer, StrokeTessellator,
+};
 
-// Source: upstream/packages/types/src/DomRenderOptions.ts:2 (sha256:dfec8f6f7ff8de47ae36a1d477b28bd8b3cf0638de999846b8917b9807b23276)
+// Source: upstream/packages/types/src/DomRenderOptions.ts:8 (sha256:1b0eaf263c201b2ff27586a52f9310005fd499f8562d759966dd5f785742ce95)
 #[derive(Clone, Default)]
 pub struct DomRenderOptions {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
-    pub background_color: Option<f64>,
+    pub canvas_shape_commands: Option<Vec<(Kind, CanvasShapeCommand<crate::OpaqueHostValue>)>>,
+    pub effect_padding_resolvers: Option<Vec<(Kind, EffectPaddingResolver)>>,
+    pub node_renderers: Option<Vec<(Kind, NodeRenderer)>>,
+    pub shape_rasterizer: Option<ShapeRasterizer>,
+    pub stroke_tessellator: Option<StrokeTessellator>,
+    pub texture_resolvers: Option<Vec<(Kind, DomTextureResolver)>>,
     pub image_smoothing_enabled: Option<bool>,
     pub pixel_ratio: Option<f64>,
     pub round_pixels: Option<bool>,

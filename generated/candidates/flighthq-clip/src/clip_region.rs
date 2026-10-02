@@ -6,6 +6,7 @@
 #![allow(unused_mut)]
 #![allow(unused_parens)]
 
+use flighthq_entity::{allocate_entity, finish_entity};
 use flighthq_geometry::{
     clone_rectangle, contains_rectangle_point_xy, copy_rectangle, create_rectangle,
     encloses_rectangle, intersects_rectangle, is_empty_rectangle, matrix_transform_rectangle,
@@ -16,7 +17,9 @@ use flighthq_path::{
     append_path_cubic_curve_to, append_path_line_to, append_path_move_to, create_path, flatten_path,
 };
 use flighthq_types::{
-    ClipRegion, ClipRegionReleaseGuard, MatrixLike, Path, PathWinding, RectangleLike,
+    ClipRegion, ClipRegionContoursExplanation, ClipRegionContoursGuard, ClipRegionExplanation,
+    ClipRegionReleaseGuard, ClipRegionUseGuard, EntityConstruction, MatrixLike, Path, PathWinding,
+    RectangleLike,
 };
 
 #[inline]
@@ -32,7 +35,7 @@ fn __flight_js_to_i32(value: f64) -> i32 {
     __flight_js_to_u32(value) as i32
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:32 (sha256:9bd8a98dcb93e1f3dafd093011d6275b352395814339f972aff4b903dff5fe15)
+// Source: upstream/packages/clip/src/clipRegion.ts:38 (sha256:9bd8a98dcb93e1f3dafd093011d6275b352395814339f972aff4b903dff5fe15)
 pub fn acquire_clip_region() -> ClipRegion {
     let mut region = CLIP_REGION_POOL.lock().unwrap().pop();
     if (region).is_some() {
@@ -48,8 +51,45 @@ pub fn acquire_clip_region() -> ClipRegion {
     return make_empty_clip_region();
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:50 (sha256:7a59178716662e1a52c5113a1b6c898fa61193e9a0b969c40b3435c1f46024d8)
+// Source: upstream/packages/clip/src/clipRegion.ts:55 (sha256:37efcb34759af9ad15116d3826f75e110f7f0783bcf3cbb18733a079f6f376af)
+pub fn clip_region_contains_clip_region(a: &ClipRegion, b: &ClipRegion) -> bool {
+    guard_clip_region_use(a);
+    guard_clip_region_use(b);
+    return encloses_rectangle(
+        &{
+            let __flight_source = &(a.rect);
+            RectangleLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
+                height: __flight_source.height,
+                width: __flight_source.width,
+                x: __flight_source.x,
+                y: __flight_source.y,
+            }
+        },
+        &{
+            let __flight_source = &(b.rect);
+            RectangleLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
+                height: __flight_source.height,
+                width: __flight_source.width,
+                x: __flight_source.x,
+                y: __flight_source.y,
+            }
+        },
+    );
+}
+
+// Source: upstream/packages/clip/src/clipRegion.ts:64 (sha256:597f50dc209a5ae77ec598879c15d6b0999b9e70e8316a94b2777b2cf0ec66be)
 pub fn clip_region_contains_point(clip: &ClipRegion, x: f64, y: f64) -> bool {
+    guard_clip_region_use(clip);
     if (!contains_rectangle_point_xy(
         &{
             let __flight_source = &(clip.rect);
@@ -81,8 +121,9 @@ pub fn clip_region_contains_point(clip: &ClipRegion, x: f64, y: f64) -> bool {
     );
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:58 (sha256:bc05f50cfaa45bc8f6657c3c73ed5b0edbec840f524721dc704249f233b929e9)
+// Source: upstream/packages/clip/src/clipRegion.ts:73 (sha256:96c2ada5ca6aacc60e33e7a80f750878b0ab523ce427893f6444afffc0d5a2cf)
 pub fn clip_region_contains_rectangle(clip: &ClipRegion, rectangle: &RectangleLike) -> bool {
+    guard_clip_region_use(clip);
     return encloses_rectangle(
         &{
             let __flight_source = &(clip.rect);
@@ -102,8 +143,45 @@ pub fn clip_region_contains_rectangle(clip: &ClipRegion, rectangle: &RectangleLi
     );
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:64 (sha256:8c3b33804cc8b658c651dd137e601da6ea8f8039849f22478253edccc50c7e70)
+// Source: upstream/packages/clip/src/clipRegion.ts:80 (sha256:a07e0b4f095ff2b95035ae1f173aac0192334e6fb1737f9982b3454206b907d8)
+pub fn clip_region_intersects_clip_region(a: &ClipRegion, b: &ClipRegion) -> bool {
+    guard_clip_region_use(a);
+    guard_clip_region_use(b);
+    return intersects_rectangle(
+        &{
+            let __flight_source = &(a.rect);
+            RectangleLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
+                height: __flight_source.height,
+                width: __flight_source.width,
+                x: __flight_source.x,
+                y: __flight_source.y,
+            }
+        },
+        &{
+            let __flight_source = &(b.rect);
+            RectangleLike {
+                __flight_identity: std::sync::Arc::clone(&__flight_source.__flight_identity),
+                __flight_entity_runtime: std::sync::Arc::clone(
+                    &__flight_source.__flight_entity_runtime,
+                ),
+                __flight_entity_snapshot: __flight_source.__flight_entity_snapshot.clone(),
+                height: __flight_source.height,
+                width: __flight_source.width,
+                x: __flight_source.x,
+                y: __flight_source.y,
+            }
+        },
+    );
+}
+
+// Source: upstream/packages/clip/src/clipRegion.ts:88 (sha256:dc137977055cf0d69eb543b43555861783f1b4fbb0f48a6c4f6a627fddf187aa)
 pub fn clip_region_intersects_rectangle(clip: &ClipRegion, rectangle: &RectangleLike) -> bool {
+    guard_clip_region_use(clip);
     return intersects_rectangle(
         &{
             let __flight_source = &(clip.rect);
@@ -123,8 +201,9 @@ pub fn clip_region_intersects_rectangle(clip: &ClipRegion, rectangle: &Rectangle
     );
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:70 (sha256:ab7a1eeb04d49249d5e43a72e3c7a1223ef820a46c339e72919d69223b3e2fa2)
+// Source: upstream/packages/clip/src/clipRegion.ts:95 (sha256:5502b2d5a32725d0c6950c7eddc72ee9bdfeb3ba4d6895ed9f2cc5648228c06a)
 pub fn clone_clip_region(clip: &ClipRegion) -> ClipRegion {
+    guard_clip_region_use(clip);
     let rect = clone_rectangle(&{
         let __flight_source = &(clip.rect);
         RectangleLike {
@@ -150,17 +229,18 @@ pub fn clone_clip_region(clip: &ClipRegion) -> ClipRegion {
                 .collect::<Vec<_>>(),
         )
     };
-    return ClipRegion {
-        __flight_identity: std::sync::Arc::new(()),
-        contours: (contours).clone(),
-        rect: (rect).clone(),
-        version: clip.version,
-        winding: (clip.winding).clone(),
-    };
+    let mut out = allocate_entity();
+    crate::host_set("host.contours", contours);
+    crate::host_set("host.rect", rect);
+    crate::host_set("host.version", clip.version);
+    crate::host_set("host.winding", (clip.winding).clone());
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:78 (sha256:07f4b3d6d9b05a2187cea6ce26b2d21531d312237d680078415f155fa47ab403)
+// Source: upstream/packages/clip/src/clipRegion.ts:109 (sha256:278ff24c24ab628b6f5d6c2d3b9907ee5acaccc22de0cb20e8157e19563d0b3e)
 pub fn copy_clip_region(out: &mut ClipRegion, source: &ClipRegion) -> () {
+    guard_clip_region_use(out);
+    guard_clip_region_use(source);
     if ({
         let __flight_portable_source = (*out).clone();
         crate::FlightValue::Record({
@@ -322,7 +402,7 @@ pub fn copy_clip_region(out: &mut ClipRegion, source: &ClipRegion) -> () {
         (__flight_js_to_u32((out.version + 1.0_f64)) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:87 (sha256:64e74b5706330628f76ed802a209caab6bee71a91ca765f58220e71b166da818)
+// Source: upstream/packages/clip/src/clipRegion.ts:120 (sha256:64e74b5706330628f76ed802a209caab6bee71a91ca765f58220e71b166da818)
 pub fn create_clip_region_from_circle(
     x: f64,
     y: f64,
@@ -335,77 +415,17 @@ pub fn create_clip_region_from_circle(
     return create_clip_region_from_path(&path, Some(tolerance));
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:97 (sha256:9cd5e83fd878ff6afa5aca751a01d04215ef2f0dff9c546744d5665b2327ad3e)
+// Source: upstream/packages/clip/src/clipRegion.ts:126 (sha256:83b212068d72af5e21cd25ad258e41b7b65071796034ad5753f228b2323ca2a5)
 pub fn create_clip_region_from_contours(
     contours: &Vec<Vec<f64>>,
     winding: PathWinding,
 ) -> ClipRegion {
-    let mut rect = create_rectangle(None, None, None, None);
-    (|| -> () {
-        let mut min_x = f64::INFINITY;
-        let mut min_y = f64::INFINITY;
-        let mut max_x = (-f64::INFINITY);
-        let mut max_y = (-f64::INFINITY);
-        {
-            let mut c = 0.0_f64;
-            while (c < (contours.len() as f64)) {
-                let contour = contours[c as usize].clone();
-                {
-                    let mut i = 0.0_f64;
-                    while (i < (contour.len() as f64)) {
-                        let x = contour[i as usize].clone();
-                        let y = contour[(i + 1.0_f64) as usize].clone();
-                        if (x < min_x) {
-                            min_x = x;
-                        }
-                        if (x > max_x) {
-                            max_x = x;
-                        }
-                        if (y < min_y) {
-                            min_y = y;
-                        }
-                        if (y > max_y) {
-                            max_y = y;
-                        }
-                        {
-                            i += 2.0_f64;
-                            i.clone()
-                        };
-                    }
-                }
-                {
-                    c += 1.0;
-                    c
-                };
-            }
-        }
-        if (min_x > max_x) {
-            rect.x = 0.0_f64;
-            rect.y = 0.0_f64;
-            rect.width = 0.0_f64;
-            rect.height = 0.0_f64;
-            return;
-        }
-        rect.x = min_x;
-        rect.y = min_y;
-        rect.width = (max_x - min_x);
-        rect.height = (max_y - min_y);
-    })();
-    let owned = (contours)
-        .iter()
-        .cloned()
-        .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
-        .collect::<Vec<_>>();
-    return ClipRegion {
-        __flight_identity: std::sync::Arc::new(()),
-        contours: Some((owned).clone()),
-        rect: (rect).clone(),
-        version: 0.0_f64,
-        winding: (winding).clone(),
-    };
+    let mut out = allocate_entity();
+    initialize_clip_region_from_contours((out).clone(), contours, (winding).clone());
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:109 (sha256:9f646d72c2ea5a6d574b1ce5b3f6f6354a89f2e823a4a6c2596099a2f0dcb6ac)
+// Source: upstream/packages/clip/src/clipRegion.ts:137 (sha256:9f646d72c2ea5a6d574b1ce5b3f6f6354a89f2e823a4a6c2596099a2f0dcb6ac)
 pub fn create_clip_region_from_ellipse(
     rectangle: &RectangleLike,
     tolerance: Option<f64>,
@@ -422,82 +442,22 @@ pub fn create_clip_region_from_ellipse(
     return create_clip_region_from_path(&path, Some(tolerance));
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:119 (sha256:071c762e6a69df2d5bd9a6da45d4c3c608092e0fae4c952991ec2955fccdba2f)
+// Source: upstream/packages/clip/src/clipRegion.ts:143 (sha256:2229eba694e0ce7bd0ad0450e7164b2d8650626dbcff20d27111cde4b572d2c9)
 pub fn create_clip_region_from_path(path: &Path, tolerance: Option<f64>) -> ClipRegion {
     let tolerance = tolerance.unwrap_or(0.25_f64);
-    let contours = flatten_path(path, Some(tolerance));
-    let mut rect = create_rectangle(None, None, None, None);
-    (|| -> () {
-        let mut min_x = f64::INFINITY;
-        let mut min_y = f64::INFINITY;
-        let mut max_x = (-f64::INFINITY);
-        let mut max_y = (-f64::INFINITY);
-        {
-            let mut c = 0.0_f64;
-            while (c < (contours.len() as f64)) {
-                let contour = contours[c as usize].clone();
-                {
-                    let mut i = 0.0_f64;
-                    while (i < (contour.len() as f64)) {
-                        let x = contour[i as usize].clone();
-                        let y = contour[(i + 1.0_f64) as usize].clone();
-                        if (x < min_x) {
-                            min_x = x;
-                        }
-                        if (x > max_x) {
-                            max_x = x;
-                        }
-                        if (y < min_y) {
-                            min_y = y;
-                        }
-                        if (y > max_y) {
-                            max_y = y;
-                        }
-                        {
-                            i += 2.0_f64;
-                            i.clone()
-                        };
-                    }
-                }
-                {
-                    c += 1.0;
-                    c
-                };
-            }
-        }
-        if (min_x > max_x) {
-            rect.x = 0.0_f64;
-            rect.y = 0.0_f64;
-            rect.width = 0.0_f64;
-            rect.height = 0.0_f64;
-            return;
-        }
-        rect.x = min_x;
-        rect.y = min_y;
-        rect.width = (max_x - min_x);
-        rect.height = (max_y - min_y);
-    })();
-    return ClipRegion {
-        __flight_identity: std::sync::Arc::new(()),
-        contours: Some((contours).clone()),
-        rect: (rect).clone(),
-        version: 0.0_f64,
-        winding: (path.winding).clone(),
-    };
+    let mut out = allocate_entity();
+    initialize_clip_region_from_path((out).clone(), path, Some(tolerance));
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:128 (sha256:4cf76946e9d73b2fdbd9d0356a973733dfd549da004338df0b635d1419824e75)
+// Source: upstream/packages/clip/src/clipRegion.ts:149 (sha256:e4030f38e44e6dec1b713168a36cd8fe0a306aa5e8ce2c38dc93f590abc2d632)
 pub fn create_clip_region_from_rectangle(rectangle: &RectangleLike) -> ClipRegion {
-    return ClipRegion {
-        __flight_identity: std::sync::Arc::new(()),
-        contours: None,
-        rect: clone_rectangle(rectangle),
-        version: 0.0_f64,
-        winding: "nonZero".to_owned(),
-    };
+    let mut out = allocate_entity();
+    initialize_clip_region_from_rectangle((out).clone(), rectangle);
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:134 (sha256:a799cca9ae977991e2400ad11363335fa6809b104bde6bb25a741cd35c51a16e)
+// Source: upstream/packages/clip/src/clipRegion.ts:157 (sha256:a799cca9ae977991e2400ad11363335fa6809b104bde6bb25a741cd35c51a16e)
 pub fn create_clip_region_from_rounded_rectangle(
     rectangle: &RectangleLike,
     radius: f64,
@@ -519,8 +479,10 @@ pub fn create_clip_region_from_rounded_rectangle(
     return create_clip_region_from_path(&path, Some(tolerance));
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:147 (sha256:076bb4c5a0c8afc34f3c1ddf09f9a10b8152c929b2ca8d2eebc61048a03837a7)
+// Source: upstream/packages/clip/src/clipRegion.ts:170 (sha256:6b123bb5406ebe5047fe15ce6a63efb994930ae46bb8f93479bc5204e0f8eeaa)
 pub fn equals_clip_region(a: &ClipRegion, b: &ClipRegion) -> bool {
+    guard_clip_region_use(a);
+    guard_clip_region_use(b);
     if (a == b) {
         return true;
     }
@@ -572,16 +534,249 @@ pub fn equals_clip_region(a: &ClipRegion, b: &ClipRegion) -> bool {
     return true;
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:170 (sha256:e3a11d0a7fa5ad9ddefdcb92b9e38b673c4710b87ea50fabc0dfd8a2d69e105a)
+// Source: upstream/packages/clip/src/clipRegion.ts:196 (sha256:89736209686aaed225c5766c3f16833b340c68f5fe8c71c45dd3b6e03ec75f28)
+pub fn explain_clip_region(clip: &ClipRegion) -> ClipRegionExplanation {
+    return ClipRegionExplanation {
+        __flight_identity: std::sync::Arc::new(()),
+        conservative: ((clip.contours).clone()).is_some(),
+        status: if {
+            let __flight_value = (*clip).clone();
+            (CLIP_REGION_POOL.lock().unwrap())
+                .iter()
+                .any(|item| item == &__flight_value)
+        } {
+            "released".to_owned()
+        } else {
+            "active".to_owned()
+        },
+    };
+}
+
+// Source: upstream/packages/clip/src/clipRegion.ts:205 (sha256:7c387937e8a95632d7061dbeabd83116f4996294ec9318c104dc39f71115f277)
+pub fn explain_clip_region_contours(
+    contours: &Vec<Vec<f64>>,
+) -> Option<ClipRegionContoursExplanation> {
+    {
+        let mut i = 0.0_f64;
+        while (i < (contours.len() as f64)) {
+            let coordinate_count = (contours[i as usize].len() as f64);
+            if ((__flight_js_to_i32(coordinate_count) & __flight_js_to_i32(1.0_f64)) as f64
+                != 0.0_f64)
+            {
+                return Some(ClipRegionContoursExplanation {
+                    __flight_identity: std::sync::Arc::new(()),
+                    contour_index: i,
+                    coordinate_count: coordinate_count,
+                    reason: "odd-coordinate-count".to_owned(),
+                });
+            }
+            if (coordinate_count < 6.0_f64) {
+                return Some(ClipRegionContoursExplanation {
+                    __flight_identity: std::sync::Arc::new(()),
+                    contour_index: i,
+                    coordinate_count: coordinate_count,
+                    reason: "too-few-points".to_owned(),
+                });
+            }
+            {
+                i += 1.0;
+                i
+            };
+        }
+    }
+    return None;
+}
+
+// Source: upstream/packages/clip/src/clipRegion.ts:217 (sha256:21dd36b3f3946a77ab26a1d82e022c3b3f5999aaa9bc90634cea0818e45d3713)
 pub fn get_clip_region_bounds(out: &mut RectangleLike, clip: &ClipRegion) -> () {
+    guard_clip_region_use(clip);
     out.x = clip.rect.x;
     out.y = clip.rect.y;
     out.width = clip.rect.width;
     out.height = clip.rect.height;
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:182 (sha256:c28abc3e7b4a98760fdf0bff5eb77881218959eed7c3f1f94bbb83e07f5406b4)
+// Source: upstream/packages/clip/src/clipRegion.ts:230 (sha256:82e2a2ccb29610df3a9472d2293d0a236d084d5f76bd5364524462bc1215246c)
+pub fn initialize_clip_region_from_contours(
+    out: EntityConstruction<ClipRegion>,
+    contours: &Vec<Vec<f64>>,
+    winding: PathWinding,
+) -> () {
+    let explanation = explain_clip_region_contours(contours);
+    if ((explanation).is_some()) && (((*_CONTOURS_GUARD.lock().unwrap()).clone()).is_some()) {
+        {
+            let __flight_callback = ((*_CONTOURS_GUARD.lock().unwrap()).as_ref().unwrap()).clone();
+            __flight_callback.lock().unwrap()(
+                (explanation.as_ref().unwrap()).clone(),
+                (*contours).clone(),
+            )
+        };
+    }
+    let mut rect = create_rectangle(None, None, None, None);
+    (|| -> () {
+        let mut min_x = f64::INFINITY;
+        let mut min_y = f64::INFINITY;
+        let mut max_x = (-f64::INFINITY);
+        let mut max_y = (-f64::INFINITY);
+        {
+            let mut c = 0.0_f64;
+            while (c < (contours.len() as f64)) {
+                let contour = contours[c as usize].clone();
+                if ((contour.len() as f64) < 6.0_f64)
+                    || ((__flight_js_to_i32((contour.len() as f64)) & __flight_js_to_i32(1.0_f64))
+                        as f64
+                        != 0.0_f64)
+                {
+                    {
+                        c += 1.0;
+                        c
+                    };
+                    continue;
+                }
+                {
+                    let mut i = 0.0_f64;
+                    while (i < (contour.len() as f64)) {
+                        let x = contour[i as usize].clone();
+                        let y = contour[(i + 1.0_f64) as usize].clone();
+                        if (x < min_x) {
+                            min_x = x;
+                        }
+                        if (x > max_x) {
+                            max_x = x;
+                        }
+                        if (y < min_y) {
+                            min_y = y;
+                        }
+                        if (y > max_y) {
+                            max_y = y;
+                        }
+                        {
+                            i += 2.0_f64;
+                            i.clone()
+                        };
+                    }
+                }
+                {
+                    c += 1.0;
+                    c
+                };
+            }
+        }
+        if (min_x > max_x) {
+            rect.x = 0.0_f64;
+            rect.y = 0.0_f64;
+            rect.width = 0.0_f64;
+            rect.height = 0.0_f64;
+            return;
+        }
+        rect.x = min_x;
+        rect.y = min_y;
+        rect.width = (max_x - min_x);
+        rect.height = (max_y - min_y);
+    })();
+    let owned = (contours)
+        .iter()
+        .cloned()
+        .map(|c: Vec<f64>| -> Vec<f64> { (c).clone() })
+        .collect::<Vec<_>>();
+    crate::host_set("host.contours", owned);
+    crate::host_set("host.rect", rect);
+    crate::host_set("host.version", 0.0_f64);
+    crate::host_set("host.winding", winding);
+}
+
+// Source: upstream/packages/clip/src/clipRegion.ts:250 (sha256:43e8e6313194095e2d0168ee522b12d6b2e57f16399c880836115a00a71f9de7)
+pub fn initialize_clip_region_from_path(
+    out: EntityConstruction<ClipRegion>,
+    path: &Path,
+    tolerance: Option<f64>,
+) -> () {
+    let tolerance = tolerance.unwrap_or(0.25_f64);
+    let contours = flatten_path(path, Some(tolerance));
+    let mut rect = create_rectangle(None, None, None, None);
+    (|| -> () {
+        let mut min_x = f64::INFINITY;
+        let mut min_y = f64::INFINITY;
+        let mut max_x = (-f64::INFINITY);
+        let mut max_y = (-f64::INFINITY);
+        {
+            let mut c = 0.0_f64;
+            while (c < (contours.len() as f64)) {
+                let contour = contours[c as usize].clone();
+                if ((contour.len() as f64) < 6.0_f64)
+                    || ((__flight_js_to_i32((contour.len() as f64)) & __flight_js_to_i32(1.0_f64))
+                        as f64
+                        != 0.0_f64)
+                {
+                    {
+                        c += 1.0;
+                        c
+                    };
+                    continue;
+                }
+                {
+                    let mut i = 0.0_f64;
+                    while (i < (contour.len() as f64)) {
+                        let x = contour[i as usize].clone();
+                        let y = contour[(i + 1.0_f64) as usize].clone();
+                        if (x < min_x) {
+                            min_x = x;
+                        }
+                        if (x > max_x) {
+                            max_x = x;
+                        }
+                        if (y < min_y) {
+                            min_y = y;
+                        }
+                        if (y > max_y) {
+                            max_y = y;
+                        }
+                        {
+                            i += 2.0_f64;
+                            i.clone()
+                        };
+                    }
+                }
+                {
+                    c += 1.0;
+                    c
+                };
+            }
+        }
+        if (min_x > max_x) {
+            rect.x = 0.0_f64;
+            rect.y = 0.0_f64;
+            rect.width = 0.0_f64;
+            rect.height = 0.0_f64;
+            return;
+        }
+        rect.x = min_x;
+        rect.y = min_y;
+        rect.width = (max_x - min_x);
+        rect.height = (max_y - min_y);
+    })();
+    crate::host_set("host.contours", contours);
+    crate::host_set("host.rect", rect);
+    crate::host_set("host.version", 0.0_f64);
+    crate::host_set("host.winding", (path.winding).clone());
+}
+
+// Source: upstream/packages/clip/src/clipRegion.ts:266 (sha256:cb6793e4c3e30bab00dbb3e0341acd2f3a02a78a317bd7a8575514783c22dabf)
+pub fn initialize_clip_region_from_rectangle(
+    out: EntityConstruction<ClipRegion>,
+    rectangle: &RectangleLike,
+) -> () {
+    crate::host_set("host.contours", None);
+    crate::host_set("host.rect", clone_rectangle(rectangle));
+    crate::host_set("host.version", 0.0_f64);
+    crate::host_set("host.winding", "nonZero");
+}
+
+// Source: upstream/packages/clip/src/clipRegion.ts:280 (sha256:7796e9c3640e627b1bfa5e57400f147817a821c22fb3bb6137c9eab8e886c9f3)
 pub fn intersect_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) -> () {
+    guard_clip_region_use(out);
+    guard_clip_region_use(a);
+    guard_clip_region_use(b);
     let ax = a.rect.x;
     let ay = a.rect.y;
     let aw = a.rect.width;
@@ -664,14 +859,16 @@ pub fn intersect_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegi
         (__flight_js_to_u32((out.version + 1.0_f64)) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:245 (sha256:cf1212730548f45c6b8f6c73e8ca1d70261f2299393b7951a2f7849d76dc1e60)
+// Source: upstream/packages/clip/src/clipRegion.ts:346 (sha256:20caecd991fe757f55299732e1c719f396a19a87891cf4b51a097d07305ebc6c)
 pub fn invalidate_clip_region(clip: &mut ClipRegion) -> () {
+    guard_clip_region_use(clip);
     clip.version =
         (__flight_js_to_u32((clip.version + 1.0_f64)) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:251 (sha256:7a43038b37ceffae64da4f681a143bdeaa2c7545e4af66bb6c413e8fe9bc7e96)
+// Source: upstream/packages/clip/src/clipRegion.ts:353 (sha256:70f286ac3ffddbe7a7f446ed9fea972ba08584b5e643032e39d635754c0c9972)
 pub fn is_clip_region_empty(clip: &ClipRegion) -> bool {
+    guard_clip_region_use(clip);
     if is_empty_rectangle(&{
         let __flight_source = &(clip.rect);
         RectangleLike {
@@ -696,13 +893,16 @@ pub fn is_clip_region_empty(clip: &ClipRegion) -> bool {
     return false;
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:258 (sha256:8df1bcc26a92928ad8fa3b6673f7daadfba5d6bc8bce20c19f9ca002374ba2e6)
+// Source: upstream/packages/clip/src/clipRegion.ts:361 (sha256:8b2be51ba7b9e7779afb34fbf5d0dba07df3427df43dd3f1fa1e56a2b7a13092)
 pub fn is_clip_region_rectangular(clip: &ClipRegion) -> bool {
+    guard_clip_region_use(clip);
     return ((clip.contours).clone()).is_none();
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:269 (sha256:f81b44d88a8b1851186a39f15f257c75cec24c77e2f4132c19bd1caea3cfe55a)
+// Source: upstream/packages/clip/src/clipRegion.ts:373 (sha256:68ae779088bfcae7e6f33afe4defc77d899e9319be34be6aa84198aa5d70f17e)
 pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
+    guard_clip_region_use(out);
+    guard_clip_region_use(clip);
     let in_contours = (clip.contours).clone();
     let in_winding = (clip.winding).clone();
     if (in_contours).is_none() {
@@ -816,7 +1016,7 @@ pub fn normalize_clip_region(out: &mut ClipRegion, clip: &ClipRegion) -> () {
         (__flight_js_to_u32((out.version + 1.0_f64)) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:341 (sha256:b60719b33f8ca88b3d8b414f1d26a9a8fca380cae5e2f39973a8ae110e31793a)
+// Source: upstream/packages/clip/src/clipRegion.ts:447 (sha256:b60719b33f8ca88b3d8b414f1d26a9a8fca380cae5e2f39973a8ae110e31793a)
 pub fn release_clip_region(clip: &ClipRegion) -> () {
     if (((*_RELEASE_GUARD.lock().unwrap()).clone()).is_some())
         && ({
@@ -837,17 +1037,109 @@ pub fn release_clip_region(clip: &ClipRegion) -> () {
         .push(((*clip).clone()).clone());
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:348 (sha256:ddcc96d5cedaa98bc154b844117c856eecc7e217412bf41bae5ade375531b657)
+// Source: upstream/packages/clip/src/clipRegion.ts:452 (sha256:82daa1cf04938b927137228ba82e87c6af3f27f6a6466f0f1796494a76012ad2)
+pub fn set_clip_region_contours_guard(guard: &Option<ClipRegionContoursGuard>) -> () {
+    (*_CONTOURS_GUARD.lock().unwrap()) = (*guard).clone();
+}
+
+// Source: upstream/packages/clip/src/clipRegion.ts:458 (sha256:ddcc96d5cedaa98bc154b844117c856eecc7e217412bf41bae5ade375531b657)
 pub fn set_clip_region_release_guard(guard: &Option<ClipRegionReleaseGuard>) -> () {
     (*_RELEASE_GUARD.lock().unwrap()) = (*guard).clone();
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:352 (sha256:e1830f0353f013df27b3fb93d99fa0d01a9a4d5a672f7f68bf59d360066fe60f)
-static _RELEASE_GUARD: std::sync::LazyLock<std::sync::Mutex<Option<ClipRegionReleaseGuard>>> =
-    std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
+// Source: upstream/packages/clip/src/clipRegion.ts:464 (sha256:d27a3fe3fd769f540c26dc53e8f862429c4e6c83899553f6e681a91eb49b906b)
+pub fn set_clip_region_to_contours(
+    out: &mut ClipRegion,
+    contours: &Vec<Vec<f64>>,
+    winding: PathWinding,
+) -> () {
+    guard_clip_region_use(out);
+    let explanation = explain_clip_region_contours(contours);
+    if ((explanation).is_some()) && (((*_CONTOURS_GUARD.lock().unwrap()).clone()).is_some()) {
+        {
+            let __flight_callback = ((*_CONTOURS_GUARD.lock().unwrap()).as_ref().unwrap()).clone();
+            __flight_callback.lock().unwrap()(
+                (explanation.as_ref().unwrap()).clone(),
+                (*contours).clone(),
+            )
+        };
+    }
+    (|| -> () {
+        let mut min_x = f64::INFINITY;
+        let mut min_y = f64::INFINITY;
+        let mut max_x = (-f64::INFINITY);
+        let mut max_y = (-f64::INFINITY);
+        {
+            let mut c = 0.0_f64;
+            while (c < (contours.len() as f64)) {
+                let contour = contours[c as usize].clone();
+                if ((contour.len() as f64) < 6.0_f64)
+                    || ((__flight_js_to_i32((contour.len() as f64)) & __flight_js_to_i32(1.0_f64))
+                        as f64
+                        != 0.0_f64)
+                {
+                    {
+                        c += 1.0;
+                        c
+                    };
+                    continue;
+                }
+                {
+                    let mut i = 0.0_f64;
+                    while (i < (contour.len() as f64)) {
+                        let x = contour[i as usize].clone();
+                        let y = contour[(i + 1.0_f64) as usize].clone();
+                        if (x < min_x) {
+                            min_x = x;
+                        }
+                        if (x > max_x) {
+                            max_x = x;
+                        }
+                        if (y < min_y) {
+                            min_y = y;
+                        }
+                        if (y > max_y) {
+                            max_y = y;
+                        }
+                        {
+                            i += 2.0_f64;
+                            i.clone()
+                        };
+                    }
+                }
+                {
+                    c += 1.0;
+                    c
+                };
+            }
+        }
+        if (min_x > max_x) {
+            out.rect.x = 0.0_f64;
+            out.rect.y = 0.0_f64;
+            out.rect.width = 0.0_f64;
+            out.rect.height = 0.0_f64;
+            return;
+        }
+        out.rect.x = min_x;
+        out.rect.y = min_y;
+        out.rect.width = (max_x - min_x);
+        out.rect.height = (max_y - min_y);
+    })();
+    out.contours = Some(
+        (contours)
+            .iter()
+            .cloned()
+            .map(|contour: Vec<f64>| -> Vec<f64> { (contour).clone() })
+            .collect::<Vec<_>>(),
+    );
+    out.winding = (winding).clone();
+    out.version =
+        (__flight_js_to_u32((out.version + 1.0_f64)) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
+}
 
-// Source: upstream/packages/clip/src/clipRegion.ts:356 (sha256:735a4aa9dc416720c9953159b297b52d877041cf192e1307755da225ad6b21de)
+// Source: upstream/packages/clip/src/clipRegion.ts:480 (sha256:b7cc30d3af53b689bb52496bb6bbe74ea96f241d5b7955f22d131218e6579928)
 pub fn set_clip_region_to_rectangle(out: &mut ClipRegion, rectangle: &RectangleLike) -> () {
+    guard_clip_region_use(out);
     copy_rectangle(&mut out.rect, rectangle);
     out.contours = None;
     out.winding = "nonZero".to_owned();
@@ -855,8 +1147,15 @@ pub fn set_clip_region_to_rectangle(out: &mut ClipRegion, rectangle: &RectangleL
         (__flight_js_to_u32((out.version + 1.0_f64)) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:368 (sha256:11d785f5afbd65075fabaeb2a1d69714e7dc784117829fc08c67470c6334f051)
+// Source: upstream/packages/clip/src/clipRegion.ts:488 (sha256:db84f7325c0f27fb05793268bc4dc48db7e6f7f9c714bc2b8c3a597e1a9b69eb)
+pub fn set_clip_region_use_guard(guard: &Option<ClipRegionUseGuard>) -> () {
+    (*_USE_GUARD.lock().unwrap()) = (*guard).clone();
+}
+
+// Source: upstream/packages/clip/src/clipRegion.ts:497 (sha256:aacc773b2eebadd1e36bf94b7547594c1201854c31d5edd7e0f16a5d847b108e)
 pub fn transform_clip_region(out: &mut ClipRegion, clip: &ClipRegion, matrix: &MatrixLike) -> () {
+    guard_clip_region_use(out);
+    guard_clip_region_use(clip);
     let ma = matrix.a;
     let mb = matrix.b;
     let mc = matrix.c;
@@ -909,6 +1208,18 @@ pub fn transform_clip_region(out: &mut ClipRegion, clip: &ClipRegion, matrix: &M
                     let mut c = 0.0_f64;
                     while (c < (vec![(quad).clone()].len() as f64)) {
                         let contour = vec![(quad).clone()][c as usize].clone();
+                        if ((contour.len() as f64) < 6.0_f64)
+                            || ((__flight_js_to_i32((contour.len() as f64))
+                                & __flight_js_to_i32(1.0_f64))
+                                as f64
+                                != 0.0_f64)
+                        {
+                            {
+                                c += 1.0;
+                                c
+                            };
+                            continue;
+                        }
                         {
                             let mut i = 0.0_f64;
                             while (i < (contour.len() as f64)) {
@@ -1014,6 +1325,17 @@ pub fn transform_clip_region(out: &mut ClipRegion, clip: &ClipRegion, matrix: &M
                 let mut c = 0.0_f64;
                 while (c < (new_contours.len() as f64)) {
                     let contour = new_contours[c as usize].clone();
+                    if ((contour.len() as f64) < 6.0_f64)
+                        || ((__flight_js_to_i32((contour.len() as f64))
+                            & __flight_js_to_i32(1.0_f64)) as f64
+                            != 0.0_f64)
+                    {
+                        {
+                            c += 1.0;
+                            c
+                        };
+                        continue;
+                    }
                     {
                         let mut i = 0.0_f64;
                         while (i < (contour.len() as f64)) {
@@ -1060,8 +1382,11 @@ pub fn transform_clip_region(out: &mut ClipRegion, clip: &ClipRegion, matrix: &M
         (__flight_js_to_u32((out.version + 1.0_f64)) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:432 (sha256:83a3038200932c2362e84e56b6888892402a2802f921480ac6804bc316930a41)
+// Source: upstream/packages/clip/src/clipRegion.ts:563 (sha256:719264e7695d5e09d75632a0261dc478f85cdbc55b308dc744d1cfc17b0b0bab)
 pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) -> () {
+    guard_clip_region_use(out);
+    guard_clip_region_use(a);
+    guard_clip_region_use(b);
     let a_contours = (a.contours).clone();
     let b_contours = (b.contours).clone();
     let a_winding = (a.winding).clone();
@@ -1148,25 +1473,53 @@ pub fn union_clip_regions(out: &mut ClipRegion, a: &ClipRegion, b: &ClipRegion) 
         (__flight_js_to_u32((out.version + 1.0_f64)) >> (__flight_js_to_u32(0.0_f64) & 31)) as f64;
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:464 (sha256:6b1600a4654adbc8826ce84b24365a41d8698cca8957d72488f536c23316cf84)
+// Source: upstream/packages/clip/src/clipRegion.ts:598 (sha256:6b1600a4654adbc8826ce84b24365a41d8698cca8957d72488f536c23316cf84)
 const NORMALIZE_EPSILON: f64 = 0.000001_f64;
 
-// Source: upstream/packages/clip/src/clipRegion.ts:468 (sha256:953b91ed5c1058a15614034ecd10d4be21df3e76ef003ee1519ee2a9f2c06c51)
+// Source: upstream/packages/clip/src/clipRegion.ts:602 (sha256:953b91ed5c1058a15614034ecd10d4be21df3e76ef003ee1519ee2a9f2c06c51)
 static CLIP_REGION_POOL: std::sync::LazyLock<std::sync::Mutex<Vec<ClipRegion>>> =
     std::sync::LazyLock::new(|| std::sync::Mutex::new(vec![]));
 
-// Source: upstream/packages/clip/src/clipRegion.ts:470 (sha256:307a5fe83db98ca824a571274be87d91132f11be585bdb1b3487eb5e8bd5b3b0)
+// Source: upstream/packages/clip/src/clipRegion.ts:604 (sha256:39fd740820b20b6fe4dfd72a3d944127590af9ba92a35adb7aef30f20bb64f5d)
+static _CONTOURS_GUARD: std::sync::LazyLock<std::sync::Mutex<Option<ClipRegionContoursGuard>>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
+
+// Source: upstream/packages/clip/src/clipRegion.ts:605 (sha256:e1830f0353f013df27b3fb93d99fa0d01a9a4d5a672f7f68bf59d360066fe60f)
+static _RELEASE_GUARD: std::sync::LazyLock<std::sync::Mutex<Option<ClipRegionReleaseGuard>>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
+
+// Source: upstream/packages/clip/src/clipRegion.ts:606 (sha256:7b706a5dc6cebb41e9b8560aaec8183bc6c8e6013c79d4cce2498ff6897652db)
+static _USE_GUARD: std::sync::LazyLock<std::sync::Mutex<Option<ClipRegionUseGuard>>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(None));
+
+// Source: upstream/packages/clip/src/clipRegion.ts:608 (sha256:4a0d5b16702eed7af84e960081d953a3b76dae8cc664dd517a51bc7475e4b0e5)
 fn make_empty_clip_region() -> ClipRegion {
-    return ClipRegion {
-        __flight_identity: std::sync::Arc::new(()),
-        contours: None,
-        rect: create_rectangle(None, None, None, None),
-        version: 0.0_f64,
-        winding: "nonZero".to_owned(),
-    };
+    let mut out = allocate_entity();
+    crate::host_set("host.contours", None);
+    crate::host_set("host.rect", create_rectangle(None, None, None, None));
+    crate::host_set("host.version", 0.0_f64);
+    crate::host_set("host.winding", "nonZero");
+    return finish_entity((out).clone());
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:476 (sha256:7118165e911c7cb6dd6474d722a3838ba5c2e66fb0c87c4d87184298183d9d28)
+// Source: upstream/packages/clip/src/clipRegion.ts:617 (sha256:7ccbc62301090826d8149af320170a729a3effcd5f6ab1cc92e3fa528ed4f334)
+fn guard_clip_region_use(clip: &ClipRegion) -> () {
+    if (((*_USE_GUARD.lock().unwrap()).clone()).is_some())
+        && ({
+            let __flight_value = (*clip).clone();
+            (CLIP_REGION_POOL.lock().unwrap())
+                .iter()
+                .any(|item| item == &__flight_value)
+        })
+    {
+        {
+            let __flight_callback = ((*_USE_GUARD.lock().unwrap()).as_ref().unwrap()).clone();
+            __flight_callback.lock().unwrap()((*clip).clone())
+        };
+    }
+}
+
+// Source: upstream/packages/clip/src/clipRegion.ts:623 (sha256:142523eaff6a5e7d402a9815a3f91cccf5c22467e0346f866cc512bf6e4989d2)
 fn point_in_contours(contours: &Vec<Vec<f64>>, winding: PathWinding, px: f64, py: f64) -> bool {
     let mut winding_number = 0.0_f64;
     {
@@ -1174,7 +1527,9 @@ fn point_in_contours(contours: &Vec<Vec<f64>>, winding: PathWinding, px: f64, py
         while (c < (contours.len() as f64)) {
             let contour = contours[c as usize].clone();
             let n = (contour.len() as f64);
-            if (n < 4.0_f64) {
+            if (n < 6.0_f64)
+                || ((__flight_js_to_i32(n) & __flight_js_to_i32(1.0_f64)) as f64 != 0.0_f64)
+            {
                 {
                     c += 1.0;
                     c
@@ -1226,7 +1581,7 @@ fn point_in_contours(contours: &Vec<Vec<f64>>, winding: PathWinding, px: f64, py
     return (winding_number != 0.0_f64);
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:515 (sha256:32c4e283d2a7dc643965dbed5ae7a215575d6869984023a0258d2a55b3d8a519)
+// Source: upstream/packages/clip/src/clipRegion.ts:662 (sha256:32c4e283d2a7dc643965dbed5ae7a215575d6869984023a0258d2a55b3d8a519)
 fn append_circle_to_path(path: &mut Path, cx: f64, cy: f64, r: f64) -> () {
     let k = (r * circle_kappa_constant);
     append_path_move_to(path, cx, (cy - r));
@@ -1236,7 +1591,7 @@ fn append_circle_to_path(path: &mut Path, cx: f64, cy: f64, r: f64) -> () {
     append_path_cubic_curve_to(path, (cx - r), (cy - k), (cx - k), (cy - r), cx, (cy - r));
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:524 (sha256:ad3e6aeddeb6eaa106fbe41572dadd98945e8d80e359bd76a9d876eb3ecb80be)
+// Source: upstream/packages/clip/src/clipRegion.ts:671 (sha256:ad3e6aeddeb6eaa106fbe41572dadd98945e8d80e359bd76a9d876eb3ecb80be)
 fn append_ellipse_to_path(path: &mut Path, x: f64, y: f64, w: f64, h: f64) -> () {
     let cx = (x + (w / 2.0_f64));
     let cy = (y + (h / 2.0_f64));
@@ -1283,7 +1638,7 @@ fn append_ellipse_to_path(path: &mut Path, x: f64, y: f64, w: f64, h: f64) -> ()
     );
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:538 (sha256:4295c327f27979bfbb44d23d505d2ce612a6b49a036697c177bfdaf832db0dab)
+// Source: upstream/packages/clip/src/clipRegion.ts:685 (sha256:4295c327f27979bfbb44d23d505d2ce612a6b49a036697c177bfdaf832db0dab)
 fn append_rounded_rect_to_path(path: &mut Path, x: f64, y: f64, w: f64, h: f64, r: f64) -> () {
     let max_r = ((w).min(h) / 2.0_f64);
     let cr = (r).min(max_r);
@@ -1303,7 +1658,7 @@ fn append_rounded_rect_to_path(path: &mut Path, x: f64, y: f64, w: f64, h: f64, 
     append_path_cubic_curve_to(path, x, (y1 - k), (x1 - k), y, x1, y);
 }
 
-// Source: upstream/packages/clip/src/clipRegion.ts:557 (sha256:7f7a3cb695e49db6dc5a6d56dca443b141f97aca34142fd65dfd14485843d2c1)
+// Source: upstream/packages/clip/src/clipRegion.ts:704 (sha256:835b82a98898f01e6714573b8486d1e8c5e2ea4a38b1495283a91423dd3b7013)
 fn set_rectangle_to_contours_bounds(out: &mut RectangleLike, contours: &Vec<Vec<f64>>) -> () {
     let mut min_x = f64::INFINITY;
     let mut min_y = f64::INFINITY;
@@ -1313,6 +1668,17 @@ fn set_rectangle_to_contours_bounds(out: &mut RectangleLike, contours: &Vec<Vec<
         let mut c = 0.0_f64;
         while (c < (contours.len() as f64)) {
             let contour = contours[c as usize].clone();
+            if ((contour.len() as f64) < 6.0_f64)
+                || ((__flight_js_to_i32((contour.len() as f64)) & __flight_js_to_i32(1.0_f64))
+                    as f64
+                    != 0.0_f64)
+            {
+                {
+                    c += 1.0;
+                    c
+                };
+                continue;
+            }
             {
                 let mut i = 0.0_f64;
                 while (i < (contour.len() as f64)) {

@@ -99,16 +99,16 @@ impl PartialEq for ParticleDesignerParseOptions {
     }
 }
 
-// Source: upstream/packages/types/src/ParticleDesignerSchema.ts:92 (sha256:e600e1dda18994ef53183f57c80e2196fb0bc89a9c5da4f15170ebe57cbe25f7)
+// Source: upstream/packages/types/src/ParticleDesignerSchema.ts:92 (sha256:7cc9388d105c68afc7e06f781720b5026e0b57e2ac63fc655c5cf4fe22934bf8)
 #[derive(Clone, Default)]
-pub struct ParticleDesignerParsed {
+pub struct ParticleDesignerParseResult {
     #[doc(hidden)]
     pub __flight_identity: std::sync::Arc<()>,
     pub config: ParticleEmitterConfig,
     pub document: ParticleDesignerDocument,
     pub diagnostics: Vec<ImportDiagnostic>,
 }
-impl PartialEq for ParticleDesignerParsed {
+impl PartialEq for ParticleDesignerParseResult {
     fn eq(&self, other: &Self) -> bool {
         std::sync::Arc::ptr_eq(&self.__flight_identity, &other.__flight_identity)
     }
