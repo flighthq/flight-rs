@@ -114854,9 +114854,9 @@
         "unpremultiplyBitmapPixels"
       ],
       "output": "generated/crates/flighthq-bitmap-wasm/src/lib.rs",
-      "outputSha256": "sha256:d6b37b7bfdc5a4205cd74c17e9f7f7928cdfb8be041b4027b51d3c8a0f064e0d",
+      "outputSha256": "sha256:5d39509f7341faa91dcce1854beba4917fca1cb6ac54e7420e1ae29d2af9ba55",
       "template": "tools/generator/templates/bitmap_wasm.rs",
-      "templateSha256": "sha256:0835bd49e767fddf334bb443290e710e3d197391364c8897c44af1a69897fbec"
+      "templateSha256": "sha256:9994c3f242f557e90ed73aa20edddf22d8c2cff37608212e06498e3c4c40aa12"
     },
     {
       "authoritativePackage": "@flighthq/compression",
