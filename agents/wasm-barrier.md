@@ -96,11 +96,13 @@ The judgement is already being applied, and until now was undocumented. Six func
 
 **Leave in TypeScript, permanently:**
 
-- **Host and DOM interop.** `createBitmapFromCanvas`, `createBitmapFromImageSource`, `captureBitmapFromImageResource`, `drawBitmap`, `encodeBitmap`, `explainBitmapReadback`. These need the platform, not arithmetic.
+- **Host and DOM interop.** `createBitmapFromImageSource`, `captureBitmapFromImageResource`, `encodeBitmap`, `explainBitmapReadback`. These need the platform, not arithmetic. (`createBitmapFromCanvas` and `drawBitmap` were on this list until upstream removed them; `createBitmapFromImageSource` now covers the canvas case.)
 - **Single-pixel accessors.** The six above. The crossing dominates the work by orders of magnitude.
 - **Allocation and entity construction.** `createBitmap`, `cloneBitmap`, `createBitmapRegion`, `splitBitmapChannels`. These allocate through the entity package; identity and lifetime live in JavaScript and there is no compute to win.
 - **String formatting and parsing.** `formatBitmapFingerprint`, `parseBitmapFingerprint`.
 - **Constants.** `BITMAP_FINGERPRINT_COMPUTATION_ID`, the `BITMAP_NOISE_CHANNEL_*` set. Data, not code.
+
+This list is enforced rather than merely written down. `tests/generator/facade-packaging.test.ts` asserts that no `wasmFacades` export set contains any of these names, and — because a guard naming things that no longer exist is a guard that has stopped working — that every name on it is still exported by upstream. That second half is what caught `createBitmapFromCanvas` and `drawBitmap` going away.
 
 **Worth crossing, once the barrier pays:** the per-pixel kernels over flat buffers with no callback and no allocation — the blur family, the glow/bevel/shadow family, median and sharpen, the geometric resamplers, the gradient fills, the composite and channel operations. Roughly forty of the seventy-five currently deferred exports.
 

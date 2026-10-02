@@ -346,4 +346,55 @@ describe('blessed facade packaging', () => {
       }
     }
   });
+  // The hybrid is deliberate: `agents/wasm-barrier.md` records which `@flighthq/bitmap` functions belong in
+  // TypeScript permanently, and the reasons are structural rather than performance-dependent — platform access,
+  // a crossing that dominates a byte of work, allocation whose identity lives in JavaScript, string formatting,
+  // and plain data. Nothing about a faster kernel changes any of them.
+  //
+  // Written down, that judgement decays. Enforced, it cannot: widening the exposed set to include one of these
+  // now fails here, with the reason one line away.
+  const permanentlyTypeScript = {
+    'host and DOM interop': [
+      'createBitmapFromImageSource',
+      'captureBitmapFromImageResource',
+      'encodeBitmap',
+      'explainBitmapReadback',
+    ],
+    'single-pixel accessors, where the crossing dominates the work': [
+      'getBitmapPixel',
+      'getBitmapPixelLuminance',
+      'getBitmapPixelRgb',
+      'setBitmapPixel',
+      'setBitmapPixelRgb',
+      'invalidateBitmap',
+    ],
+    'allocation and entity construction': ['createBitmap', 'cloneBitmap', 'createBitmapRegion', 'splitBitmapChannels'],
+    'string formatting and parsing': ['formatBitmapFingerprint', 'parseBitmapFingerprint'],
+    'data rather than code': ['BITMAP_FINGERPRINT_COMPUTATION_ID'],
+  } as const;
+
+  it('keeps the permanently-TypeScript functions out of every wasm export set', () => {
+    const exposed = new Set(portConfig.wasmFacades.flatMap((facade) => facade.exports));
+    for (const [reason, names] of Object.entries(permanentlyTypeScript)) {
+      for (const name of names) {
+        expect(exposed.has(name), `${name} must stay in TypeScript — ${reason}`).toBe(false);
+      }
+    }
+  });
+
+  it('names only functions upstream still exports, so the list above cannot rot unnoticed', () => {
+    // A guard listing names that no longer exist has quietly stopped guarding anything: every assertion above
+    // would pass for a function upstream deleted, and pass just as well for one it renamed into the exposed set
+    // under a new name. This is the half that fails when upstream moves — it already caught
+    // `createBitmapFromCanvas` and `drawBitmap` being removed.
+    const upstreamExports = publicValueNames(
+      path.join(workspace, portConfig.upstreamDirectory, 'packages', 'bitmap', 'src/index.ts'),
+    );
+    expect(upstreamExports.size, 'upstream @flighthq/bitmap exposes a readable public surface').toBeGreaterThan(20);
+    for (const names of Object.values(permanentlyTypeScript)) {
+      for (const name of names) {
+        expect(upstreamExports.has(name), `${name} is still exported by upstream @flighthq/bitmap`).toBe(true);
+      }
+    }
+  });
 });
